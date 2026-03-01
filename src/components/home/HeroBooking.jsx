@@ -12,7 +12,7 @@ export default function HeroBooking() {
           {/* Promo badges */}
           <div style={{ position: 'absolute', top: 16, left: 16, display: 'flex', gap: 8 }}>
             <span style={{ background: 'var(--gold)', color: '#1a3329', fontWeight: 800, fontSize: 11, padding: '3px 10px', borderRadius: 4 }}>
-              50% OFF
+              Exculsive 50% OFF
             </span>
             <span style={{ background: 'var(--accent)', color: 'white', fontWeight: 800, fontSize: 11, padding: '3px 10px', borderRadius: 4 }}>
               BOOK IT NOW
