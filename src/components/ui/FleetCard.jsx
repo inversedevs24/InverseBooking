@@ -1,8 +1,11 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function FleetCard({ car }) {
+  const navigate = useNavigate()
+
   return (
-    <div className="fleet-card">
+    <div className="fleet-card" onClick={() => navigate('/fleet')}>
       <div className="fleet-car-icon">{car.icon}</div>
       <div className="fleet-car-name">{car.name}</div>
       <div className="fleet-car-badges">
