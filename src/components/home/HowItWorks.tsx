@@ -1,30 +1,36 @@
-const STEPS = [
+import { CalendarDays, User, Navigation2, Monitor, CheckCircle, UserCheck, MapPin, Star, ShieldCheck } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+
+type Step = { Icon: LucideIcon; title: string; desc: string; bgColor: string }
+type FlowItem = { step: string; Icon: LucideIcon; color: string }
+
+const STEPS: Step[] = [
   {
-    icon: '📅',
+    Icon: CalendarDays,
     title: 'Book Your Chauffeur Online',
     desc: 'Enter your pickup details, choose your chauffeur, and customize your ride. You can cancel or change your ride up to 24 hours before the pickup.',
     bgColor: 'rgba(203,161,53,0.1)',
   },
   {
-    icon: '👤',
+    Icon: User,
     title: 'Meet Your Driver',
     desc: "Your driver will be waiting at the meeting spot with a signboard. They'll track your flight and be there even if your flight is delayed.",
     bgColor: 'rgba(203,161,53,0.12)',
   },
   {
-    icon: '🎯',
+    Icon: Navigation2,
     title: 'Enjoy a Comfortable Ride',
     desc: 'Skip the taxi lines and crowded buses. InverseRide will get you to your destination on time, stress-free.',
     bgColor: 'rgba(74,144,226,0.1)',
   },
 ]
 
-const FLOW = [
-  { step: 'Book Online',             icon: '💻', color: '#CBA135' },
-  { step: 'Instant Confirmation',    icon: '✅', color: '#CBA135' },
-  { step: 'Meet your driver',        icon: '🧑‍✈️', color: '#CBA135' },
-  { step: 'Get to Your Destination', icon: '📍', color: '#CBA135' },
-  { step: 'Enjoy your trip',         icon: '🎉', color: '#CBA135' },
+const FLOW: FlowItem[] = [
+  { step: 'Book Online',             Icon: Monitor,      color: '#CBA135' },
+  { step: 'Instant Confirmation',    Icon: CheckCircle,  color: '#CBA135' },
+  { step: 'Meet your driver',        Icon: UserCheck,    color: '#CBA135' },
+  { step: 'Get to Your Destination', Icon: MapPin,       color: '#CBA135' },
+  { step: 'Enjoy your trip',         Icon: Star,         color: '#CBA135' },
 ]
 
 export default function HowItWorks() {
@@ -39,7 +45,9 @@ export default function HowItWorks() {
             <div className="text-white/70 text-label">No Last-Minute Hassles</div>
           </div>
           <div className="bg-black/20 px-5 py-3 rounded-[10px]">
-            <div className="text-white font-bold text-label">✅ Secure Payments</div>
+            <div className="text-white font-bold text-label flex items-center gap-1">
+              <ShieldCheck size={14} /> Secure Payments
+            </div>
             <div className="text-white/70 text-[11px]">Book with Confidence</div>
           </div>
         </div>
@@ -53,10 +61,10 @@ export default function HowItWorks() {
             {STEPS.map((s, i) => (
               <div key={i} className="flex gap-4 mb-7">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-[22px] flex-shrink-0"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-secondary flex-shrink-0"
                   style={{ background: s.bgColor }}
                 >
-                  {s.icon}
+                  <s.Icon size={22} />
                 </div>
                 <div>
                   <h4 className="font-bold text-span mb-1">{s.title}</h4>
@@ -72,10 +80,10 @@ export default function HowItWorks() {
             {FLOW.map((item, i) => (
               <div key={i} className="flex items-center gap-3 mb-4">
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-base flex-shrink-0"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white flex-shrink-0"
                   style={{ background: item.color }}
                 >
-                  {item.icon}
+                  <item.Icon size={16} />
                 </div>
                 <span className="font-semibold text-label">{item.step}</span>
               </div>

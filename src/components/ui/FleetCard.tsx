@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { Users, Briefcase } from 'lucide-react'
 import type { FleetItem } from '../../types'
 
 interface FleetCardProps {
@@ -22,10 +23,10 @@ export default function FleetCard({ car }: FleetCardProps) {
         <div className="font-bold text-label text-primary mb-[6px]">{car.name}</div>
         <div className="flex gap-[6px] mb-[6px]">
           <span className="bg-secondaryBg text-primary/70 text-[11px] px-2 py-[2px] rounded flex items-center gap-1">
-            👥 {car.pax}
+            <Users size={11} /> {car.pax}
           </span>
           <span className="bg-secondaryBg text-primary/70 text-[11px] px-2 py-[2px] rounded flex items-center gap-1">
-            🧳 {car.lug}
+            <Briefcase size={11} /> {car.lug}
           </span>
         </div>
         <div className="text-[11px] text-muted">{car.models}</div>

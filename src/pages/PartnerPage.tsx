@@ -1,14 +1,18 @@
 import { useState } from 'react'
+import { UserCheck, Car, Building2, Bus, Handshake, CheckCircle, Check } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import FAQ from '../components/ui/FAQ'
 import { PARTNER_FAQS } from '../data'
 
 const PARTNER_TYPES = ['Individual Chauffeur', 'Fleet Owner', 'Transport Company']
 
-const WHO_CAN_JOIN = [
-  { icon: '🧑‍✈️', label: 'Individual Chauffeurs' },
-  { icon: '🚗',    label: 'Fleet Owners' },
-  { icon: '🚙',    label: 'Limousine Companies' },
-  { icon: '🚌',    label: 'Transport Agencies' },
+type WhoItem = { Icon: LucideIcon; label: string }
+
+const WHO_CAN_JOIN: WhoItem[] = [
+  { Icon: UserCheck,  label: 'Individual Chauffeurs' },
+  { Icon: Car,        label: 'Fleet Owners' },
+  { Icon: Building2,  label: 'Limousine Companies' },
+  { Icon: Bus,        label: 'Transport Agencies' },
 ]
 
 const REQUIREMENTS = [
@@ -44,7 +48,7 @@ export default function PartnerPage() {
     setTimeout(() => setSubmitted(false), 3000)
   }
 
-  const inputCls = 'w-full border-none border-b border-b-border pb-[10px] text-label font-body outline-none text-primary bg-transparent transition-colors focus:border-b-secondary placeholder:text-[#aaa]'
+  const inputCls = 'w-full border-0 border-b border-b-border pb-[10px] text-label font-body outline-none text-primary bg-transparent transition-colors focus:border-b-secondary placeholder:text-[#aaa]'
 
   return (
     <>
@@ -56,14 +60,17 @@ export default function PartnerPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] rounded-card-lg overflow-hidden shadow-card-lg max-w-[860px] mx-auto mb-10 md:mb-[60px]">
-          <div className="bg-primary p-9 px-7 flex flex-col">
-            <h3 className="text-white text-span font-bold mb-5">Contact Information</h3>
-            <div className="text-[80px] text-center mt-5 opacity-60">🤝</div>
+          <div className="bg-primary p-9 px-7 flex flex-col items-center justify-center">
+            <h3 className="text-white text-span font-bold mb-6 self-start">Contact Information</h3>
+            <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+              <Handshake size={36} className="text-white/80" />
+            </div>
           </div>
           <div className="bg-white p-9">
             {submitted && (
-              <div className="bg-secondary/10 border border-secondary/30 text-secondary px-4 py-3 rounded-lg text-label mb-4">
-                ✅ Application submitted! We'll review and contact you within 3-5 business days.
+              <div className="bg-secondary/10 border border-secondary/30 text-secondary px-4 py-3 rounded-lg text-label mb-4 flex items-center gap-2">
+                <CheckCircle size={14} className="flex-shrink-0" />
+                Application submitted! We'll review and contact you within 3-5 business days.
               </div>
             )}
             <form onSubmit={handleSubmit}>
@@ -75,7 +82,7 @@ export default function PartnerPage() {
                 <div className="mb-4">
                   <label className="block text-label font-semibold text-primary mb-[6px]">Phone Number</label>
                   <div className="flex items-center gap-2 border-b border-border focus-within:border-secondary transition-colors">
-                    <span className="text-lg">🇦🇪</span>
+                    <span className="text-label text-muted font-semibold pb-[10px]">+971</span>
                     <input className="border-none outline-none text-label font-body flex-1 pb-[10px] bg-transparent" placeholder="(231) 555-0123" />
                   </div>
                 </div>
@@ -121,7 +128,7 @@ export default function PartnerPage() {
               <p className="font-bold mb-3">What You Get:</p>
               {WHY_PARTNER_LIST.map((item, i) => (
                 <div key={i} className="flex items-center gap-[10px] text-label mb-[10px]">
-                  <span className="text-secondary">✅</span>
+                  <CheckCircle size={15} className="text-secondary flex-shrink-0" />
                   <span>{item}</span>
                 </div>
               ))}
@@ -134,7 +141,9 @@ export default function PartnerPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px] mb-12">
             {WHO_CAN_JOIN.map((item, i) => (
               <div key={i} className="border border-[1.5px] border-border rounded-card p-[22px] text-center cursor-pointer transition-all hover:border-secondary hover:shadow-card">
-                <div className="text-[60px] mb-3">{item.icon}</div>
+                <div className="w-16 h-16 bg-secondaryBg rounded-full flex items-center justify-center text-secondary mx-auto mb-4">
+                  <item.Icon size={28} />
+                </div>
                 <h4 className="text-label font-semibold">{item.label}</h4>
               </div>
             ))}
@@ -152,7 +161,7 @@ export default function PartnerPage() {
               <p className="text-muted text-label mb-4">To ensure quality service, we require:</p>
               {REQUIREMENTS.map((r, i) => (
                 <div key={i} className="flex items-center gap-[10px] text-label mb-3">
-                  <span className="text-secondary">✅</span>
+                  <CheckCircle size={15} className="text-secondary flex-shrink-0" />
                   <span>{r}</span>
                 </div>
               ))}
@@ -170,7 +179,7 @@ export default function PartnerPage() {
           <div className="flex flex-wrap justify-center gap-[14px]">
             {BENEFITS.map((b, i) => (
               <div key={i} className="bg-primary text-white px-[22px] py-3 rounded-lg text-label font-semibold flex items-center gap-[10px]">
-                <span className="text-secondary">✓</span>
+                <Check size={14} className="text-secondary flex-shrink-0" />
                 {b}
               </div>
             ))}

@@ -8,10 +8,7 @@ export default function RideSmileBanner() {
           <br />
           <span className="text-secondary">REPEAT.</span>
         </div>
-        <div className="absolute right-[180px] top-1/2 -translate-y-1/2 text-[120px] opacity-[0.08]">
-          🚗
-        </div>
-        <div className="bg-white/10 rounded-xl px-6 py-4 text-center z-[1]">
+<div className="bg-white/10 rounded-xl px-6 py-4 text-center z-[1]">
           <div className="text-white font-head text-xl">InverseRide</div>
           <div className="text-white/50 text-[11px]">Premium Ride Partner UAE</div>
         </div>

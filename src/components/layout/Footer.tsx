@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Mail, Phone, Instagram } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandEmail, brandPhone } from '../../env'
 
-const PAYMENTS = ['GPay', 'VISA', 'AMEX', 'MC', 'Stripe', '💳', 'APay', 'JCB']
+const PAYMENTS = ['GPay', 'VISA', 'AMEX', 'MC', 'Stripe', 'APay', 'JCB']
 
 export default function Footer() {
   return (
@@ -13,25 +13,27 @@ export default function Footer() {
 
           {/* Brand */}
           <div>
-            <Logo />
+            <Logo light />
             <div className="mt-4">
               <div className="flex items-center gap-[10px] text-white/70 text-label mb-[10px]">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-secondary/20">
-                  <Mail size={13} className="text-secondary" />
+                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-white/10">
+                  <Mail size={13} className="text-white" />
                 </div>
                 <span>{brandEmail}</span>
               </div>
               <div className="flex items-center gap-[10px] text-white/70 text-label mb-[10px]">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-secondary/20">
-                  <Phone size={13} className="text-secondary" />
+                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-white/10">
+                  <Phone size={13} className="text-white" />
                 </div>
                 <span>{brandPhone}</span>
               </div>
             </div>
             <div className="flex gap-[10px] mt-4">
-              <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-label cursor-pointer font-bold transition-opacity hover:opacity-80 bg-[#1877f2] text-white">f</div>
-              <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-label cursor-pointer font-bold transition-opacity hover:opacity-80 bg-[#e1306c] text-white">📷</div>
-              <div className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-label cursor-pointer font-bold transition-opacity hover:opacity-80 bg-[#ff9500] text-white">★</div>
+              <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center text-label cursor-pointer font-bold text-white transition-all duration-200 hover:scale-110 hover:bg-white/20">f</div>
+              <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center cursor-pointer text-white transition-all duration-200 hover:scale-110 hover:bg-white/20">
+                <Instagram size={15} />
+              </div>
+              <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center text-label cursor-pointer font-bold text-white transition-all duration-200 hover:scale-110 hover:bg-white/20">𝕏</div>
             </div>
           </div>
 

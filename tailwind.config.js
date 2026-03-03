@@ -4,23 +4,27 @@ const config = {
   theme: {
     extend: {
       colors: {
-        primary: '#FF4433',
-        secondary: '#FF4433',
-        primaryBg: '#FF4433',
-        secondaryBg: '#FF4433',
-        muted: '#FF4433',
-        border: '#FF4433',
+        primary: '#0F172A',        // Deep navy (brand authority)
+        secondary: '#1E293B',
+        accent: '#2563EB',         // Premium blue for CTAs
+        primaryBg: '#F8FAFC',
+        secondaryBg: '#FFFFFF',
+        muted: '#64748B',
+        border: '#E2E8F0',
+        textPrimary: '#0F172A',
+        textSecondary: '#475569'
       },
       fontFamily: {
         head: ['Outfit', 'sans-serif'],
         body: ['Plus Jakarta Sans', 'sans-serif'],
       },
       fontSize: {
-        display: ['3rem', { lineHeight: '1.1', fontWeight: '800' }],
-        heading: ['2rem', { lineHeight: '2.5rem', fontWeight: '700' }],
-        title: ['1.5rem', { lineHeight: '2rem', fontWeight: '600' }],
+        display: ['4rem', { lineHeight: '1.1', fontWeight: '800' }],
+        heading: ['4rem', { lineHeight: '2.5rem', fontWeight: '700' }],
+        title: ['3rem', { lineHeight: '2rem', fontWeight: '600' }],
         span: ['1rem', { lineHeight: '1.5rem', fontWeight: '500' }],
-        label: ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],
+        label: ['1rem', { lineHeight: '1.25rem', fontWeight: '500' }],
+        content:['2rem', { lineHeight: '2rem', fontWeight: '500' }],
       },
       borderRadius: {
         card: '12px',

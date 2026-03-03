@@ -1,17 +1,22 @@
 import { useNavigate } from 'react-router-dom'
+import { Car, UserCheck, Compass, Landmark, CalendarDays, Wifi, ShieldCheck } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
-const OFFERS = [
-  { icon: '🚗',    title: 'Transfers: Fixed-point rides (e.g., airport, hotel, intercity)',      desc: 'Point-to-point rides suitable for airport transfers, city transport, and intercity travel. Includes 15 minutes free waiting for standard pickups and 60 minutes for airport pickups.' },
-  { icon: '🧑‍✈️', title: 'Hourly Chauffeur: Time-based vehicle hire with a professional driver', desc: 'Hire a vehicle with a professional driver based on time. Suitable for errands, business meetings, or events.' },
-  { icon: '🏜️',  title: 'Desert Safari',                                                        desc: "Enjoy the thrill of the UAE's desert with our exciting safari packages. From dune bashing to traditional Bedouin camps, experience the magic of the Arabian desert." },
-  { icon: '🏛️',  title: 'City Tours',                                                            desc: "Discover UAE's culture and landmarks with our guided city tours. Explore Dubai's skyscrapers, Abu Dhabi's heritage sites, and more." },
+type OfferItem  = { Icon: LucideIcon; title: string; desc: string }
+type WhyCard    = { Icon: LucideIcon; title: string; desc: string }
+
+const OFFERS: OfferItem[] = [
+  { Icon: Car,       title: 'Transfers: Fixed-point rides (e.g., airport, hotel, intercity)',      desc: 'Point-to-point rides suitable for airport transfers, city transport, and intercity travel. Includes 15 minutes free waiting for standard pickups and 60 minutes for airport pickups.' },
+  { Icon: UserCheck, title: 'Hourly Chauffeur: Time-based vehicle hire with a professional driver', desc: 'Hire a vehicle with a professional driver based on time. Suitable for errands, business meetings, or events.' },
+  { Icon: Compass,   title: 'Desert Safari',                                                        desc: "Enjoy the thrill of the UAE's desert with our exciting safari packages. From dune bashing to traditional Bedouin camps, experience the magic of the Arabian desert." },
+  { Icon: Landmark,  title: 'City Tours',                                                            desc: "Discover UAE's culture and landmarks with our guided city tours. Explore Dubai's skyscrapers, Abu Dhabi's heritage sites, and more." },
 ]
 
-const WHY_CARDS = [
-  { icon: '📅',    title: 'Flexible Booking',        desc: "Book your ride anytime — instantly or in advance. We're available 24/7 for your convenience." },
-  { icon: '👨‍✈️', title: 'Professional Chauffeurs', desc: 'All our drivers are trained, polite, and experienced to make your ride safe and comfortable.' },
-  { icon: '💧',    title: 'Free Wi-Fi & Water',       desc: 'Stay connected and refreshed during your journey. Complimentary Wi-Fi and bottled water in every ride.' },
-  { icon: '🚗',    title: 'Multiple Ride Options',    desc: 'From airport transfers to hourly chauffeurs — choose the service that suits your needs.' },
+const WHY_CARDS: WhyCard[] = [
+  { Icon: CalendarDays, title: 'Flexible Booking',        desc: "Book your ride anytime — instantly or in advance. We're available 24/7 for your convenience." },
+  { Icon: UserCheck,    title: 'Professional Chauffeurs', desc: 'All our drivers are trained, polite, and experienced to make your ride safe and comfortable.' },
+  { Icon: Wifi,         title: 'Free Wi-Fi & Water',       desc: 'Stay connected and refreshed during your journey. Complimentary Wi-Fi and bottled water in every ride.' },
+  { Icon: Car,          title: 'Multiple Ride Options',    desc: 'From airport transfers to hourly chauffeurs — choose the service that suits your needs.' },
 ]
 
 export default function AboutPage() {
@@ -30,7 +35,9 @@ export default function AboutPage() {
               <p className="text-muted text-span mb-[14px] leading-[1.7]">In the UAE, we also offer exclusive Desert Safari and City Tour experiences.</p>
               <p className="text-muted text-span mb-[14px] leading-[1.7]">Whether you're a resident or a visitor, InverseRide is here to make every ride easy, comfortable, and stress-free.</p>
               <div className="mt-5 flex items-center gap-[10px] flex-wrap">
-                <span className="text-secondary font-bold text-label">🛡️ Secure Payments</span>
+                <span className="text-secondary font-bold text-label flex items-center gap-1">
+                  <ShieldCheck size={14} /> Secure Payments
+                </span>
                 <div className="flex gap-[5px] flex-wrap">
                   {['GPay', 'VISA', 'AMEX', 'MC', 'Stripe', 'APay'].map((p, i) => (
                     <div key={i} className="bg-secondaryBg rounded px-[6px] py-[2px] text-[10px] font-bold">{p}</div>
@@ -54,8 +61,8 @@ export default function AboutPage() {
           <div className="flex flex-col gap-6 max-w-[700px] mx-auto">
             {OFFERS.map((item, i) => (
               <div key={i} className="flex gap-5 items-start">
-                <div className="w-[52px] h-[52px] bg-primary rounded-full flex items-center justify-center text-[22px] flex-shrink-0">
-                  {item.icon}
+                <div className="w-[52px] h-[52px] bg-primary rounded-full flex items-center justify-center text-white flex-shrink-0">
+                  <item.Icon size={22} />
                 </div>
                 <div>
                   <h4 className="font-bold text-span mb-1">{item.title}</h4>
@@ -77,7 +84,9 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {WHY_CARDS.map((c, i) => (
               <div key={i} className="text-center py-7 px-5">
-                <div className="text-[36px] mb-3">{c.icon}</div>
+                <div className="w-16 h-16 bg-secondaryBg rounded-full flex items-center justify-center text-secondary mx-auto mb-4">
+                  <c.Icon size={28} />
+                </div>
                 <h4 className="font-bold text-span mb-2">{c.title}</h4>
                 <p className="text-muted text-label">{c.desc}</p>
               </div>

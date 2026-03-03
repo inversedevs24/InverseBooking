@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Phone, Mail, MapPin } from 'lucide-react'
+import { Phone, Mail, MapPin, Instagram, CheckCircle } from 'lucide-react'
 import FAQ from '../components/ui/FAQ'
 import { CONTACT_FAQS } from '../data'
 import { brandPhone, brandEmail } from '../env'
@@ -9,6 +9,12 @@ const SUBJECTS = [
   { value: 'fare',      label: 'Fare Dispute' },
   { value: 'technical', label: 'Technical Error' },
   { value: 'quote',     label: 'Give me a Quote' },
+]
+
+const SOCIAL = [
+  { label: 'f',  isText: true  as const },
+  { label: 'ig', isText: false as const, Icon: Instagram },
+  { label: 'x',  isText: true  as const },
 ]
 
 export default function ContactPage() {
@@ -21,7 +27,9 @@ export default function ContactPage() {
     setTimeout(() => setSubmitted(false), 3000)
   }
 
-  const inputCls = 'w-full border-none border-b border-b-border pb-[10px] text-label font-body outline-none text-primary bg-transparent transition-colors focus:border-b-secondary placeholder:text-[#aaa]'
+  // border-0 (not border-none) keeps border-style:solid from Tailwind preflight,
+  // allowing border-b to render the bottom border correctly.
+  const inputCls = 'w-full border-0 border-b border-b-border pb-[10px] text-label font-body outline-none text-primary bg-transparent transition-colors focus:border-b-secondary placeholder:text-[#aaa]'
 
   return (
     <>
@@ -35,27 +43,40 @@ export default function ContactPage() {
             <div className="bg-primary text-white rounded-card-lg p-8 relative overflow-hidden">
               <h3 className="text-xl font-bold mb-6">Contact Information</h3>
               {[
-                { icon: <Phone size={18} />, text: brandPhone },
-                { icon: <Mail size={18} />,  text: brandEmail },
-                { icon: <MapPin size={18} />, text: 'Floor 1, Office no. 127, AlHisn Baskin Robins Building, Kulaib Bin Abdullah Al Hameli Street, Abu Dhabi' },
+                { Icon: Phone,  text: brandPhone },
+                { Icon: Mail,   text: brandEmail },
+                { Icon: MapPin, text: 'Floor 1, Office no. 127, AlHisn Baskin Robins Building, Kulaib Bin Abdullah Al Hameli Street, Abu Dhabi' },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3 mb-[18px]">
-                  <span className="text-secondary flex-shrink-0 mt-1">{item.icon}</span>
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-[2px]">
+                    <item.Icon size={15} className="text-white" />
+                  </div>
                   <p className="text-white/80 text-label leading-[1.5]">{item.text}</p>
                 </div>
               ))}
+
+              {/* Social links */}
               <div className="flex gap-[10px] mt-6">
-                <div className="w-[34px] h-[34px] rounded-full bg-[#1877f2] text-white flex items-center justify-center text-label cursor-pointer font-bold hover:opacity-80 transition-opacity">f</div>
-                <div className="w-[34px] h-[34px] rounded-full bg-[#e1306c] text-white flex items-center justify-center text-label cursor-pointer font-bold hover:opacity-80 transition-opacity">📷</div>
-                <div className="w-[34px] h-[34px] rounded-full bg-[#ff0000] text-white flex items-center justify-center text-label cursor-pointer font-bold hover:opacity-80 transition-opacity">▶</div>
+                {SOCIAL.map((s, i) => (
+                  <div
+                    key={i}
+                    className="w-[34px] h-[34px] rounded-full bg-white/10 text-white flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-white/20"
+                  >
+                    {s.isText
+                      ? <span className="text-label font-bold">{s.label}</span>
+                      : <s.Icon size={16} />
+                    }
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Form */}
             <div className="bg-white border border-border rounded-card-lg p-8">
               {submitted && (
-                <div className="bg-secondary/10 border border-secondary/30 text-secondary px-4 py-3 rounded-lg text-label mb-4">
-                  ✅ Message sent successfully! We'll get back to you soon.
+                <div className="bg-secondary/10 border border-secondary/30 text-secondary px-4 py-3 rounded-lg text-label mb-4 flex items-center gap-2">
+                  <CheckCircle size={14} className="flex-shrink-0" />
+                  Message sent successfully! We'll get back to you soon.
                 </div>
               )}
               <form onSubmit={handleSubmit}>
@@ -77,7 +98,7 @@ export default function ContactPage() {
                   <div className="mb-4">
                     <label className="block text-label font-semibold text-primary mb-[6px]">Phone Number</label>
                     <div className="flex items-center gap-2 border-b border-border focus-within:border-secondary transition-colors">
-                      <span className="text-lg">🇦🇪</span>
+                      <span className="text-label text-muted font-semibold pb-[10px]">+971</span>
                       <input className="border-none outline-none text-label font-body flex-1 pb-[10px] bg-transparent" placeholder="050 123 4567" />
                     </div>
                   </div>

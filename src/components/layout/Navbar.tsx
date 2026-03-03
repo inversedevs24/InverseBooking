@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Menu, X, Phone, Mail } from 'lucide-react'
+import { Menu, X, Phone, Mail, User } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandPhone, brandEmail } from '../../env'
 
@@ -39,8 +39,8 @@ export default function Navbar() {
           className="hidden md:flex items-center gap-2 cursor-pointer px-3 py-[6px] rounded-lg transition-colors hover:bg-secondaryBg"
           onClick={() => navigate('/signin')}
         >
-          <div className="w-[30px] h-[30px] bg-secondaryBg rounded-full flex items-center justify-center text-primary/70 text-label">
-            👤
+          <div className="w-[30px] h-[30px] bg-secondaryBg rounded-full flex items-center justify-center text-primary/70">
+            <User size={16} />
           </div>
           <div className="text-label text-muted leading-tight">
             <span className="block">Welcome</span>

@@ -1,3 +1,4 @@
+import { CheckCircle } from 'lucide-react'
 import FleetCard from '../ui/FleetCard'
 import { FLEET_HOME, TRUST_BADGES } from '../../data'
 
@@ -25,7 +26,9 @@ export default function FleetSection() {
           ))}
         </div>
 
-        <div className="text-center mt-4 text-secondary text-label">✅ Licensed Vehicles</div>
+        <div className="text-center mt-4 text-secondary text-label flex items-center justify-center gap-1">
+          <CheckCircle size={14} /> Licensed Vehicles
+        </div>
       </div>
     </div>
   )

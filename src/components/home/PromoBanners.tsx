@@ -8,12 +8,11 @@ export default function PromoBanners() {
           style={{ background: 'linear-gradient(135deg, #0F172A, #1e2d4a)' }}
         >
           <div>
-            <span className="bg-secondary text-primary font-extrabold text-[26px] px-3 py-[3px] rounded-[6px] inline-block mb-2">
+            <span className="font-extrabold text-[26px] px-3 py-[3px] rounded-[6px] inline-block mb-2 text-[#0F172A]" style={{ background: '#CBA135' }}>
               50% OFF
             </span>
             <div className="text-white/80 text-label">Book Your Ride at Half Price!</div>
           </div>
-          <div className="absolute right-5 bottom-0 text-[90px] opacity-20">🚗</div>
         </div>
 
         {/* Banner 2 */}
@@ -26,7 +25,6 @@ export default function PromoBanners() {
             <div className="font-head text-white text-[22px] font-bold">YOUR TIME!</div>
             <div className="text-white/60 text-[11px] mt-1">Hire a Chauffeur By The Hour</div>
           </div>
-          <div className="absolute right-4 top-4 text-[60px] opacity-30">🧑‍✈️</div>
         </div>
       </div>
     </div>

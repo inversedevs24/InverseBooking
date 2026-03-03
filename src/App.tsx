@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <>
-      {!isAuth && <div className="hidden md:block"><TopBar /></div>}
+      {/* {!isAuth && <div className="hidden md:block"><TopBar /></div>} */}
       {!isAuth && <Navbar />}
       <main>
         <Routes>
