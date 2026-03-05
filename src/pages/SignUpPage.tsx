@@ -1,70 +1,107 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, User } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react'
 import Logo from '../components/ui/Logo'
+
+const GRID_BG = 'linear-gradient(rgba(15,23,42,0.88), rgba(15,23,42,0.88)), repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px)'
+
+const cardCls  = 'bg-white rounded-2xl px-4 pt-3 pb-4 mb-2'
+const labelCls = 'block text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]'
+const inputCls = 'flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]'
 
 export default function SignUpPage() {
   const navigate = useNavigate()
+  const [showPw, setShowPw] = useState(false)
 
   return (
     <div
-      className="min-h-screen bg-primary flex items-center justify-center px-6 py-10 relative"
-      style={{
-        backgroundImage: 'linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.85)), repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px)',
-      }}
+      className="min-h-screen flex items-center justify-center px-6 py-16 relative"
+      style={{ backgroundImage: GRID_BG, backgroundColor: '#0F172A' }}
     >
       <div className="absolute top-6 left-8">
         <Logo light onClick={() => navigate('/')} />
       </div>
 
-      <div className="bg-white rounded-card-lg p-10 w-full max-w-[440px]">
-        <h2 className="font-head text-title mb-6 text-primary">Sign Up</h2>
+      <div className="w-full max-w-[420px]">
 
-        <div className="relative mb-[14px]">
-          <span className="absolute left-[14px] top-1/2 -translate-y-1/2 text-muted flex items-center">
-            <User size={15} />
-          </span>
-          <input className="w-full pl-10 pr-[14px] py-[13px] border-none rounded-lg bg-secondaryBg text-label font-body outline-none text-primary placeholder:text-[#999]" placeholder="Full Name" />
+        {/* Header */}
+        <p className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: '#CBA135' }}>
+          Get Started
+        </p>
+        <h1 className="font-head text-heading text-white leading-none mb-1">Create Account</h1>
+        <p className="text-[14px] text-white/70 font-body mb-7">Fill in your details to get started.</p>
+
+        {/* Full Name */}
+        <div className={cardCls}>
+          <label className={labelCls}>Full Name</label>
+          <div className="flex items-center gap-2">
+            <User size={14} className="text-[#aaa] flex-shrink-0" />
+            <input className={inputCls} type="text" placeholder="John Doe" />
+          </div>
         </div>
 
-        <div className="relative mb-[14px]">
-          <span className="absolute left-[14px] top-1/2 -translate-y-1/2 text-muted flex items-center">
-            <Mail size={15} />
-          </span>
-          <input className="w-full pl-10 pr-[14px] py-[13px] border-none rounded-lg bg-secondaryBg text-label font-body outline-none text-primary placeholder:text-[#999]" type="email" placeholder="Email Address" />
+        {/* Email */}
+        <div className={cardCls}>
+          <label className={labelCls}>Email Address</label>
+          <div className="flex items-center gap-2">
+            <Mail size={14} className="text-[#aaa] flex-shrink-0" />
+            <input className={inputCls} type="email" placeholder="you@example.com" />
+          </div>
         </div>
 
-        <div className="relative mb-[14px]">
-          <span className="absolute left-[14px] top-1/2 -translate-y-1/2 text-muted flex items-center">
-            <Lock size={15} />
-          </span>
-          <input className="w-full pl-10 pr-10 py-[13px] border-none rounded-lg bg-secondaryBg text-label font-body outline-none text-primary placeholder:text-[#999]" type="password" placeholder="Password" />
-          <span className="absolute right-[14px] top-1/2 -translate-y-1/2 cursor-pointer text-muted flex items-center">
-            <Eye size={15} />
-          </span>
+        {/* Password */}
+        <div className={cardCls}>
+          <label className={labelCls}>Password</label>
+          <div className="flex items-center gap-2">
+            <Lock size={14} className="text-[#aaa] flex-shrink-0" />
+            <input className={inputCls} type={showPw ? 'text' : 'password'} placeholder="••••••••" />
+            <button
+              type="button"
+              onClick={() => setShowPw(v => !v)}
+              className="text-[#aaa] hover:text-primary transition-colors flex-shrink-0 border-none bg-transparent cursor-pointer p-0"
+            >
+              {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+            </button>
+          </div>
         </div>
 
-        <button className="w-full bg-primary text-white border-none rounded-lg py-[14px] font-bold text-span cursor-pointer font-body transition-colors hover:bg-secondary mb-[14px]" onClick={() => navigate('/')}>
-          Sign Up
+        {/* Submit */}
+        <button
+          className="w-full border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body text-white mb-2 mt-1"
+          style={{ background: '#CBA135' }}
+          onClick={() => navigate('/')}
+        >
+          Create Account
         </button>
 
-        <p className="text-center text-label text-muted my-2">
-          Already have an Account? <Link to="/signin" className="text-secondary font-semibold no-underline">Login now</Link>
-        </p>
-
-        <div className="flex items-center gap-3 text-muted text-label my-[6px]">
-          <div className="flex-1 h-px bg-border" />
+        {/* Divider */}
+        <div className="flex items-center gap-3 text-white/50 text-[12px] my-4">
+          <div className="flex-1 h-px bg-white/10" />
           OR
-          <div className="flex-1 h-px bg-border" />
+          <div className="flex-1 h-px bg-white/10" />
         </div>
 
-        <button className="w-full bg-secondaryBg text-primary border-none rounded-lg py-3 font-semibold text-label cursor-pointer font-body flex items-center justify-center gap-2 mb-3 transition-colors hover:bg-border" onClick={() => navigate('/')}>
-          <User size={14} /> Book as a Guest
+        {/* Guest */}
+        <button
+          className="w-full bg-white/10 border border-white/20 text-white rounded-2xl py-[13px] font-semibold text-[14px] cursor-pointer font-body flex items-center justify-center gap-2 mb-6"
+          onClick={() => navigate('/')}
+        >
+          <User size={15} /> Book as a Guest
         </button>
 
-        <p className="text-center text-[11px] text-muted">
-          By proceeding you agree to InverseRide{' '}
-          <Link to="/terms" className="text-secondary no-underline">Terms</Link> &amp; <Link to="/privacy" className="text-secondary no-underline">Privacy</Link>
+        {/* Sign in link */}
+        <p className="text-center text-[13px] text-white mb-3">
+          Already have an account?{' '}
+          <Link to="/signin" className="text-white font-semibold underline">Sign in</Link>
         </p>
+
+        {/* Terms */}
+        <p className="text-center text-[11px] text-white">
+          By proceeding you agree to InverseRide{' '}
+          <Link to="/terms" className="text-white underline">Terms</Link> &amp;{' '}
+          <Link to="/privacy" className="text-white underline">Privacy</Link>
+        </p>
+
       </div>
     </div>
   )

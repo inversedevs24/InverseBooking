@@ -2,7 +2,7 @@ import type { FleetItem, Service, TrustBadge, Feature, FAQ } from '../types'
 import { brandName, brandEmail, brandPhone } from '../env'
 
 export const FLEET: FleetItem[] = [
-  { name: 'Executive',   pax: '4', lug: '3', models: 'Mercedes-Benz E-Class, Lexus ES, Tesla Model 3',        icon: '🚗', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80' },
+  { name: 'Executive',   pax: '4', lug: '3', models: 'Mercedes-Benz E-Class, Lexus ES, Tesla Model 3',        icon: '🚗', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&q=80' },
   { name: 'First Class', pax: '3', lug: '3', models: 'Mercedes-Benz S-Class, Audi A8, BMW 7 Series',          icon: '🚙', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=80' },
   { name: 'Urban SUV',   pax: '5', lug: '2', models: 'Toyota Highlander, Ford Edge, Mitsubishi Outlander',     icon: '🚐', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=80' },
   { name: 'Luxury SUV',  pax: '6', lug: '6', models: 'Cadillac Escalade, GMC Yukon, Range Rover Vogue',        icon: '🚖', image: 'https://images.unsplash.com/photo-1616455579100-2ceaa4eb2d37?w=400&q=80' },

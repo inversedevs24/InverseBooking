@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Phone, Mail, MapPin, Instagram, CheckCircle } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, CheckCircle, Send } from 'lucide-react'
 import FAQ from '../components/ui/FAQ'
 import { CONTACT_FAQS } from '../data'
 import { brandPhone, brandEmail } from '../env'
@@ -9,12 +9,6 @@ const SUBJECTS = [
   { value: 'fare',      label: 'Fare Dispute' },
   { value: 'technical', label: 'Technical Error' },
   { value: 'quote',     label: 'Give me a Quote' },
-]
-
-const SOCIAL = [
-  { label: 'f',  isText: true  as const },
-  { label: 'ig', isText: false as const, Icon: Instagram },
-  { label: 'x',  isText: true  as const },
 ]
 
 export default function ContactPage() {
@@ -27,87 +21,105 @@ export default function ContactPage() {
     setTimeout(() => setSubmitted(false), 3000)
   }
 
-  // border-0 (not border-none) keeps border-style:solid from Tailwind preflight,
-  // allowing border-b to render the bottom border correctly.
-  const inputCls = 'w-full border-0 border-b border-b-border pb-[10px] text-label font-body outline-none text-primary bg-transparent transition-colors focus:border-b-secondary placeholder:text-[#aaa]'
+  const inputCls = 'flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]'
+  const labelCls = 'block text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]'
+  const cardCls  = 'bg-white rounded-2xl px-4 pt-3 pb-4 mb-2'
 
   return (
     <>
-      <div className="py-10 md:py-[60px]">
+      <div className="py-10 md:py-[60px]" style={{ backgroundColor:  '#d5e0de' }}>
         <div className="max-w-container mx-auto px-6">
           <h1 className="font-head text-heading text-center mb-2 text-primary">Contact Us</h1>
           <p className="text-center text-muted mb-10">Got something on your mind? We'd love to hear from you!</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-7">
-            {/* Info panel */}
-            <div className="bg-primary text-white rounded-card-lg p-8 relative overflow-hidden">
-              <h3 className="text-xl font-bold mb-6">Contact Information</h3>
-              {[
-                { Icon: Phone,  text: brandPhone },
-                { Icon: Mail,   text: brandEmail },
-                { Icon: MapPin, text: 'Floor 1, Office no. 127, AlHisn Baskin Robins Building, Kulaib Bin Abdullah Al Hameli Street, Abu Dhabi' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 mb-[18px]">
-                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-[2px]">
-                    <item.Icon size={15} className="text-white" />
-                  </div>
-                  <p className="text-white/80 text-label leading-[1.5]">{item.text}</p>
-                </div>
-              ))}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-7 md:items-start">
+            {/* Info panel — second on mobile, first on desktop */}
+            <div className="md:order-first order-last">
+              {/* <p className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px] px-1">Contact Information</p> */}
 
-              {/* Social links */}
-              <div className="flex gap-[10px] mt-6">
-                {SOCIAL.map((s, i) => (
-                  <div
-                    key={i}
-                    className="w-[34px] h-[34px] rounded-full bg-white/10 text-white flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-white/20"
-                  >
-                    {s.isText
-                      ? <span className="text-label font-bold">{s.label}</span>
-                      : <s.Icon size={16} />
-                    }
+              <div className="rounded-2xl px-4 pt-3 pb-4 mb-2" style={{ background: '#0F172A' }}>
+                <label className="block text-[11px] font-bold text-white/60 uppercase tracking-wide mb-[6px]">Phone</label>
+                <div className="flex items-center gap-2">
+                  <Phone size={14} className="text-white/60 flex-shrink-0" />
+                  <span className="text-[14px] text-white font-body">{brandPhone}</span>
+                </div>
+              </div>
+
+              <div className="rounded-2xl px-4 pt-3 pb-4 mb-2" style={{ background: '#0F172A' }}>
+                <label className="block text-[11px] font-bold text-white/60 uppercase tracking-wide mb-[6px]">Email</label>
+                <div className="flex items-center gap-2">
+                  <Mail size={14} className="text-white/60 flex-shrink-0" />
+                  <span className="text-[14px] text-white font-body">{brandEmail}</span>
+                </div>
+              </div>
+
+              <div className="rounded-2xl px-4 pt-3 pb-4 mb-2" style={{ background: '#0F172A' }}>
+                <label className="block text-[11px] font-bold text-white/60 uppercase tracking-wide mb-[6px]">Address</label>
+                <div className="flex items-start gap-2">
+                  <MapPin size={14} className="text-white/60 flex-shrink-0 mt-[2px]" />
+                  <span className="text-[14px] text-white font-body leading-[1.5]">Floor 1, Office no. 127, AlHisn Baskin</span>
+                </div>
+              </div>
+
+              <div className="rounded-2xl px-4 pt-3 pb-4 mb-2" style={{ background: '#0F172A' }}>
+                <label className="block text-[11px] font-bold text-white/60 uppercase tracking-wide mb-[6px]">Business Hours</label>
+                <div className="flex items-start gap-2">
+                  <Clock size={14} className="text-white/60 flex-shrink-0 mt-[2px]" />
+                  <div>
+                    <span className="text-[14px] text-white font-body block">Mon – Fri: 8:00 AM – 8:00 PM</span>
+                    <span className="text-[14px] text-white font-body block">Sat – Sun: 9:00 AM – 6:00 PM</span>
                   </div>
-                ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl px-4 pt-3 pb-4 mb-2" style={{ background: '#0F172A' }}>
+                <label className="block text-[11px] font-bold text-white/60 uppercase tracking-wide mb-[6px]">Response Time</label>
+                <span className="text-[14px] text-white font-body">We typically respond within 2 hours during business hours.</span>
               </div>
             </div>
 
             {/* Form */}
-            <div className="bg-white border border-border rounded-card-lg p-8">
+            <div className="rounded-2xl px-3 pb-3" style={{ backgroundColor: '#d5e0de' }}>
               {submitted && (
-                <div className="bg-secondary/10 border border-secondary/30 text-secondary px-4 py-3 rounded-lg text-label mb-4 flex items-center gap-2">
+                <div className="bg-green-600/10 border border-secondary/30 text-secondary px-4 py-3 rounded-lg text-label mb-4 flex items-center gap-2">
                   <CheckCircle size={14} className="flex-shrink-0" />
                   Message sent successfully! We'll get back to you soon.
                 </div>
               )}
               <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  <div className="mb-4">
-                    <label className="block text-label font-semibold text-primary mb-[6px]">Name</label>
+                {/* Name + Last Name */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                  <div className={cardCls}>
+                    <label className={labelCls}>Name</label>
                     <input className={inputCls} placeholder="Name" />
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-label font-semibold text-primary mb-[6px]">Last Name</label>
+                  <div className={cardCls}>
+                    <label className={labelCls}>Last Name</label>
                     <input className={inputCls} placeholder="Last Name" />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  <div className="mb-4">
-                    <label className="block text-label font-semibold text-primary mb-[6px]">Email</label>
+
+                {/* Email + Phone */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                  <div className={cardCls}>
+                    <label className={labelCls}>Email</label>
                     <input className={inputCls} type="email" placeholder="Email" />
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-label font-semibold text-primary mb-[6px]">Phone Number</label>
-                    <div className="flex items-center gap-2 border-b border-border focus-within:border-secondary transition-colors">
-                      <span className="text-label text-muted font-semibold pb-[10px]">+971</span>
-                      <input className="border-none outline-none text-label font-body flex-1 pb-[10px] bg-transparent" placeholder="050 123 4567" />
+                  <div className={cardCls}>
+                    <label className={labelCls}>Phone Number</label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[14px] font-body flex-shrink-0">+971</span>
+                      <input className={inputCls} placeholder="050 123 4567" />
                     </div>
                   </div>
                 </div>
-                <div className="mb-4">
-                  <label className="block text-label font-semibold text-primary mb-[6px]">Select Subject?</label>
+
+                {/* Subject */}
+                <div className={cardCls}>
+                  <label className={labelCls}>Select Subject?</label>
                   <div className="flex gap-4 flex-wrap">
                     {SUBJECTS.map(s => (
-                      <label key={s.value} className="flex items-center gap-[6px] text-label cursor-pointer">
+                      <label key={s.value} className="flex items-center gap-[6px] text-[14px] cursor-pointer">
                         <input
                           type="radio" name="subject" value={s.value}
                           checked={subject === s.value}
@@ -119,19 +131,28 @@ export default function ContactPage() {
                     ))}
                   </div>
                 </div>
-                <div className="mb-4">
-                  <label className="block text-label font-semibold text-primary mb-[6px]">Message</label>
+
+                {/* Message */}
+                <div className={cardCls}>
+                  <label className={labelCls}>Message</label>
                   <textarea
-                    className="w-full border border-border rounded-lg p-[10px] text-label font-body outline-none text-primary bg-transparent transition-colors focus:border-secondary resize-y min-h-[80px] placeholder:text-[#aaa]"
+                    className="w-full text-[14px] text-primary font-body outline-none border-none bg-transparent resize-y min-h-[80px] placeholder:text-[#aaa]"
                     placeholder="Write your message..."
                     rows={4}
                   />
                 </div>
-                <div className="text-right">
-                  <button type="submit" className="bg-primary text-white border-none rounded-lg px-7 py-3 font-semibold text-label cursor-pointer font-body transition-colors hover:bg-secondary">
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  className="group relative overflow-hidden w-full bg-white text-primary border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-700 hover:text-white flex items-center justify-center gap-2"
+                >
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] aspect-square rounded-full bg-[#0F172A] scale-0 group-hover:scale-100 transition-transform duration-700 ease-in-out" />
+                  <span className="relative z-10 flex items-center gap-2">
                     Send Message
-                  </button>
-                </div>
+                    <Send size={16} />
+                  </span>
+                </button>
               </form>
             </div>
           </div>
@@ -140,7 +161,7 @@ export default function ContactPage() {
 
       <section className="py-10 md:py-[60px] bg-secondaryBg">
         <div className="max-w-container mx-auto px-6">
-          <h2 className="font-head text-heading text-primary text-center mb-10">Frequently Asked Questions</h2>
+          <h2 className="font-head text-heading text-primary text-center leading-none mb-10">Frequently Asked Questions</h2>
           <FAQ items={CONTACT_FAQS} />
         </div>
       </section>

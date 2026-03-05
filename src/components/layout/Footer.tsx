@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="bg-primary pt-[60px] pb-5">
       <div className="max-w-container mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
 
           {/* Brand */}
           <div>
@@ -72,7 +72,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/40 text-label">CopyRight - InverseRide © All Right Reserved..</p>
+          <p className="text-white/40 text-label">© {new Date().getFullYear()} InverseRide — All Rights Reserved</p>
           <div className="flex gap-[6px] items-center flex-wrap justify-center">
             {PAYMENTS.map((p, i) => (
               <div key={i} className="bg-white rounded px-[7px] py-[3px] text-[10px] font-bold text-primary">{p}</div>

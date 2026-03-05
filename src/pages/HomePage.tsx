@@ -25,7 +25,7 @@ export default function HomePage() {
 
       <section className="py-10 md:py-[60px]">
         <div className="max-w-container mx-auto px-6">
-          <h2 className="font-head text-heading text-primary text-center mb-2">Frequently Asked Questions</h2>
+          <h2 className="font-head text-heading text-primary text-center leading-none mb-2">Frequently Asked Questions</h2>
           <div className="mb-10" />
           <FAQ items={HOME_FAQS} />
         </div>

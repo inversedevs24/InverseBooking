@@ -1,35 +1,70 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, Briefcase } from 'lucide-react'
+import { Users, Briefcase, Heart } from 'lucide-react'
 import type { FleetItem } from '../../types'
 
-interface FleetCardProps {
-  car: FleetItem
+const GRADIENTS = [
+  'linear-gradient(135deg, #f0f4ff, #e0e7ff)',
+  'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
+  'linear-gradient(135deg, #fce7f3, #fbcfe8)',
+  'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+]
+
+function deriveType(name: string): string {
+  const n = name.toLowerCase()
+  if (n.includes('suv')) return 'SUV'
+  if (n.includes('van')) return 'Van'
+  if (n.includes('bus')) return 'Bus'
+  if (n.includes('family')) return 'MPV'
+  return 'Sedan'
 }
 
-export default function FleetCard({ car }: FleetCardProps) {
+export default function FleetCard({ car, index = 0 }: { car: FleetItem; index?: number }) {
   const navigate = useNavigate()
+  const [liked, setLiked] = useState(false)
 
   return (
     <div
-      className="group bg-white rounded-card overflow-hidden cursor-pointer transition-transform hover:-translate-y-1"
-      onClick={() => navigate('/fleet')}
+      className="bg-white overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[0_12px_36px_rgba(0,0,0,0.13)]"
+      style={{ borderRadius: '20px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}
     >
-      <img
-        src={car.image}
-        alt={car.name}
-        className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-      />
-      <div className="p-5">
-        <div className="font-bold text-label text-primary mb-[6px]">{car.name}</div>
-        <div className="flex gap-[6px] mb-[6px]">
-          <span className="bg-secondaryBg text-primary/70 text-[11px] px-2 py-[2px] rounded flex items-center gap-1">
-            <Users size={11} /> {car.pax}
+      {/* Image area */}
+      <div className="relative overflow-hidden" style={{ height: '150px', background: GRADIENTS[index % GRADIENTS.length] }}>
+        <button
+          onClick={e => { e.stopPropagation(); setLiked(l => !l) }}
+          className="absolute top-3 right-3 z-10 bg-white border-none rounded-full flex items-center justify-center cursor-pointer"
+          style={{ width: '32px', height: '32px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+        >
+          <Heart size={16} fill={liked ? '#ef4444' : 'none'} stroke={liked ? '#ef4444' : '#9ca3af'} />
+        </button>
+        <img src={car.image} alt={car.name} className="w-full h-full object-cover" />
+      </div>
+
+      {/* Content */}
+      <div className="p-4">
+        <p className="text-[11px] font-semibold text-muted uppercase tracking-widest mb-1 font-body">
+          {deriveType(car.name)}
+        </p>
+        <h3 className="font-head text-[17px] font-extrabold text-primary mb-3">{car.name}</h3>
+
+        {/* Specs */}
+        <div className="flex gap-3 mb-4">
+          <span className="flex items-center gap-1 text-[11px] font-semibold text-muted font-body">
+            <Users size={14} /> {car.pax} People
           </span>
-          <span className="bg-secondaryBg text-primary/70 text-[11px] px-2 py-[2px] rounded flex items-center gap-1">
-            <Briefcase size={11} /> {car.lug}
+          <span className="flex items-center gap-1 text-[11px] font-semibold text-muted font-body">
+            <Briefcase size={14} /> {car.lug} Bags
           </span>
         </div>
-        <div className="text-[11px] text-muted">{car.models}</div>
+
+        {/* CTA */}
+        <button
+          onClick={() => navigate('/vehicles')}
+          className="w-full text-white border-none text-[13px] font-bold cursor-pointer hover:opacity-85 transition-opacity duration-200 font-body"
+          style={{ background: 'linear-gradient(135deg, #0F172A, #1e293b)', borderRadius: '12px', padding: '9px 18px' }}
+        >
+          Rent Now
+        </button>
       </div>
     </div>
   )

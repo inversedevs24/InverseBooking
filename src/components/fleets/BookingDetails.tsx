@@ -33,7 +33,7 @@ export default function BookingDetails() {
     navigate('/checkout', { state: { ...booking, passenger: form } })
   }
 
-  const v = booking.vehicle || {}
+  const v = booking.vehicle
 
   const inputCls = (hasError?: string) =>
     `bg-white/[0.07] border rounded-lg px-[14px] py-[11px] text-label text-white font-body outline-none transition-all w-full placeholder:text-white/25 ${
@@ -143,10 +143,10 @@ export default function BookingDetails() {
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
           <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl overflow-hidden">
-            {'image' in v && v.image && <img src={v.image as string} alt={v.name as string} className="w-full h-[140px] object-cover" />}
+            {v?.image && <img src={v.image} alt={v.name} className="w-full h-[140px] object-cover" />}
             <div className="p-4">
-              <div className="font-head text-[17px] font-bold text-white mb-1">{(v.name as string) || 'Selected Vehicle'}</div>
-              <div className="text-[11px] text-white/40 mb-3">{(v.model as string) || ''}</div>
+              <div className="font-head text-[17px] font-bold text-white mb-1">{v?.name || 'Selected Vehicle'}</div>
+              <div className="text-[11px] text-white/40 mb-3">{v?.model || ''}</div>
               {[
                 { key: 'From', val: booking.from },
                 { key: 'To', val: booking.to },

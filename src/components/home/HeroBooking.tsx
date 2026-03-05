@@ -47,10 +47,10 @@ export default function HeroBooking() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-[2] w-full max-w-container mx-auto px-6 md:px-10 py-20 flex items-center">
+      <div className="relative w-full max-w-container mx-auto px-6 md:px-10 pt-8 pb-20 md:py-20 max-sm:pb-36 flex items-center">
         <div className="max-w-[420px] w-full relative">
-          <h1 className="font-head text-heading md:text-display text-primary mb-1">Book Now —</h1>
-          <p className="font-head text-title font-medium text-muted mb-5">Transfer or Hourly</p>
+          <h1 className="font-head text-heading md:text-display text-primary leading-none mb-1">Book Now</h1>
+          <p className="font-head text-title font-medium text-muted leading-none mb-5">Transfer or Hourly</p>
 
           {/* Booking form — individual cards, no outer wrapper */}
 
@@ -168,10 +168,10 @@ export default function HeroBooking() {
       </div>
 
       {/* Scroll hint */}
-      <div className="absolute bottom-6 left-1/2 z-[3] flex flex-col items-center gap-[6px] animate-scroll-bob">
+      {/* <div className="absolute bottom-6 left-1/2 z-[3] flex flex-col items-center gap-[6px] animate-scroll-bob">
         <div className="w-[5px] h-[5px] rounded-full bg-primary/30" />
         <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, rgba(15,23,42,0.4), transparent)' }} />
-      </div>
+      </div> */}
     </div>
   )
 }

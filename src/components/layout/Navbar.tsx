@@ -15,11 +15,11 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white border-b border-border sticky top-0 z-[100] shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
-      <div className="max-w-container mx-auto px-6 flex items-center justify-between h-16">
+      <div className="max-w-container mx-auto px-6 relative flex items-center justify-between h-16">
         <Logo />
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop nav — absolutely centered regardless of logo/signin widths */}
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
           <NavLink to="/" end className={linkCls}>Home</NavLink>
           <NavLink to="/about" className={linkCls}>About Us</NavLink>
           <NavLink to="/contact" className={linkCls}>Contact Us</NavLink>
@@ -42,10 +42,7 @@ export default function Navbar() {
           <div className="w-[30px] h-[30px] bg-secondaryBg rounded-full flex items-center justify-center text-primary/70">
             <User size={16} />
           </div>
-          <div className="text-label text-muted leading-tight">
-            <span className="block">Welcome</span>
-            <strong className="block text-primary text-label">Sign in / Register</strong>
-          </div>
+          <span className="text-[12px] font-semibold text-primary whitespace-nowrap">Sign in / Register</span>
         </div>
       </div>
 

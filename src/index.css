@@ -22,3 +22,6 @@
     scrollbar-color: rgba(255,255,255,0.08) transparent;
   }
 }
+
+.swiper-pagination-bullet { background: #0F172A; opacity: 0.3; }
+.swiper-pagination-bullet-active { background: #CBA135; opacity: 1; }
