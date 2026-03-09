@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -22,6 +23,8 @@ const AUTH_ROUTES = ['/signin', '/signup']
 export default function App() {
   const { pathname } = useLocation()
   const isAuth = AUTH_ROUTES.includes(pathname)
+
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
 
   return (
     <>
