@@ -37,4 +37,15 @@ function tailwindHotReload(): Plugin {
 
 export default defineConfig({
   plugins: [react(), tailwindHotReload()],
+  publicDir: 'public', // This is the default, but explicitly set for clarity
+  build: {
+    outDir: 'dist',
+    // Ensure assets are properly handled
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
 })
