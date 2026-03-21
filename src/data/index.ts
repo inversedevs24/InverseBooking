@@ -5,7 +5,7 @@ export const FLEET: FleetItem[] = [
   { name: 'Executive',   pax: '4', lug: '3', models: 'Mercedes-Benz E-Class, Lexus ES, Tesla Model 3',        icon: '🚗', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&q=80' },
   { name: 'First Class', pax: '3', lug: '3', models: 'Mercedes-Benz S-Class, Audi A8, BMW 7 Series',          icon: '🚙', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=80' },
   { name: 'Urban SUV',   pax: '5', lug: '2', models: 'Toyota Highlander, Ford Edge, Mitsubishi Outlander',     icon: '🚐', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=80' },
-  { name: 'Luxury SUV',  pax: '6', lug: '6', models: 'Cadillac Escalade, GMC Yukon, Range Rover Vogue',        icon: '🚖', image: 'https://images.unsplash.com/photo-1616455579100-2ceaa4eb2d37?w=400&q=80' },
+  { name: 'Luxury SUV',  pax: '6', lug: '6', models: 'Cadillac Escalade, GMC Yukon, Range Rover',        icon: '🚖', image: 'https://images.unsplash.com/photo-1616455579100-2ceaa4eb2d37?w=400&q=80' },
   { name: 'Family Ride', pax: '6', lug: '6', models: 'Chrysler Grand C4 SpaceTourer, Toyota Prado',            icon: '🚐', image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=80' },
   { name: 'Elite Van',   pax: '7', lug: '9', models: 'Mercedes-Benz V-Class',                                  icon: '🚌', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80' },
   { name: 'Mini Bus',    pax: '8', lug: '14', models: 'Mercedes-Benz Sprinter',                                icon: '🚎', image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400&q=80' },

@@ -1,7 +1,160 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import {
+  ChevronLeft, User, Mail, Phone, Users, Plane,
+  MessageSquare, Clock, Ruler, CheckCircle2,
+  ShieldCheck, ArrowRight, Car,
+} from 'lucide-react'
 import type { BookingState, PassengerForm, ValidationErrors } from '../../types'
 
+//  Step indicator
+const STEPS = [
+  { label: 'Vehicle' },
+  { label: 'Details' },
+  { label: 'Checkout' },
+]
+
+function StepBar({ current }: { current: number }) {
+  return (
+    <div className="bg-white border-b border-slate-100">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-center gap-2 sm:gap-3">
+        {STEPS.map((step, i) => {
+          const done = i < current
+          const active = i === current
+          return (
+            <div key={i} className="flex items-center gap-2 sm:gap-3">
+              {i > 0 && (
+                <div className={`h-px flex-shrink-0 transition-colors ${done ? 'w-8 sm:w-12' : 'w-6 sm:w-10'}`}
+                  style={{ backgroundColor: done ? '#0f766e' : '#e2e8f0', width: undefined }}
+                >
+                  <div className={`h-px ${done ? 'w-8 sm:w-12' : 'w-6 sm:w-10'}`}
+                    style={{ backgroundColor: done ? '#0f766e' : '#e2e8f0' }} />
+                </div>
+              )}
+              <div className={`flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold transition-colors ${active ? 'text-slate-800' : done ? 'text-slate-400' : 'text-slate-300'
+                }`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 transition-all ${active ? 'text-white' : done ? 'text-white' : 'text-slate-400 bg-slate-100'
+                  }`} style={active ? { backgroundColor: '#0f4c3e' } : done ? { backgroundColor: '#0f766e' } : {}}>
+                  {done ? <CheckCircle2 size={13} /> : i + 1}
+                </div>
+                <span className="hidden sm:block">{step.label}</span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+//  Labelled input wrapper 
+function Field({
+  label, error, children,
+}: {
+  label: string
+  error?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</label>
+      {children}
+      {error && <span className="text-[11px] text-red-500 font-medium">{error}</span>}
+    </div>
+  )
+}
+
+//  Input style factory 
+const inputCls = (hasError?: string) =>
+  `w-full bg-white border rounded-xl px-4 py-2.5 text-[13px] text-slate-700 font-body outline-none transition-all placeholder:text-slate-300 ${hasError
+    ? 'border-red-400 focus:ring-2 focus:ring-red-100'
+    : 'border-slate-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-50'
+  }`
+
+const iconInputWrapper = 'relative'
+const iconCls = 'absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none'
+const iconInputCls = (err?: string) => inputCls(err) + ' pl-10'
+
+//  Booking summary sidebar 
+function BookingSummary({ booking }: { booking: BookingState }) {
+  const v = booking.vehicle
+  return (
+    <div className="flex flex-col gap-3">
+      {/* Vehicle card */}
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
+        {v?.image && (
+          <div className="h-[130px] overflow-hidden relative">
+            <img src={v.image} alt={v.name} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: 'linear-gradient(to top, rgba(15,23,42,0.4) 0%, transparent 60%)' }} />
+            {v.tag && (
+              <div
+                className="absolute bottom-3 left-3 text-[9px] font-extrabold px-2 py-0.5 rounded-full text-white uppercase tracking-wide"
+                style={{ backgroundColor: v.tagColor }}
+              >
+                {v.tag}
+              </div>
+            )}
+          </div>
+        )}
+        <div className="px-4 pt-3 pb-4">
+          <div className="text-[15px] font-bold text-slate-800 font-head">{v?.name || 'Selected Vehicle'}</div>
+          <div className="text-[11px] text-slate-400 mb-3">{v?.model}</div>
+
+          {/* Route */}
+          <div className="flex gap-2.5 mb-3">
+            <div className="flex flex-col items-center flex-shrink-0 mt-1">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#0f766e' }} />
+              <div className="w-px flex-1 my-1" style={{ backgroundColor: '#d5e0de', minHeight: 20 }} />
+              <div className="w-2 h-2 rounded-full bg-slate-300" />
+            </div>
+            <div className="flex flex-col gap-3 flex-1 min-w-0">
+              <div>
+                <div className="text-[9px] text-slate-400 uppercase tracking-widest mb-0.5">From</div>
+                <div className="text-[12px] font-semibold text-slate-700 leading-tight truncate">{booking.from || '—'}</div>
+              </div>
+              <div>
+                <div className="text-[9px] text-slate-400 uppercase tracking-widest mb-0.5">To</div>
+                <div className="text-[12px] font-semibold text-slate-700 leading-tight truncate">{booking.to || '—'}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {[
+              { Icon: Ruler, val: booking.distance ? `${booking.distance} km` : '—' },
+              { Icon: Clock, val: booking.duration ? `${booking.duration} min` : '—' },
+            ].map(({ Icon, val }, i) => (
+              <div key={i} className="flex items-center gap-1.5 rounded-xl px-3 py-2" style={{ backgroundColor: '#f0f5f4' }}>
+                <Icon size={12} style={{ color: '#0f766e' }} />
+                <span className="text-[12px] font-semibold text-slate-700">{val}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Price */}
+          <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+            <span className="text-[12px] text-slate-500 font-body">Total</span>
+            <span className="text-[20px] font-bold font-head" style={{ color: '#0f4c3e' }}>
+              ${booking.price || '—'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Trust note */}
+      <div className="flex items-start gap-2.5 rounded-2xl px-4 py-3" style={{ backgroundColor: '#e8eeec' }}>
+        <ShieldCheck size={14} style={{ color: '#0f766e' }} className="flex-shrink-0 mt-0.5" />
+        <p className="text-[11px] leading-relaxed" style={{ color: '#0f4c3e' }}>
+          Your information is secure and will only be used for this booking.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+//  Main 
 export default function BookingDetails() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -12,6 +165,7 @@ export default function BookingDetails() {
     passengers: '1', flightNumber: '', specialRequests: '',
   })
   const [errors, setErrors] = useState<ValidationErrors>({})
+  const [showSummary, setShowSummary] = useState(false)
 
   const set = (key: keyof PassengerForm, val: string) => {
     setForm(f => ({ ...f, [key]: val }))
@@ -33,140 +187,185 @@ export default function BookingDetails() {
     navigate('/checkout', { state: { ...booking, passenger: form } })
   }
 
-  const v = booking.vehicle
-
-  const inputCls = (hasError?: string) =>
-    `bg-white/[0.07] border rounded-lg px-[14px] py-[11px] text-label text-white font-body outline-none transition-all w-full placeholder:text-white/25 ${
-      hasError
-        ? 'border-red-500'
-        : 'border-white/12 focus:border-secondary focus:bg-white/10'
-    }`
-
   return (
-    <div className="min-h-screen bg-[#0f1f19] font-body">
-      {/* Topbar */}
-      <div className="bg-[#122a20] border-b border-white/[0.08] px-7 py-[14px] flex items-center gap-4">
-        <button
-          className="bg-white/[0.08] border border-white/12 rounded-lg text-white/70 px-[14px] py-[7px] cursor-pointer text-label font-semibold transition-all hover:bg-white/14 hover:text-white"
-          onClick={() => navigate(-1)}
-        >
-          ← Back
-        </button>
-        <span className="font-head text-span font-bold text-white">Passenger Details</span>
-      </div>
+    <div className="min-h-screen font-body" style={{ backgroundColor: '#f0f5f4' }}>
 
-      {/* Steps */}
-      <div className="flex items-center justify-center gap-2 px-7 py-5 bg-[#122a20] border-b border-white/[0.06]">
-        {[
-          { label: 'Vehicle', state: 'done' },
-          { label: 'Details', state: 'active' },
-          { label: 'Checkout', state: 'pending' },
-        ].map((step, i) => (
-          <div key={i} className="flex items-center gap-2">
-            {i > 0 && <div className="w-10 h-px bg-white/10" />}
-            <div className={`flex items-center gap-2 text-[11px] font-semibold ${step.state === 'active' ? 'text-secondary' : step.state === 'done' ? 'text-white/50' : 'text-white/30'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step.state === 'active' ? 'bg-secondary text-white' : step.state === 'done' ? 'bg-white/15' : 'bg-white/[0.08]'}`}>
-                {step.state === 'done' ? '✓' : i + 1}
-              </div>
-              {step.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="max-w-[900px] mx-auto my-9 px-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-        {/* Form */}
-        <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl p-7">
-          <div className="font-head text-span font-bold text-white mb-[6px]">Your Details</div>
-          <div className="text-label text-white/40 mb-6">Fill in your information to complete the booking</div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px] mb-[14px]">
-            <div className="flex flex-col gap-[6px]">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">First Name</label>
-              <input className={inputCls(errors.firstName)} placeholder="John" value={form.firstName} onChange={e => set('firstName', e.target.value)} />
-              {errors.firstName && <span className="text-[11px] text-red-500">{errors.firstName}</span>}
-            </div>
-            <div className="flex flex-col gap-[6px]">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">Last Name</label>
-              <input className={inputCls(errors.lastName)} placeholder="Doe" value={form.lastName} onChange={e => set('lastName', e.target.value)} />
-              {errors.lastName && <span className="text-[11px] text-red-500">{errors.lastName}</span>}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px] mb-[14px]">
-            <div className="flex flex-col gap-[6px]">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">Email Address</label>
-              <input className={inputCls(errors.email)} placeholder="john@email.com" type="email" value={form.email} onChange={e => set('email', e.target.value)} />
-              {errors.email && <span className="text-[11px] text-red-500">{errors.email}</span>}
-            </div>
-            <div className="flex flex-col gap-[6px]">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">Phone Number</label>
-              <input className={inputCls(errors.phone)} placeholder="+971 50 000 0000" type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} />
-              {errors.phone && <span className="text-[11px] text-red-500">{errors.phone}</span>}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px] mb-[14px]">
-            <div className="flex flex-col gap-[6px]">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">Number of Passengers</label>
-              <select className={inputCls()} value={form.passengers} onChange={e => set('passengers', e.target.value)}>
-                {[1,2,3,4,5,6,7,8,9,10,11,12,13,14].map(n => (
-                  <option key={n} value={n}>{n} passenger{n > 1 ? 's' : ''}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col gap-[6px]">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">Flight Number (optional)</label>
-              <input className={inputCls()} placeholder="EK 203" value={form.flightNumber} onChange={e => set('flightNumber', e.target.value)} />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-[6px] mb-[14px]">
-            <label className="text-[10px] font-bold text-white/40 uppercase tracking-[1px]">Special Requests (optional)</label>
-            <textarea
-              className={`${inputCls()} resize-y min-h-[80px]`}
-              placeholder="Child seat, meet & greet, specific route..."
-              value={form.specialRequests}
-              onChange={e => set('specialRequests', e.target.value)}
-            />
-          </div>
-
+      {/*  Top bar  */}
+      <div className="bg-white border-b border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-2 sm:gap-3">
           <button
-            className="w-full bg-gradient-to-br from-secondary to-secondary/80 border-none rounded-[10px] py-[14px] text-white text-span font-bold cursor-pointer font-body transition-all mt-2 shadow-[0_4px_20px_rgba(203,161,53,0.35)] hover:-translate-y-px hover:shadow-[0_8px_28px_rgba(203,161,53,0.5)]"
-            onClick={handleContinue}
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 sm:gap-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 transition-colors px-2 sm:px-3 py-1.5 rounded-xl hover:bg-slate-100 flex-shrink-0"
           >
-            Continue to Checkout →
+            <ChevronLeft size={15} />
+            <span className="hidden xs:inline">Back</span>
+          </button>
+
+          <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
+
+          <h1 className="font-head font-bold text-slate-800 text-[14px] sm:text-[16px] truncate min-w-0">
+            Passenger Details
+          </h1>
+
+          <div className="flex-1" />
+
+          {/* Mobile summary toggle */}
+          <button
+            className="lg:hidden flex items-center gap-1.5 text-[12px] font-semibold rounded-xl px-2.5 sm:px-3 py-1.5 transition-colors flex-shrink-0"
+            style={showSummary
+              ? { backgroundColor: '#0f4c3e', color: 'white' }
+              : { backgroundColor: '#e8eeec', color: '#0f4c3e' }
+            }
+            onClick={() => setShowSummary(v => !v)}
+          >
+            <Car size={13} />
+            <span className="hidden sm:inline">{showSummary ? 'Hide' : 'Your'} Booking</span>
           </button>
         </div>
+      </div>
 
-        {/* Sidebar */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl overflow-hidden">
-            {v?.image && <img src={v.image} alt={v.name} className="w-full h-[140px] object-cover" />}
-            <div className="p-4">
-              <div className="font-head text-[17px] font-bold text-white mb-1">{v?.name || 'Selected Vehicle'}</div>
-              <div className="text-[11px] text-white/40 mb-3">{v?.model || ''}</div>
-              {[
-                { key: 'From', val: booking.from },
-                { key: 'To', val: booking.to },
-                { key: 'Distance', val: booking.distance ? `${booking.distance} km` : undefined },
-                { key: 'Duration', val: booking.duration ? `${booking.duration} min` : undefined },
-              ].map(row => row.val && (
-                <div key={row.key} className="flex justify-between items-center py-2 border-b border-white/[0.06] text-label">
-                  <span className="text-white/45">{row.key}</span>
-                  <span className="text-white font-semibold">{row.val}</span>
+      {/*  Steps  */}
+      <StepBar current={1} />
+
+      {/*  Mobile summary (collapsible)  */}
+      {showSummary && (
+        <div className="lg:hidden px-4 pt-4 pb-2 max-w-5xl mx-auto">
+          <BookingSummary booking={booking} />
+        </div>
+      )}
+
+      {/*  Body  */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="flex gap-6 items-start">
+
+          {/*  Form  */}
+          <div className="flex-1 min-w-0">
+            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
+
+              {/* Form header */}
+              <div
+                className="px-5 sm:px-6 py-4 border-b border-slate-100"
+                style={{ backgroundColor: '#f8fafa' }}
+              >
+                <h2 className="font-head font-bold text-slate-800 text-[16px]">Your Details</h2>
+                <p className="text-[12px] text-slate-400 mt-0.5">Fill in your information to complete the booking</p>
+              </div>
+
+              <div className="px-5 sm:px-6 py-5 space-y-4">
+
+                {/* Name row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="First Name" error={errors.firstName}>
+                    <div className={iconInputWrapper}>
+                      <User size={13} className={iconCls} />
+                      <input
+                        className={iconInputCls(errors.firstName)}
+                        placeholder="John"
+                        value={form.firstName}
+                        onChange={e => set('firstName', e.target.value)}
+                      />
+                    </div>
+                  </Field>
+                  <Field label="Last Name" error={errors.lastName}>
+                    <div className={iconInputWrapper}>
+                      <User size={13} className={iconCls} />
+                      <input
+                        className={iconInputCls(errors.lastName)}
+                        placeholder="Doe"
+                        value={form.lastName}
+                        onChange={e => set('lastName', e.target.value)}
+                      />
+                    </div>
+                  </Field>
                 </div>
-              ))}
-              <div className="flex justify-between items-center py-2 text-label">
-                <span className="text-white/45">Total</span>
-                <span className="text-secondary font-bold text-span font-head">${booking.price || '—'}</span>
+
+                {/* Contact row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Email Address" error={errors.email}>
+                    <div className={iconInputWrapper}>
+                      <Mail size={13} className={iconCls} />
+                      <input
+                        className={iconInputCls(errors.email)}
+                        placeholder="john@email.com"
+                        type="email"
+                        value={form.email}
+                        onChange={e => set('email', e.target.value)}
+                      />
+                    </div>
+                  </Field>
+                  <Field label="Phone Number" error={errors.phone}>
+                    <div className={iconInputWrapper}>
+                      <Phone size={13} className={iconCls} />
+                      <input
+                        className={iconInputCls(errors.phone)}
+                        placeholder="+971 50 000 0000"
+                        type="tel"
+                        value={form.phone}
+                        onChange={e => set('phone', e.target.value)}
+                      />
+                    </div>
+                  </Field>
+                </div>
+
+                {/* Passengers + flight */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Number of Passengers">
+                    <div className={iconInputWrapper}>
+                      <Users size={13} className={iconCls} />
+                      <select
+                        className={iconInputCls()}
+                        value={form.passengers}
+                        onChange={e => set('passengers', e.target.value)}
+                      >
+                        {Array.from({ length: 14 }, (_, i) => i + 1).map(n => (
+                          <option key={n} value={n}>{n} passenger{n > 1 ? 's' : ''}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </Field>
+                  <Field label="Flight Number (optional)">
+                    <div className={iconInputWrapper}>
+                      <Plane size={13} className={iconCls} />
+                      <input
+                        className={iconInputCls()}
+                        placeholder="EK 203"
+                        value={form.flightNumber}
+                        onChange={e => set('flightNumber', e.target.value)}
+                      />
+                    </div>
+                  </Field>
+                </div>
+
+                {/* Special requests */}
+                <Field label="Special Requests (optional)">
+                  <div className="relative">
+                    <MessageSquare size={13} className="absolute left-3.5 top-3 text-slate-300 pointer-events-none" />
+                    <textarea
+                      className={`${inputCls()} pl-10 resize-y min-h-[90px]`}
+                      placeholder="Child seat, meet & greet, specific route…"
+                      value={form.specialRequests}
+                      onChange={e => set('specialRequests', e.target.value)}
+                    />
+                  </div>
+                </Field>
+
+                {/* CTA */}
+                <button
+                  onClick={handleContinue}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] shadow-[0_4px_16px_rgba(15,76,62,0.3)]"
+                  style={{ backgroundColor: '#0f4c3e' }}
+                >
+                  Continue to Checkout
+                  <ArrowRight size={16} />
+                </button>
+
               </div>
             </div>
           </div>
 
-          <div className="bg-secondary/[0.08] border border-secondary/20 rounded-[10px] px-4 py-3 text-[11px] text-white/50 leading-[1.7]">
-            🔒 Your information is secure and will only be used for this booking.
+          {/*  Sidebar (desktop only)  */}
+          <div className="hidden lg:block w-[300px] xl:w-[320px] flex-shrink-0 sticky top-[112px]">
+            <BookingSummary booking={booking} />
           </div>
         </div>
       </div>

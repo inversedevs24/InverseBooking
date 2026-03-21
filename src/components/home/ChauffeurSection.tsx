@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom'
 import { Award, Clock, MapPin, Zap } from 'lucide-react'
 
 const FEATURES = [
-  { icon: <Award  size={18} />, text: 'Luxury & Comfort Fleet'       },
-  { icon: <Clock  size={18} />, text: '24/7 Service & Support'       },
-  { icon: <MapPin size={18} />, text: 'Go Anywhere, Stop Anywhere'   },
-  { icon: <Zap    size={18} />, text: 'Simple & Fast Booking'        },
+  { icon: <Award size={18} />, text: 'Luxury & Comfort Fleet' },
+  { icon: <Clock size={18} />, text: '24/7 Service & Support' },
+  { icon: <MapPin size={18} />, text: 'Go Anywhere, Stop Anywhere' },
+  { icon: <Zap size={18} />, text: 'Simple & Fast Booking' },
 ]
 
 export default function ChauffeurSection() {
@@ -55,7 +55,7 @@ export default function ChauffeurSection() {
             <button
               className="group relative overflow-hidden text-white border-none rounded-2xl py-[15px] px-8 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-300 hover:text-white"
               style={{ background: '#0F172A' }}
-              onClick={() => navigate('/signin')}
+              onClick={() => navigate('/book?service=hourly')}
             >
               <span className="absolute inset-0 bg-secondary -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out" />
               <span className="relative z-10">Check Fare</span>
