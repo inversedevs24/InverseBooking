@@ -4,7 +4,7 @@ export default function PrivacyPage() {
   return (
     <div className="py-10 md:py-[60px]">
       <div className="max-w-container mx-auto px-6">
-        <h1 className="font-head text-heading text-center mb-2 text-primary">Privacy Policy</h1>
+        <h1 className="font-head text-heading text-center mb-2 text-primary leading-none">Privacy Policy</h1>
         <div className="bg-white border border-border rounded-card-lg p-10 max-w-[900px] mx-auto mt-10">
           {[
             { h: 'Information We Collect', content: <ul className="pl-5 my-2"><li className="text-label text-primary mb-[6px] leading-[1.6]">Full name, phone number, email address</li><li className="text-label text-primary mb-[6px] leading-[1.6]">Booking history and ride preferences</li><li className="text-label text-primary mb-[6px] leading-[1.6]">Payment method and transaction records</li><li className="text-label text-muted mb-[6px] leading-[1.6]">Device type, operating system, IP address</li></ul> },

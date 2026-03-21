@@ -21,7 +21,7 @@ export default function HelpPage() {
     <>
       <div className="bg-primary py-16 text-center">
         <div className="max-w-container mx-auto px-6">
-          <h1 className="font-head text-heading text-white mb-2">Help Center</h1>
+          <h1 className="font-head text-heading text-white mb-2 leading-none">Help Center</h1>
           <p className="text-white/40 text-span">How can we help you today?</p>
         </div>
       </div>
@@ -43,7 +43,7 @@ export default function HelpPage() {
             ))}
           </div>
 
-          <h2 className="font-head text-heading text-primary text-center mb-8 mt-4">
+          <h2 className="font-head text-heading text-primary text-center mb-8 mt-4 leading-none">
             Common Questions
           </h2>
           <FAQ items={COMBINED_FAQS} />

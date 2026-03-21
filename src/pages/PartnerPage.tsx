@@ -55,7 +55,7 @@ export default function PartnerPage() {
       {/* Hero + Form */}
       <div className="max-w-container mx-auto px-6">
         <div className="text-center py-12 pb-8">
-          <h1 className="font-head text-heading mb-2">Become a InverseRide Partner</h1>
+          <h1 className="font-head text-heading mb-2 leading-none">Become a InverseRide Partner</h1>
           <p className="text-muted text-span">Drive your success with us. Join the InverseRide partner network and grow your business.</p>
         </div>
 
@@ -123,7 +123,7 @@ export default function PartnerPage() {
         <div className="max-w-container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[60px] items-center mb-[60px]">
             <div>
-              <h2 className="font-head text-title mb-2">Why Partner with InverseRide?</h2>
+              <h2 className="font-head text-title mb-2 leading-none">Why Partner with InverseRide?</h2>
               <p className="text-muted text-label mb-4">We believe in growing together. Join our partner network and unlock new earning opportunities with every ride.</p>
               <p className="font-bold mb-3">What You Get:</p>
               {WHY_PARTNER_LIST.map((item, i) => (
@@ -136,7 +136,7 @@ export default function PartnerPage() {
             <img src="https://images.unsplash.com/photo-1565043666747-69f6646db940?w=600&q=80" alt="Partner driver" className="w-full h-[360px] object-cover rounded-card-lg" />
           </div>
 
-          <h2 className="font-head text-heading text-primary text-center mb-2">Who Can Join?</h2>
+          <h2 className="font-head text-heading text-primary text-center mb-2 leading-none">Who Can Join?</h2>
           <p className="text-center text-muted text-span mb-10">We welcome all professional and reliable transport partners to join InverseRide:</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px] mb-12">
             {WHO_CAN_JOIN.map((item, i) => (
@@ -157,7 +157,7 @@ export default function PartnerPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[60px] items-center mb-[60px]">
             <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80" alt="Requirements" className="w-full h-[320px] object-cover rounded-card-lg" />
             <div>
-              <h2 className="font-head text-title mb-3">Partner Requirements</h2>
+              <h2 className="font-head text-title mb-3 leading-none">Partner Requirements</h2>
               <p className="text-muted text-label mb-4">To ensure quality service, we require:</p>
               {REQUIREMENTS.map((r, i) => (
                 <div key={i} className="flex items-center gap-[10px] text-label mb-3">
@@ -173,7 +173,7 @@ export default function PartnerPage() {
       {/* Benefits */}
       <div className="bg-secondaryBg py-10 md:py-[60px]">
         <div className="max-w-container mx-auto px-6">
-          <h2 className="font-head text-heading text-primary text-center mb-2">Partner Benefits</h2>
+          <h2 className="font-head text-heading text-primary text-center mb-2 leading-none">Partner Benefits</h2>
           <p className="text-center text-secondary italic font-semibold mb-2">Earn More. Work Smart.</p>
           <p className="text-center text-muted mb-8 text-label">At InverseRide, we believe in sharing success with our partners. You'll get:</p>
           <div className="flex flex-wrap justify-center gap-[14px]">
@@ -190,7 +190,7 @@ export default function PartnerPage() {
       {/* FAQ */}
       <section className="py-10 md:py-[60px]">
         <div className="max-w-container mx-auto px-6">
-          <h2 className="font-head text-heading text-primary text-center mb-10">Frequently Asked Questions</h2>
+          <h2 className="font-head text-heading text-primary text-center mb-10 leading-none">Frequently Asked Questions</h2>
           <FAQ items={PARTNER_FAQS} />
         </div>
       </section>

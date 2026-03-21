@@ -4,7 +4,7 @@ export default function TermsPage() {
   return (
     <div className="py-10 md:py-[60px]">
       <div className="max-w-container mx-auto px-6">
-        <h1 className="font-head text-heading text-center mb-2 text-primary">Terms &amp; Conditions</h1>
+        <h1 className="font-head text-heading text-center mb-2 text-primary leading-none">Terms &amp; Conditions</h1>
         <div className="bg-white border border-border rounded-card-lg p-10 max-w-[900px] mx-auto mt-10">
           <p className="text-label text-muted mb-2 leading-[1.7]">
             These Terms of Use ("Terms") govern your access to and use of the {brandName} platform, services, and website. By accessing or using our services, you agree to be legally bound by these Terms.
