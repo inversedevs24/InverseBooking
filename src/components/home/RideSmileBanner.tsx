@@ -38,7 +38,7 @@ export default function RideSmileBanner() {
           {/* Right — CTA + stats */}
           <div className="relative z-10 flex flex-col gap-7 md:items-end">
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/book')}
               className="border-none rounded-2xl py-[15px] px-10 font-semibold text-[15px] cursor-pointer font-body text-primary self-start md:self-auto"
               style={{ background: '#CBA135' }}
             >

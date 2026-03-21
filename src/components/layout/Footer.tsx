@@ -1,84 +1,162 @@
 import { Link } from 'react-router-dom'
-import { Mail, Phone, Instagram } from 'lucide-react'
+import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandEmail, brandPhone } from '../../env'
+import { SERVICES } from '../../data'
+import Payment from '../../Assets/payment.png'
 
-const PAYMENTS = ['GPay', 'VISA', 'AMEX', 'MC', 'Stripe', 'APay', 'JCB']
+const NAV_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About Us' },
+  { to: '/contact', label: 'Contact Us' },
+  { to: '/partner', label: 'Become a Partner' },
+]
+
+// Map service labels to their /book?service= keys
+const SERVICE_ROUTE_MAP: Record<string, string> = {
+  'Private Transfer': '/book?service=transfer',
+  'City to City': '/book?service=city-to-city',
+  'Airport Rides': '/book?service=airport',
+  'City Tour': '/book?service=city-tour',
+  'Hourly Hire': '/book?service=hourly',
+  'Desert Safari': '/book?service=desert-safari',
+}
+
+const LEGAL_LINKS = [
+  { to: '/terms', label: 'Terms and Conditions' },
+  { to: '/privacy', label: 'Privacy Policy' },
+  { to: '/booking-conditions', label: 'Booking Conditions' },
+  { to: '/refund', label: 'Cancellation & Refund' },
+  { to: '/help', label: 'Help Center' },
+]
 
 export default function Footer() {
   return (
-    <footer className="bg-primary pt-[60px] pb-5">
+    <footer style={{ backgroundColor: '#0f172a' }} className="pt-14 pb-6">
       <div className="max-w-container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
 
-          {/* Brand */}
-          <div>
+        {/* ── Main grid ── */}
+        <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
+
+          {/* Brand col — full width on mobile */}
+          <div className="col-span-2 md:col-span-1">
             <Logo light />
-            <div className="mt-4">
-              <div className="flex items-center gap-[10px] text-white/70 text-label mb-[10px]">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-white/10">
-                  <Mail size={13} className="text-white" />
+
+            {/* Contact */}
+            <div className="mt-5 flex flex-col gap-2.5">
+              <a
+                href={`mailto:${brandEmail}`}
+                className="flex items-center gap-2.5 no-underline group"
+              >
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 group-hover:bg-white/20 transition-colors">
+                  <Mail size={13} className="text-white/70" />
                 </div>
-                <span>{brandEmail}</span>
-              </div>
-              <div className="flex items-center gap-[10px] text-white/70 text-label mb-[10px]">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-white/10">
-                  <Phone size={13} className="text-white" />
+                <span className="text-[13px] text-white/60 group-hover:text-white/90 transition-colors">{brandEmail}</span>
+              </a>
+              <a
+                href={`tel:${brandPhone}`}
+                className="flex items-center gap-2.5 no-underline group"
+              >
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/10 group-hover:bg-white/20 transition-colors">
+                  <Phone size={13} className="text-white/70" />
                 </div>
-                <span>{brandPhone}</span>
-              </div>
+                <span className="text-[13px] text-white/60 group-hover:text-white/90 transition-colors">{brandPhone}</span>
+              </a>
             </div>
-            <div className="flex gap-[10px] mt-4">
-              <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center text-label cursor-pointer font-bold text-white transition-all duration-200 hover:scale-110 hover:bg-white/20">f</div>
-              <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center cursor-pointer text-white transition-all duration-200 hover:scale-110 hover:bg-white/20">
-                <Instagram size={15} />
-              </div>
-              <div className="w-[34px] h-[34px] rounded-full bg-white/10 flex items-center justify-center text-label cursor-pointer font-bold text-white transition-all duration-200 hover:scale-110 hover:bg-white/20">𝕏</div>
+
+            {/* Social */}
+            <div className="flex gap-2 mt-5">
+              {[
+                { Icon: Facebook, label: 'Facebook' },
+                { Icon: Instagram, label: 'Instagram' },
+                { Icon: Twitter, label: 'Twitter' },
+              ].map(({ Icon, label }) => (
+                <button
+                  key={label}
+                  aria-label={label}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <Icon size={14} className="text-white/70" />
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Useful Links */}
+          {/* Useful links */}
           <div>
-            <h4 className="text-white font-semibold text-label mb-4">Useful Links</h4>
-            <div className="flex flex-col gap-[10px]">
-              <Link to="/" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Home</Link>
-              <Link to="/about" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">About Us</Link>
-              <Link to="/contact" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Contact Us</Link>
-              <Link to="/partner" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Become a Partner</Link>
+            <h4 className="text-white text-[12px] font-bold uppercase tracking-widest mb-4">
+              Useful Links
+            </h4>
+            <div className="flex flex-col gap-2.5">
+              {NAV_LINKS.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="text-[13px] text-white/50 no-underline hover:text-white transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Services */}
           <div>
-            <h4 className="text-white font-semibold text-label mb-4">Our Services</h4>
-            <div className="flex flex-col gap-[10px]">
-              <span className="text-white/60 text-label cursor-pointer hover:text-white transition-colors">Airport Transfer</span>
-              <span className="text-white/60 text-label cursor-pointer hover:text-white transition-colors">City Transfer</span>
-              <span className="text-white/60 text-label cursor-pointer hover:text-white transition-colors">Car Hire</span>
+            <h4 className="text-white text-[12px] font-bold uppercase tracking-widest mb-4">
+              Our Services
+            </h4>
+            <div className="flex flex-col gap-2.5">
+              {SERVICES.map(s => (
+                <Link
+                  key={s.label}
+                  to={SERVICE_ROUTE_MAP[s.label] ?? '/book'}
+                  className="text-[13px] text-white/50 no-underline hover:text-white transition-colors"
+                >
+                  {s.label}
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Terms */}
+          {/* Legal */}
           <div>
-            <h4 className="text-white font-semibold text-label mb-4">InverseRide Terms</h4>
-            <div className="flex flex-col gap-[10px]">
-              <Link to="/terms" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Terms and Conditions</Link>
-              <Link to="/privacy" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Privacy Policy</Link>
-              <Link to="/booking-conditions" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Booking Conditions</Link>
-              <Link to="/refund" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Cancellation &amp; Refund Policy</Link>
-              <Link to="/help" className="text-white/60 text-label no-underline transition-colors hover:text-white cursor-pointer">Help Center</Link>
+            <h4 className="text-white text-[12px] font-bold uppercase tracking-widest mb-4">
+              Legal
+            </h4>
+            <div className="flex flex-col gap-2.5">
+              {LEGAL_LINKS.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="text-[13px] text-white/50 no-underline hover:text-white transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/40 text-label">© {new Date().getFullYear()} InverseRide — All Rights Reserved</p>
-          <div className="flex gap-[6px] items-center flex-wrap justify-center">
-            {PAYMENTS.map((p, i) => (
-              <div key={i} className="bg-white rounded px-[7px] py-[3px] text-[10px] font-bold text-primary">{p}</div>
-            ))}
+        {/* ── Divider ── */}
+        <div className="border-t border-white/10 pt-5 flex flex-col items-center gap-5">
+
+          {/* Copyright */}
+          <p className="text-[12px] text-white/30 self-start sm:self-center">
+            © {new Date().getFullYear()} InverseRide — All Rights Reserved
+          </p>
+
+          {/* Payment methods image — centered, large */}
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[11px] text-white/30 uppercase tracking-widest">We Accept</span>
+            <img
+              src={Payment}
+              alt="Accepted payment methods: PayPal, Mastercard, Visa, Maestro, Apple Pay, Amazon Pay, Google Pay, Stripe"
+              className="h-14 sm:h-16 w-auto max-w-full object-contain opacity-100 transition-opacity"
+            />
           </div>
+
         </div>
+
       </div>
     </footer>
   )

@@ -14,9 +14,9 @@ export default function HomePage() {
   return (
     <>
       <HeroBooking />
-      <FeaturesBar />
       <PromoBanners />
       <ServiceCategories />
+      <FeaturesBar />
       <FleetSection />
       <ChauffeurSection />
       <WhyChooseUs />

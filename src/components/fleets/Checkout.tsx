@@ -1,7 +1,132 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import {
+  ChevronLeft, MapPin, Clock, Ruler, Car, Users,
+  Luggage, User, Mail, Phone, Plane, MessageSquare,
+  CheckCircle2, ArrowRight, ShieldCheck, CreditCard, ExternalLink, Loader2,
+} from 'lucide-react'
 import type { BookingState } from '../../types'
 
+//  Step bar (shared pattern with BookingDetails) 
+const STEPS = [{ label: 'Vehicle' }, { label: 'Details' }, { label: 'Checkout' }]
+
+function StepBar({ current }: { current: number }) {
+  return (
+    <div className="bg-white border-b border-slate-100">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-center gap-2 sm:gap-3">
+        {STEPS.map((step, i) => {
+          const done = i < current
+          const active = i === current
+          return (
+            <div key={i} className="flex items-center gap-2 sm:gap-3">
+              {i > 0 && (
+                <div className="h-px flex-shrink-0"
+                  style={{ width: done ? 40 : 28, backgroundColor: done ? '#0f766e' : '#e2e8f0' }} />
+              )}
+              <div className={`flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold ${active ? 'text-slate-800' : done ? 'text-slate-400' : 'text-slate-300'
+                }`}>
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                  style={active ? { backgroundColor: '#0f4c3e', color: 'white' }
+                    : done ? { backgroundColor: '#0f766e', color: 'white' }
+                      : { backgroundColor: '#f1f5f9', color: '#94a3b8' }}
+                >
+                  {done ? <CheckCircle2 size={13} /> : i + 1}
+                </div>
+                <span className="hidden sm:block">{step.label}</span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+//  Section card wrapper 
+function SectionCard({ title, icon: Icon, children }: {
+  title: string; icon: typeof Car; children: React.ReactNode
+}) {
+  return (
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
+      <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-100" style={{ backgroundColor: '#f8fafa' }}>
+        <Icon size={14} style={{ color: '#0f766e' }} />
+        <span className="text-[12px] font-bold text-slate-700 uppercase tracking-widest">{title}</span>
+      </div>
+      <div className="px-5 py-4">{children}</div>
+    </div>
+  )
+}
+
+//  Info row 
+function InfoRow({ label, value }: { label: string; value?: string }) {
+  if (!value) return null
+  return (
+    <div className="flex items-start justify-between gap-4 py-2.5 border-b border-slate-50 last:border-0">
+      <span className="text-[12px] text-slate-400 flex-shrink-0">{label}</span>
+      <span className="text-[12px] font-semibold text-slate-700 text-right">{value}</span>
+    </div>
+  )
+}
+
+//  Info chip 
+function InfoChip({ icon: Icon, label, value }: { icon: typeof User; label: string; value?: string }) {
+  if (!value) return null
+  return (
+    <div className="rounded-xl px-3 py-2.5" style={{ backgroundColor: '#f0f5f4' }}>
+      <div className="flex items-center gap-1.5 mb-0.5">
+        <Icon size={11} style={{ color: '#0f766e' }} />
+        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
+      </div>
+      <div className="text-[12px] font-semibold text-slate-700 truncate">{value}</div>
+    </div>
+  )
+}
+
+//  Confirmed screen 
+function ConfirmedScreen({ firstName, email }: { firstName: string; email: string }) {
+  const navigate = useNavigate()
+  const ref = `INV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4 font-body" style={{ backgroundColor: '#f0f5f4' }}>
+      <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(15,23,42,0.12)] px-8 py-10 text-center max-w-[420px] w-full">
+        {/* Check circle */}
+        <div
+          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-[0_4px_20px_rgba(15,118,110,0.25)]"
+          style={{ backgroundColor: '#0f4c3e' }}
+        >
+          <CheckCircle2 size={30} className="text-white" />
+        </div>
+
+        <h2 className="font-head text-[22px] font-bold text-slate-800 mb-2">Booking Confirmed!</h2>
+        <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
+          Thank you, <span className="font-semibold text-slate-700">{firstName}</span>!
+          Your ride has been booked. A confirmation has been sent to{' '}
+          <span className="font-semibold text-slate-700">{email}</span>.
+        </p>
+
+        {/* Reference chip */}
+        <div
+          className="inline-flex items-center gap-2 rounded-xl px-5 py-3 mb-7 border border-dashed"
+          style={{ backgroundColor: '#e8eeec', borderColor: '#a7c8c2' }}
+        >
+          <span className="text-[11px] text-slate-500">Booking Ref</span>
+          <span className="text-[14px] font-bold font-mono tracking-widest" style={{ color: '#0f4c3e' }}>{ref}</span>
+        </div>
+
+        <button
+          onClick={() => navigate('/')}
+          className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90"
+          style={{ backgroundColor: '#0f4c3e' }}
+        >
+          Back to Home <ArrowRight size={15} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+//  Main 
 export default function Checkout() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -9,187 +134,270 @@ export default function Checkout() {
   const v = booking.vehicle || ({} as NonNullable<BookingState['vehicle']>)
   const p = booking.passenger || ({} as NonNullable<BookingState['passenger']>)
 
-  const [paying, setPaying] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
   const [done, setDone] = useState(false)
+  const [showSummary, setShowSummary] = useState(false)
 
   const subtotal = Number(booking.price || 0)
-  const tax = (subtotal * 0.05).toFixed(2)
-  const total = (subtotal + Number(tax)).toFixed(2)
-
-  const handlePay = () => {
-    setPaying(true)
-    setTimeout(() => { setPaying(false); setDone(true) }, 2200)
-  }
+  const tax = +(subtotal * 0.05).toFixed(2)
+  const total = (subtotal + tax).toFixed(2)
 
   const formatDatetime = (dt?: string) => {
     if (!dt) return '—'
-    return new Date(dt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    return new Date(dt).toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    })
+  }
+
+  const handleShopifyRedirect = () => {
+    setRedirecting(true)
+    //  TODO: Replace this timeout with your real Shopify Storefront API cart/checkout URL 
+    // Example:
+    //   const checkoutUrl = await createShopifyCheckout({ booking, total })
+    //   window.location.href = checkoutUrl
+    setTimeout(() => {
+      // Simulating redirect completion — remove this and redirect to Shopify in production
+      setRedirecting(false)
+      setDone(true)
+    }, 2000)
   }
 
   if (done) {
-    return (
-      <div className="min-h-screen bg-[#0f1f19] flex items-center justify-center font-body">
-        <div className="bg-[#1a3028] border border-secondary/30 rounded-[20px] px-10 py-12 text-center max-w-[440px] shadow-[0_0_60px_rgba(203,161,53,0.1)] animate-pop-in">
-          <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-secondary to-secondary/80 flex items-center justify-center text-[32px] mx-auto mb-5 shadow-[0_0_32px_rgba(203,161,53,0.4)]">
-            ✓
-          </div>
-          <div className="font-head text-[26px] font-bold text-white mb-[10px]">Booking Confirmed!</div>
-          <div className="text-label text-white/50 leading-[1.7] mb-7">
-            Thank you, {p.firstName}! Your ride has been booked.<br />
-            A confirmation has been sent to <strong className="text-white">{p.email}</strong>.
-          </div>
-          <div className="bg-secondary/10 border border-dashed border-secondary/30 rounded-[10px] px-5 py-3 text-label text-secondary font-bold tracking-[1px] mb-6">
-            Booking Ref: INV-{Math.random().toString(36).slice(2, 8).toUpperCase()}
-          </div>
-          <button
-            className="bg-gradient-to-br from-secondary to-secondary/80 border-none rounded-[10px] px-8 py-[13px] text-white text-label font-bold cursor-pointer font-body"
-            onClick={() => navigate('/')}
-          >
-            Back to Home
-          </button>
-        </div>
-      </div>
-    )
+    return <ConfirmedScreen firstName={p.firstName || 'there'} email={p.email || ''} />
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1f19] font-body">
-      {/* Topbar */}
-      <div className="bg-[#122a20] border-b border-white/[0.08] px-7 py-[14px] flex items-center gap-4">
-        <button
-          className="bg-white/[0.08] border border-white/12 rounded-lg text-white/70 px-[14px] py-[7px] cursor-pointer text-label font-semibold transition-all hover:bg-white/14 hover:text-white"
-          onClick={() => navigate(-1)}
-        >
-          ← Back
-        </button>
-        <span className="font-head text-span font-bold text-white">Checkout</span>
+    <div className="min-h-screen font-body" style={{ backgroundColor: '#f0f5f4' }}>
+
+      {/*  Top bar  */}
+      <div className="bg-white border-b border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 sm:gap-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 transition-colors px-2 sm:px-3 py-1.5 rounded-xl hover:bg-slate-100 flex-shrink-0"
+          >
+            <ChevronLeft size={15} />
+            <span className="hidden xs:inline">Back</span>
+          </button>
+
+          <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
+
+          <h1 className="font-head font-bold text-slate-800 text-[14px] sm:text-[16px] truncate min-w-0">
+            Review & Checkout
+          </h1>
+
+          <div className="flex-1" />
+
+          {/* Mobile summary toggle */}
+          <button
+            className="lg:hidden flex items-center gap-1.5 text-[12px] font-semibold rounded-xl px-2.5 sm:px-3 py-1.5 transition-colors flex-shrink-0"
+            style={showSummary
+              ? { backgroundColor: '#0f4c3e', color: 'white' }
+              : { backgroundColor: '#e8eeec', color: '#0f4c3e' }
+            }
+            onClick={() => setShowSummary(s => !s)}
+          >
+            <CreditCard size={13} />
+            <span className="hidden sm:inline">{showSummary ? 'Hide' : 'Payment'}</span>
+          </button>
+        </div>
       </div>
 
-      {/* Steps */}
-      <div className="flex items-center justify-center gap-2 px-7 py-5 bg-[#122a20] border-b border-white/[0.06]">
-        {[
-          { label: 'Vehicle', state: 'done' },
-          { label: 'Details', state: 'done' },
-          { label: 'Checkout', state: 'active' },
-        ].map((step, i) => (
-          <div key={i} className="flex items-center gap-2">
-            {i > 0 && <div className="w-10 h-px bg-white/10" />}
-            <div className={`flex items-center gap-2 text-[11px] font-semibold ${step.state === 'active' ? 'text-secondary' : 'text-white/50'}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step.state === 'active' ? 'bg-secondary text-white' : 'bg-white/15'}`}>
-                {step.state === 'done' ? '✓' : i + 1}
-              </div>
-              {step.label}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/*  Steps  */}
+      <StepBar current={2} />
 
-      {/* Content */}
-      <div className="max-w-[900px] mx-auto my-9 px-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-        {/* Left: summary cards */}
-        <div>
-          {/* Trip */}
-          <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl p-6 mb-5">
-            <div className="font-head text-span font-bold text-white mb-4 flex items-center gap-2">🗺 Trip Details</div>
-            {[
-              { key: 'From',         val: booking.from },
-              { key: 'To',           val: booking.to },
-              { key: 'Date & Time',  val: formatDatetime(booking.datetime) },
-              { key: 'Distance',     val: booking.distance ? `${booking.distance} km` : '—' },
-              { key: 'Duration',     val: booking.duration ? `${booking.duration} min` : '—' },
-            ].map(row => (
-              <div key={row.key} className="flex justify-between items-center py-[10px] border-b border-white/[0.05] text-label last:border-none">
-                <span className="text-white/45">{row.key}</span>
-                <span className="text-white font-semibold">{row.val || '—'}</span>
-              </div>
-            ))}
-          </div>
+      {/*  Mobile payment panel (collapsible)  */}
+      {showSummary && (
+        <div className="lg:hidden px-4 pt-4 pb-2 max-w-5xl mx-auto">
+          <PaymentPanel
+            subtotal={subtotal} tax={tax} total={total}
+            redirecting={redirecting} onPay={handleShopifyRedirect}
+          />
+        </div>
+      )}
 
-          {/* Vehicle */}
-          <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl p-6 mb-5">
-            <div className="font-head text-span font-bold text-white mb-4 flex items-center gap-2">🚗 Vehicle</div>
-            <div className="flex gap-[14px] items-center">
-              {v.image && <img src={v.image} alt={v.name} className="w-[100px] h-[68px] object-cover rounded-lg flex-shrink-0" />}
-              <div>
-                <div className="font-bold text-white text-span mb-1">{v.name}</div>
-                <div className="text-[11px] text-white/40 mb-2">{v.model}</div>
-                <div className="flex gap-[6px]">
-                  <span className="text-[11px] bg-white/[0.08] text-white/60 px-2 py-[2px] rounded-full">👥 {v.passengers} pax</span>
-                  <span className="text-[11px] bg-white/[0.08] text-white/60 px-2 py-[2px] rounded-full">🧳 {v.luggage} bags</span>
+      {/*  Body  */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="flex gap-6 items-start">
+
+          {/*  Left: review cards  */}
+          <div className="flex-1 min-w-0 flex flex-col gap-4">
+
+            {/* Trip details */}
+            <SectionCard title="Trip Details" icon={MapPin}>
+              <InfoRow label="From" value={booking.from} />
+              <InfoRow label="To" value={booking.to} />
+              <InfoRow label="Date & Time" value={formatDatetime(booking.datetime)} />
+              <div className="flex gap-3 pt-1 mt-1">
+                <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#f0f5f4' }}>
+                  <Ruler size={12} style={{ color: '#0f766e' }} />
+                  <span className="text-[12px] font-semibold text-slate-700">
+                    {booking.distance ? `${booking.distance} km` : '—'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#f0f5f4' }}>
+                  <Clock size={12} style={{ color: '#0f766e' }} />
+                  <span className="text-[12px] font-semibold text-slate-700">
+                    {booking.duration ? `${booking.duration} min` : '—'}
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>
+            </SectionCard>
 
-          {/* Passenger */}
-          <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl p-6">
-            <div className="font-head text-span font-bold text-white mb-4 flex items-center gap-2">👤 Passenger Info</div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[10px]">
-              {[
-                { label: 'Name',       val: `${p.firstName} ${p.lastName}` },
-                { label: 'Email',      val: p.email },
-                { label: 'Phone',      val: p.phone },
-                { label: 'Passengers', val: p.passengers },
-                ...(p.flightNumber ? [{ label: 'Flight No.', val: p.flightNumber }] : []),
-              ].map(item => (
-                <div key={item.label} className="bg-white/[0.04] rounded-lg px-3 py-[10px]">
-                  <div className="text-[10px] text-white/35 uppercase tracking-[0.8px] mb-[3px]">{item.label}</div>
-                  <div className="text-label text-white font-semibold">{item.val}</div>
+            {/* Vehicle */}
+            <SectionCard title="Vehicle" icon={Car}>
+              <div className="flex gap-4 items-center">
+                {v.image && (
+                  <div className="w-[100px] h-[68px] rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+                    <img src={v.image} alt={v.name} className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-bold text-slate-800 font-head">{v.name || '—'}</div>
+                  <div className="text-[11px] text-slate-400 mb-2">{v.model}</div>
+                  <div className="flex gap-2">
+                    <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                      <Users size={10} />{v.passengers} pax
+                    </span>
+                    <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                      <Luggage size={10} />{v.luggage} bags
+                    </span>
+                  </div>
                 </div>
-              ))}
+              </div>
+            </SectionCard>
+
+            {/* Passenger info */}
+            <SectionCard title="Passenger Info" icon={User}>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <InfoChip icon={User} label="Full Name" value={`${p.firstName || ''} ${p.lastName || ''}`.trim() || undefined} />
+                <InfoChip icon={Mail} label="Email" value={p.email} />
+                <InfoChip icon={Phone} label="Phone" value={p.phone} />
+                <InfoChip icon={Users} label="Passengers" value={p.passengers ? `${p.passengers} pax` : undefined} />
+                {p.flightNumber && <InfoChip icon={Plane} label="Flight No." value={p.flightNumber} />}
+              </div>
               {p.specialRequests && (
-                <div className="bg-white/[0.04] rounded-lg px-3 py-[10px] col-span-2">
-                  <div className="text-[10px] text-white/35 uppercase tracking-[0.8px] mb-[3px]">Special Requests</div>
-                  <div className="text-label text-white font-semibold">{p.specialRequests}</div>
+                <div className="mt-3 rounded-xl px-3 py-2.5" style={{ backgroundColor: '#f0f5f4' }}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <MessageSquare size={11} style={{ color: '#0f766e' }} />
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Special Requests</span>
+                  </div>
+                  <p className="text-[12px] text-slate-600 leading-relaxed">{p.specialRequests}</p>
                 </div>
               )}
+            </SectionCard>
+
+            {/* Mobile CTA (below cards, above sidebar) */}
+            <div className="lg:hidden">
+              <PaymentPanel
+                subtotal={subtotal} tax={tax} total={total}
+                redirecting={redirecting} onPay={handleShopifyRedirect}
+              />
             </div>
+          </div>
+
+          {/*  Right: payment sidebar (desktop)  */}
+          <div className="hidden lg:block w-[300px] xl:w-[320px] flex-shrink-0 sticky top-[112px]">
+            <PaymentPanel
+              subtotal={subtotal} tax={tax} total={total}
+              redirecting={redirecting} onPay={handleShopifyRedirect}
+            />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  )
+}
+
+//  Payment panel (extracted so it can be used in both mobile + desktop) 
+function PaymentPanel({
+  subtotal, tax, total, redirecting, onPay,
+}: {
+  subtotal: number; tax: number; total: string
+  redirecting: boolean; onPay: () => void
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+
+      {/* Price breakdown */}
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
+        {/* Header */}
+        <div
+          className="px-5 py-4"
+          style={{ background: 'linear-gradient(135deg, #0f4c3e 0%, #1a6b5a 60%, #2d9c84 100%)' }}
+        >
+          <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#a7c8c2' }}>
+            Payment Summary
+          </div>
+          <div className="text-[28px] font-bold text-white font-head leading-none">
+            ${total}
+          </div>
+          <div className="text-[11px] mt-1" style={{ color: '#a7c8c2' }}>Total inc. VAT</div>
+        </div>
+
+        {/* Breakdown rows */}
+        <div className="px-5 py-4">
+          {[
+            { label: 'Base fare', value: `$${subtotal.toFixed(2)}`, highlight: false },
+            { label: 'VAT (5%)', value: `$${tax.toFixed(2)}`, highlight: false },
+            { label: 'Discount', value: '–$0.00', highlight: true },
+          ].map(row => (
+            <div key={row.label} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+              <span className="text-[12px] text-slate-500">{row.label}</span>
+              <span className={`text-[13px] font-semibold ${row.highlight ? 'text-emerald-600' : 'text-slate-700'}`}>
+                {row.value}
+              </span>
+            </div>
+          ))}
+
+          <div className="flex items-center justify-between pt-3 mt-1 border-t border-slate-200">
+            <span className="text-[13px] font-bold text-slate-800">Total</span>
+            <span className="text-[20px] font-bold font-head" style={{ color: '#0f4c3e' }}>${total}</span>
           </div>
         </div>
 
-        {/* Right: payment */}
-        <div>
-          <div className="bg-[#1a3028] border border-white/[0.08] rounded-2xl overflow-hidden">
-            <div className="px-5 pt-5">
-              <div className="font-head text-span font-bold text-white mb-4 flex items-center gap-2">💳 Payment Summary</div>
-              {[
-                { label: 'Base fare', val: `$${subtotal}`, color: '' },
-                { label: 'VAT (5%)', val: `$${tax}`, color: '' },
-                { label: 'Discount',  val: '-$0.00', color: 'text-secondary' },
-              ].map(row => (
-                <div key={row.label} className="flex justify-between text-label mb-[10px] text-white/60">
-                  <span>{row.label}</span>
-                  <span className={row.color}>{row.val}</span>
-                </div>
-              ))}
-              <div className="flex justify-between text-span font-bold text-white pt-3 border-t border-white/[0.08] mt-1">
-                <span>Total</span>
-                <span className="text-secondary font-head text-[22px]">${total}</span>
-              </div>
-            </div>
-
-            <button
-              className="block w-[calc(100%-40px)] mx-5 my-5 bg-gradient-to-br from-secondary to-secondary/80 border-none rounded-[10px] py-[15px] text-white text-span font-bold cursor-pointer font-body transition-all shadow-[0_4px_20px_rgba(203,161,53,0.35)] hover:shadow-[0_8px_28px_rgba(203,161,53,0.5)] hover:-translate-y-px disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
-              onClick={handlePay}
-              disabled={paying}
-            >
-              {paying ? (
-                <>
-                  <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin-ring align-middle mr-2" />
-                  Processing...
-                </>
-              ) : `Confirm & Pay $${total}`}
-            </button>
-
-            <div className="flex justify-center gap-[10px] px-5 pb-[18px]">
-              {['💳 Card', 'Apple Pay', 'Google Pay'].map(m => (
-                <span key={m} className="bg-white/[0.07] border border-white/10 rounded-[6px] px-3 py-[5px] text-[11px] text-white/45 font-semibold">{m}</span>
-              ))}
-            </div>
-
-            <div className="text-center text-[11px] text-white/30 pb-4">🔒 Secured by 256-bit SSL encryption</div>
-          </div>
+        {/* Accepted payment methods */}
+        <div className="px-5 pb-4 flex gap-2">
+          {['Card', 'Apple Pay', 'Google Pay'].map(m => (
+            <span key={m}
+              className="flex-1 text-center text-[10px] font-semibold text-slate-400 border border-slate-200 rounded-lg px-2 py-1.5">
+              {m}
+            </span>
+          ))}
         </div>
+      </div>
+
+      {/* CTA — redirects to Shopify */}
+      <button
+        onClick={onPay}
+        disabled={redirecting}
+        className="w-full flex items-center justify-center gap-2 rounded-xl py-4 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed shadow-[0_4px_16px_rgba(15,76,62,0.3)]"
+        style={{ backgroundColor: '#0f4c3e' }}
+      >
+        {redirecting ? (
+          <>
+            <Loader2 size={16} className="animate-spin" />
+            Redirecting to Checkout…
+          </>
+        ) : (
+          <>
+            Proceed to Payment
+            <ExternalLink size={15} />
+          </>
+        )}
+      </button>
+
+      {/* Shopify note */}
+      <div
+        className="flex items-start gap-2.5 rounded-2xl px-4 py-3"
+        style={{ backgroundColor: '#e8eeec' }}
+      >
+        <ShieldCheck size={14} style={{ color: '#0f766e' }} className="flex-shrink-0 mt-0.5" />
+        <p className="text-[11px] leading-relaxed" style={{ color: '#0f4c3e' }}>
+          You'll be securely redirected to our Shopify checkout to complete your payment. 256-bit SSL encrypted.
+        </p>
       </div>
     </div>
   )

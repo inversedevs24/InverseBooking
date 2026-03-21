@@ -17,6 +17,9 @@ import AllFleets from './components/fleets/AllFleets'
 import VehicleSelect from './components/fleets/VehicleSelect'
 import BookingDetails from './components/fleets/BookingDetails'
 import Checkout from './components/fleets/Checkout'
+import UserDashboard from './components/user/UserDashboard'
+import ServiceBookingForm from './components/fleets/ServiceBookingForm'
+import AdminDashboard from './components/admin/Admindashboard'
 
 const AUTH_ROUTES = ['/signin', '/signup']
 
@@ -33,6 +36,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/book" element={<ServiceBookingForm />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/partner" element={<PartnerPage />} />
@@ -47,6 +51,8 @@ export default function App() {
           <Route path="/vehicles" element={<VehicleSelect />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/account" element={<UserDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
       {!isAuth && <Footer />}
