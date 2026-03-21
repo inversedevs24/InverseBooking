@@ -7,19 +7,19 @@ export const FLEET: FleetItem[] = [
   { name: 'Urban SUV',   pax: '5', lug: '2', models: 'Toyota Highlander, Ford Edge, Mitsubishi Outlander',     icon: '🚐', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=80' },
   { name: 'Luxury SUV',  pax: '6', lug: '6', models: 'Cadillac Escalade, GMC Yukon, Range Rover',        icon: '🚖', image: 'https://images.unsplash.com/photo-1616455579100-2ceaa4eb2d37?w=400&q=80' },
   { name: 'Family Ride', pax: '6', lug: '6', models: 'Chrysler Grand C4 SpaceTourer, Toyota Prado',            icon: '🚐', image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=80' },
-  { name: 'Elite Van',   pax: '7', lug: '9', models: 'Mercedes-Benz V-Class',                                  icon: '🚌', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80' },
+  { name: 'Elite Van',   pax: '7', lug: '9', models: 'Mercedes-Benz V-Class',                                  icon: '🚌', image: 'https://tse4.mm.bing.net/th/id/OIP._zi2WAWjqIooEa4GYawMBQHaEH?rs=1&pid=ImgDetMain&o=7&rm=3' },
   { name: 'Mini Bus',    pax: '8', lug: '14', models: 'Mercedes-Benz Sprinter',                                icon: '🚎', image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400&q=80' },
 ]
 
 export const FLEET_HOME = FLEET.slice(3, 7)
 
 export const SERVICES: Service[] = [
-  { icon: '🚗',    label: 'Private Transfer', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&q=80' },
+  { icon: '🚗',    label: 'Private Transfer', image: 'https://images.pexels.com/photos/36377058/pexels-photo-36377058.jpeg' },
   { icon: '🏙️',  label: 'City to City',      image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=200&q=80' },
   { icon: '✈️',   label: 'Airport Rides',     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&q=80' },
   { icon: '🏛️',  label: 'City Tour',          image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=200&q=80' },
-  { icon: '🧑‍✈️', label: 'Hourly Hire',     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80' },
-  { icon: '🏜️',  label: 'Desert Safari',      image: 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=200&q=80' },
+  { icon: '🧑‍✈️', label: 'Hourly Hire',     image: 'https://cdn.prod.website-files.com/656e39bd8b07a811ace24224/656e39bd8b07a811ace2462a_falt.webp' },
+  { icon: '🏜️',  label: 'Desert Safari',      image: 'https://images.pexels.com/photos/5604852/pexels-photo-5604852.jpeg' },
 ]
 
 export const TRUST_BADGES: TrustBadge[] = [
