@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
 interface Banner {
   id: number
@@ -131,6 +134,22 @@ const BANNERS: Banner[] = [
 
 export default function PromoBanners() {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { products, initialized } = useAppSelector(s => s.shopify)
+
+  console.log("products",products);
+  
+
+  useEffect(() => {
+    dispatch(fetchTaxiProducts())
+  }, [dispatch])
+
+  const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
+
+  // Once loaded, show only banners whose service type exists in Shopify; before that show all
+  const visibleBanners = initialized && activeTypes.size > 0
+    ? BANNERS.filter(b => activeTypes.has(b.eyebrow))
+    : BANNERS
 
   return (
     <div className="py-10 md:py-[60px]">
@@ -177,7 +196,7 @@ export default function PromoBanners() {
           loop
           className="promo-swiper !pb-8"
         >
-          {BANNERS.map(b => (
+          {visibleBanners.map(b => (
             <SwiperSlide key={b.id}>
               <div
                 className="relative w-full h-full rounded-2xl overflow-hidden cursor-pointer group shadow-lg transition-shadow hover:shadow-xl"

@@ -1,23 +1,39 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 import { SERVICES } from '../../data'
 
-// Route map — each service label maps to its page path
 const SERVICE_ROUTES: Record<string, string> = {
   'Private Transfer': '/book?service=transfer',
-  'City to City': '/book?service=city-to-city',
-  'Airport Rides': '/book?service=airport',
-  'City Tour': '/book?service=city-tour',
-  'Hourly Hire': '/book?service=hourly',
-  'Desert Safari': '/book?service=desert-safari',
+  'City to City':     '/book?service=city-to-city',
+  'Airport Rides':    '/book?service=airport',
+  'City Tour':        '/book?service=city-tour',
+  'Hourly Hire':      '/book?service=hourly',
+  'Desert Safari':    '/book?service=desert-safari',
 }
 
 export default function ServiceCategories() {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { products, initialized } = useAppSelector(s => s.shopify)
+
+  useEffect(() => {
+    dispatch(fetchTaxiProducts())
+  }, [dispatch])
+
+  // Derive active service types from Shopify product metafields
+  const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
+
+  // Once initialized, show only services present in the catalog; before that show all
+  const visibleServices = initialized && activeTypes.size > 0
+    ? SERVICES.filter(s => activeTypes.has(s.label))
+    : SERVICES
 
   return (
     <div className="max-w-container mx-auto px-6">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-[14px] mb-12">
-        {SERVICES.map((s, i) => (
+        {visibleServices.map((s, i) => (
           <div
             key={i}
             onClick={() => navigate(SERVICE_ROUTES[s.label] ?? '/book')}

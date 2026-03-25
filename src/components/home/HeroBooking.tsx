@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import DateTimePicker from '../ui/DateTimePicker'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
 const GRAIN_SVG = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
@@ -11,6 +13,19 @@ function toLocalISO(date: Date) {
 }
 
 export default function HeroBooking() {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { products, initialized } = useAppSelector(s => s.shopify)
+
+  useEffect(() => {
+    dispatch(fetchTaxiProducts())
+  }, [dispatch])
+
+  // Derive which tabs to show from Shopify service types
+  const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
+  const showTransfer = !initialized || activeTypes.size === 0 || activeTypes.has('Private Transfer')
+  const showHourly   = !initialized || activeTypes.size === 0 || activeTypes.has('Hourly Hire')
+
   const [tab, setTab]                   = useState<'transfer' | 'hourly'>('transfer')
   const [from, setFrom]                 = useState('')
   const [to, setTo]                     = useState('')
@@ -18,7 +33,6 @@ export default function HeroBooking() {
   const [datetime, setDatetime]         = useState(minNow)
   const [showReturn, setShowReturn]     = useState(false)
   const [returnDatetime, setReturnDatetime] = useState('')
-  const navigate = useNavigate()
 
   function handlePickupChange(val: string) {
     setDatetime(val)
@@ -54,25 +68,31 @@ export default function HeroBooking() {
 
           {/* Booking form — individual cards, no outer wrapper */}
 
-          {/* Tabs */}
-          <div className="flex gap-2 mb-2">
-            <button
-              type="button"
-              className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-              style={tab === 'transfer' ? { background: '#0F172A' } : undefined}
-              onClick={() => setTab('transfer')}
-            >
-              Private Transfer
-            </button>
-            <button
-              type="button"
-              className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'hourly' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-              style={tab === 'hourly' ? { background: '#0F172A' } : undefined}
-              onClick={() => { setTab('hourly'); setShowReturn(false) }}
-            >
-              Hourly Hire
-            </button>
-          </div>
+          {/* Tabs — shown only if that service type exists in Shopify */}
+          {(showTransfer || showHourly) && (
+            <div className="flex gap-2 mb-2">
+              {showTransfer && (
+                <button
+                  type="button"
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  style={tab === 'transfer' ? { background: '#0F172A' } : undefined}
+                  onClick={() => setTab('transfer')}
+                >
+                  Private Transfer
+                </button>
+              )}
+              {showHourly && (
+                <button
+                  type="button"
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'hourly' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  style={tab === 'hourly' ? { background: '#0F172A' } : undefined}
+                  onClick={() => { setTab('hourly'); setShowReturn(false) }}
+                >
+                  Hourly Hire
+                </button>
+              )}
+            </div>
+          )}
 
           {/* From */}
           <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">

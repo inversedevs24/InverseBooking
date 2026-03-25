@@ -62,6 +62,62 @@ export interface AllFleetItem {
   pricePerDay: number
 }
 
+// ─── Shopify / Booking types ──────────────────────────────────────────────────
+
+export interface TaxiVariant {
+  id: string                                     // full Shopify GID
+  title: string                                  // e.g. "11-20 miles"
+  price: { amount: string; currencyCode: string } // raw object — do NOT flatten
+  kmRangeMin: number
+  kmRangeMax: number
+}
+
+export interface TaxiOption {
+  id: number
+  shopifyId: string           // first variant GID (legacy / display only — NOT for checkout)
+  shopifyProductId: string    // product GID
+  name: string
+  vehicleType: string         // metafield vehicle_type
+  type: string                // alias for vehicleType
+  displayName: string
+  image: string
+  rating: number
+  reviews: number
+  passengers: number
+  luggage: number
+  features: string[]
+  baseFare: number
+  perKmRate: number
+  estimatedArrival: string
+  eta: string                 // alias for estimatedArrival
+  popular: boolean
+  serviceType: string         // metafield service_type (e.g. "Airport Rides")
+  variants: TaxiVariant[]     // full array of distance-band variants
+}
+
+export interface SearchDetails {
+  tripType?: 'one-way' | 'return'
+  from: string
+  to: string
+  fromCoords?: { lat: number; lng: number }
+  toCoords?: { lat: number; lng: number }
+  distance: number            // MILES (Google Maps metres ÷ 1609.34)
+  duration: string
+  date: string
+  time: string
+  passengers: number
+  returnDate?: string
+  returnTime?: string
+  flightNumber?: string
+}
+
+export interface CartItem {
+  taxi: TaxiOption
+  search: SearchDetails
+  totalPrice: number
+  quantity: number
+}
+
 // ─── Route state shapes ───────────────────────────────────────────────────────
 
 export interface PassengerForm {

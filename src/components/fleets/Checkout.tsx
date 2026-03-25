@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, MapPin, Clock, Ruler, Car, Users,
   Luggage, User, Mail, Phone, Plane, MessageSquare,
   CheckCircle2, ArrowRight, ShieldCheck, CreditCard, ExternalLink, Loader2,
+  AlertCircle,
 } from 'lucide-react'
-import type { BookingState } from '../../types'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { createCheckout } from '../../store/slices/cartSlice'
+import type { BookingState, TaxiOption, SearchDetails } from '../../types'
 
 //  Step bar (shared pattern with BookingDetails) 
 const STEPS = [{ label: 'Vehicle' }, { label: 'Details' }, { label: 'Checkout' }]
@@ -134,7 +137,9 @@ export default function Checkout() {
   const v = booking.vehicle || ({} as NonNullable<BookingState['vehicle']>)
   const p = booking.passenger || ({} as NonNullable<BookingState['passenger']>)
 
-  const [redirecting, setRedirecting] = useState(false)
+  const dispatch = useAppDispatch()
+  const { checkoutUrl, loading: cartLoading, error: cartError } = useAppSelector(s => s.cart)
+
   const [done, setDone] = useState(false)
   const [showSummary, setShowSummary] = useState(false)
 
@@ -150,18 +155,43 @@ export default function Checkout() {
     })
   }
 
+  // Redirect to Shopify when checkoutUrl arrives
+  useEffect(() => {
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl
+    }
+  }, [checkoutUrl])
+
   const handleShopifyRedirect = () => {
-    setRedirecting(true)
-    //  TODO: Replace this timeout with your real Shopify Storefront API cart/checkout URL 
-    // Example:
-    //   const checkoutUrl = await createShopifyCheckout({ booking, total })
-    //   window.location.href = checkoutUrl
-    setTimeout(() => {
-      // Simulating redirect completion — remove this and redirect to Shopify in production
-      setRedirecting(false)
-      setDone(true)
-    }, 2000)
+    // If Shopify taxi option was threaded through from VehicleSelect, use real checkout
+    const taxiOption = (booking as any).taxiOption as TaxiOption | undefined
+    const selectedVariantId = (booking as any).selectedVariantId as string | undefined
+    const rawSearchDetails = (booking as any).searchDetails as SearchDetails | undefined
+    const quantity: number = (booking as any).quantity ?? 1
+
+    if (taxiOption && selectedVariantId && rawSearchDetails) {
+      const item = {
+        taxi: {
+          ...taxiOption,
+          // Override shopifyId with the distance-matched variant for checkout
+          shopifyId: selectedVariantId,
+        },
+        search: {
+          ...rawSearchDetails,
+          // Thread flight number from passenger form if not already set
+          flightNumber: rawSearchDetails.flightNumber || p.flightNumber || undefined,
+        },
+        totalPrice: Number(booking.price || 0),
+        quantity,
+      }
+      dispatch(createCheckout({ item, email: p.email || undefined }))
+    } else {
+      // Fallback: simulate completion if Shopify is not yet configured
+      setTimeout(() => setDone(true), 1500)
+    }
   }
+
+  const redirecting = cartLoading
 
   if (done) {
     return <ConfirmedScreen firstName={p.firstName || 'there'} email={p.email || ''} />
@@ -212,7 +242,7 @@ export default function Checkout() {
         <div className="lg:hidden px-4 pt-4 pb-2 max-w-5xl mx-auto">
           <PaymentPanel
             subtotal={subtotal} tax={tax} total={total}
-            redirecting={redirecting} onPay={handleShopifyRedirect}
+            redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
           />
         </div>
       )}
@@ -292,7 +322,7 @@ export default function Checkout() {
             <div className="lg:hidden">
               <PaymentPanel
                 subtotal={subtotal} tax={tax} total={total}
-                redirecting={redirecting} onPay={handleShopifyRedirect}
+                redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
               />
             </div>
           </div>
@@ -301,7 +331,7 @@ export default function Checkout() {
           <div className="hidden lg:block w-[300px] xl:w-[320px] flex-shrink-0 sticky top-[112px]">
             <PaymentPanel
               subtotal={subtotal} tax={tax} total={total}
-              redirecting={redirecting} onPay={handleShopifyRedirect}
+              redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
             />
           </div>
 
@@ -313,10 +343,10 @@ export default function Checkout() {
 
 //  Payment panel (extracted so it can be used in both mobile + desktop) 
 function PaymentPanel({
-  subtotal, tax, total, redirecting, onPay,
+  subtotal, tax, total, redirecting, error, onPay,
 }: {
   subtotal: number; tax: number; total: string
-  redirecting: boolean; onPay: () => void
+  redirecting: boolean; error?: string | null; onPay: () => void
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -368,6 +398,14 @@ function PaymentPanel({
           ))}
         </div>
       </div>
+
+      {/* Error from Shopify */}
+      {error && (
+        <div className="flex items-start gap-2.5 rounded-2xl px-4 py-3 bg-red-50 border border-red-100">
+          <AlertCircle size={14} className="text-red-400 flex-shrink-0 mt-0.5" />
+          <p className="text-[11px] leading-relaxed text-red-600">{error}</p>
+        </div>
+      )}
 
       {/* CTA — redirects to Shopify */}
       <button
