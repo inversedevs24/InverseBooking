@@ -3,7 +3,8 @@ import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandEmail, brandPhone } from '../../env'
 import { SERVICES } from '../../data'
-import Payment from '../../Assets/payment.png'
+import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
+import CashLogo from '../ui/CashLogo'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -145,14 +146,16 @@ export default function Footer() {
             © {new Date().getFullYear()} InverseRide — All Rights Reserved
           </p>
 
-          {/* Payment methods image — centered, large */}
-          <div className="flex flex-col items-center gap-2">
+          {/* Payment methods */}
+          <div className="flex flex-col items-center gap-3">
             <span className="text-[11px] text-white/30 uppercase tracking-widest">We Accept</span>
-            <img
-              src={Payment}
-              alt="Accepted payment methods: PayPal, Mastercard, Visa, Maestro, Apple Pay, Amazon Pay, Google Pay, Stripe"
-              className="h-14 sm:h-16 w-auto max-w-full object-contain opacity-100 transition-opacity"
-            />
+            <div className="flex items-center gap-3">
+              <Visa style={{ height: 28, width: 'auto' }} />
+              <Mastercard style={{ height: 28, width: 'auto' }} />
+              <Paypal style={{ height: 28, width: 'auto' }} />
+              <Generic style={{ height: 28, width: 'auto' }} />
+              <CashLogo style={{ height: 28, width: 'auto' }} />
+            </div>
           </div>
 
         </div>

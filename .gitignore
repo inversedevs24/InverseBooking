@@ -22,3 +22,6 @@ dist-ssr
 .DS_Store
 Claude.md
 tasks
+.planning
+.claude
+codebase

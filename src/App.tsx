@@ -20,6 +20,8 @@ import Checkout from './components/fleets/Checkout'
 import UserDashboard from './components/user/UserDashboard'
 import ServiceBookingForm from './components/fleets/ServiceBookingForm'
 import AdminDashboard from './components/admin/Admindashboard'
+import { WhatsAppButton } from './components/ui/WhatsAppButton'
+
 
 const AUTH_ROUTES = ['/signin', '/signup']
 
@@ -55,6 +57,7 @@ export default function App() {
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
+      {!isAuth && <WhatsAppButton />}
       {!isAuth && <Footer />}
     </>
   )
