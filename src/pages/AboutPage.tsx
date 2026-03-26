@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { Car, UserCheck, Compass, Landmark, CalendarDays, Wifi, ShieldCheck } from 'lucide-react'
+import { Car, UserCheck, Compass, Landmark, CalendarDays, Wifi } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
+import CashLogo from '../components/ui/CashLogo'
 
 type OfferItem = { Icon: LucideIcon; title: string; desc: string }
 type WhyCard = { Icon: LucideIcon; title: string; desc: string }
@@ -31,18 +33,17 @@ export default function AboutPage() {
             <div>
               <h1 className="font-head text-heading leading-none mb-4 ">Welcome to InverseRide</h1>
               <p className="text-muted text-span mb-[0px] leading-[1.7]">Your trusted platform for smooth and reliable travel experiences in the UAE. <br></br>We specialize in providing premium ride services, including city, airport, and intercity transfers, along with hourly chauffeur services. <br></br>In the UAE, we also offer exclusive Desert Safari and City Tour experiences. <br></br>Whether you're a resident or a visitor, InverseRide is here to make every ride easy, comfortable, and stress-free.</p>
-              <div className="mt-5 flex items-center gap-[10px] flex-wrap">
-                <span className="text-primary font-bold text-label flex items-center gap-1">
-                  <ShieldCheck size={14} /> Secure Payments
+              <div className="mt-5 flex items-center gap-3">
+                <span className="text-[10px] font-bold uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0" style={{ color: 'rgba(46,64,82,0.4)' }}>
+                  We Accept
                 </span>
-                <div className="flex gap-[5px] flex-wrap">
-                  {['GPay', 'VISA', 'AMEX', 'MC', 'Stripe', 'APay'].map((p, i) => (
-                    <div key={i} className="bg-secondaryBg rounded px-[6px] py-[2px] text-[10px] font-bold">
-                      <div className="rounded-md bg-slate-800 py-0.5 px-2.5 border border-transparent text-sm text-white transition-all shadow-sm">
-                        {p}
-                      </div>
-                    </div>
-                  ))}
+                <div className="w-px h-5 flex-shrink-0" style={{ backgroundColor: 'rgba(46,64,82,0.15)' }} />
+                <div className="flex items-center gap-3 flex-wrap">
+                  <Visa style={{ height: 28, width: 'auto' }} />
+                  <Mastercard style={{ height: 28, width: 'auto' }} />
+                  <Paypal style={{ height: 28, width: 'auto' }} />
+                  <Generic style={{ height: 28, width: 'auto' }} />
+                  <CashLogo style={{ height: 28, width: 'auto' }} />
                 </div>
               </div>
             </div>
