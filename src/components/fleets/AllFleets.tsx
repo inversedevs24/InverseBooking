@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, Luggage, Loader2, AlertCircle, Star } from 'lucide-react'
+import { Users, Luggage, Loader2, AlertCircle, Star, Car, ArrowRight } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 import type { TaxiOption } from '../../types'
@@ -20,108 +20,179 @@ function getBookRoute(product: TaxiOption): string {
   return SERVICE_ROUTE_MAP[product.serviceType] ?? '/book?service=transfer'
 }
 
-/** Derive a display category from the product name for filter tabs. */
 function getCategory(name: string): string {
   const lower = name.toLowerCase()
   if (lower.includes('coach')) return 'Coach'
   if (lower.includes('minibus') || lower.includes('mini bus')) return 'Minibus'
-  return 'Other'
+  if (lower.includes('executive') || lower.includes('luxury')) return 'Executive'
+  if (lower.includes('suv') || lower.includes('4x4')) return 'SUV'
+  return 'Standard'
 }
 
 // ─── Fleet Card ───────────────────────────────────────────────────────────────
 
 function FleetCard({ fleet }: { fleet: TaxiOption }) {
   const navigate = useNavigate()
-  const category = getCategory(fleet.name)
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(15,23,42,0.07)] group hover:shadow-[0_6px_24px_rgba(15,23,42,0.12)] hover:-translate-y-1 transition-all duration-200 flex flex-col">
-      {/* Image */}
-      <div className="relative h-[160px] overflow-hidden bg-slate-100 flex-shrink-0">
+    <div
+      className="group bg-white rounded-[20px] overflow-hidden flex flex-col cursor-pointer"
+      style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.08)', transition: 'transform 0.25s ease, box-shadow 0.25s ease' }}
+      onClick={() => navigate(getBookRoute(fleet))}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-5px)'
+        e.currentTarget.style.boxShadow = '0 18px 48px rgba(46,64,82,0.16)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translateY(0)'
+        e.currentTarget.style.boxShadow = '0 2px 16px rgba(46,64,82,0.08)'
+      }}
+    >
+      {/* ── Image ── */}
+      <div className="relative overflow-hidden flex-shrink-0" style={{ height: 200, backgroundColor: '#EAF0EA' }}>
         {fleet.image ? (
           <img
             src={fleet.image}
             alt={fleet.name}
-            className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.06]"
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.07]"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Users size={32} className="text-slate-300" />
+            <Car size={40} style={{ color: '#BDD9BF' }} />
           </div>
         )}
-        <span className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg uppercase tracking-wide backdrop-blur-sm">
-          {category}
-        </span>
+
+        {/* Gradient overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(to top, rgba(46,64,82,0.82) 0%, rgba(46,64,82,0.12) 50%, transparent 100%)' }}
+        />
+
+        {/* Popular badge */}
         {fleet.popular && (
-          <span className="absolute top-2 left-2 text-[9px] font-extrabold px-2 py-0.5 rounded-full text-white uppercase tracking-wide"
-            style={{ backgroundColor: '#FFC857', color: '#2E4052' }}>
+          <div
+            className="absolute top-3 left-3 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-[5px] rounded-full"
+            style={{ backgroundColor: '#FFC857', color: '#2E4052' }}
+          >
             Popular
-          </span>
+          </div>
         )}
+
+        {/* Service type badge — top-right */}
+        {fleet.serviceType && (
+          <div
+            className="absolute top-3 right-3 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-[5px] rounded-full"
+            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+          >
+            {fleet.serviceType}
+          </div>
+        )}
+
+        {/* Name + type overlaid */}
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-10">
+          <h3 className="font-head text-[16px] font-bold text-white leading-tight drop-shadow">
+            {fleet.name}
+          </h3>
+          {fleet.vehicleType && (
+            <p className="text-[10px] mt-0.5 font-body" style={{ color: 'rgba(255,255,255,0.68)' }}>
+              {fleet.vehicleType}
+            </p>
+          )}
+        </div>
       </div>
 
-      {/* Body */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-head text-[14px] font-bold text-slate-800 mb-1.5 leading-tight">{fleet.name}</h3>
+      {/* ── Body ── */}
+      <div className="p-4 flex flex-col flex-1 gap-3">
 
-        {/* Service type badge */}
-        {fleet.serviceType && (
-          <span className="inline-block self-start text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2"
-            style={{ color: '#2E4052', backgroundColor: '#BDD9BF' }}>
-            {fleet.serviceType}
+        {/* Specs + rating row */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span
+            className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full"
+            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
+          >
+            <Users size={10} /> {fleet.passengers} pax
           </span>
-        )}
-
-        {/* Pax + luggage */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-            <Users size={10} />{fleet.passengers} pax
-          </span>
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-            <Luggage size={10} />{fleet.luggage} bags
+          <span
+            className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full"
+            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
+          >
+            <Luggage size={10} /> {fleet.luggage} bags
           </span>
           {fleet.rating > 0 && (
-            <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500">
-              <Star size={9} style={{ color: '#2E4052' }} fill="#2E4052" />
+            <span className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: '#2E4052' }}>
+              <Star size={10} fill="#2E4052" stroke="none" />
               {fleet.rating.toFixed(1)}
             </span>
           )}
         </div>
 
         {/* Feature chips */}
-        <div className="flex flex-wrap gap-1 mb-3">
-          {fleet.features.slice(0, 3).map(f => (
-            <span
-              key={f}
-              className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
-              style={{ color: '#2E4052', backgroundColor: '#BDD9BF', borderColor: '#A8C9AA' }}
-            >
-              {f}
-            </span>
-          ))}
-        </div>
+        {fleet.features.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {fleet.features.slice(0, 3).map(f => (
+              <span
+                key={f}
+                className="text-[9px] font-semibold px-2.5 py-1 rounded-full"
+                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+              >
+                {f}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Divider */}
+        <div className="border-t mt-auto" style={{ borderColor: 'rgba(46,64,82,0.08)' }} />
 
         {/* Price + CTA */}
-        <div className="border-t border-slate-100 mt-auto pt-3 flex items-center justify-between">
+        <div className="flex items-center justify-between pt-0.5">
           {fleet.baseFare > 0 ? (
             <div>
-              <div className="text-[9px] text-slate-400 uppercase tracking-widest">From</div>
-              <div className="font-head text-[18px] font-bold text-slate-800 leading-tight">
+              <div className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(46,64,82,0.45)' }}>
+                From
+              </div>
+              <div className="font-head text-[20px] font-bold leading-tight" style={{ color: '#2E4052' }}>
                 £{fleet.baseFare.toFixed(0)}
               </div>
             </div>
           ) : (
-            <div className="text-[12px] text-slate-400">Contact for price</div>
+            <div className="text-[12px] font-semibold" style={{ color: 'rgba(46,64,82,0.5)' }}>
+              Contact for price
+            </div>
           )}
+
           <button
-            onClick={() => navigate(getBookRoute(fleet))}
-            className="flex items-center gap-1.5 text-[12px] font-bold px-4 py-2 rounded-xl transition-all"
-            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2E4052'; e.currentTarget.style.color = '#fff' }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#BDD9BF'; e.currentTarget.style.color = '#2E4052' }}
+            onClick={e => { e.stopPropagation(); navigate(getBookRoute(fleet)) }}
+            className="flex items-center gap-1.5 text-[12px] font-bold px-4 py-2.5 rounded-xl cursor-pointer border-none text-white"
+            style={{ backgroundColor: '#2E4052', transition: 'background-color 0.2s ease' }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3A5268' }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#2E4052' }}
           >
-            Book →
+            Book
+            <ArrowRight size={12} />
           </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Skeleton loader card ─────────────────────────────────────────────────────
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-[20px] overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.06)' }}>
+      <div className="animate-pulse">
+        <div style={{ height: 200, backgroundColor: '#EAF0EA' }} />
+        <div className="p-4 flex flex-col gap-3">
+          <div className="h-4 rounded-full w-3/4" style={{ backgroundColor: '#EAF0EA' }} />
+          <div className="h-3 rounded-full w-1/2" style={{ backgroundColor: '#F0F5F0' }} />
+          <div className="flex gap-2">
+            <div className="h-6 rounded-full w-20" style={{ backgroundColor: '#F0F5F0' }} />
+            <div className="h-6 rounded-full w-16" style={{ backgroundColor: '#F0F5F0' }} />
+          </div>
+          <div className="h-10 rounded-xl mt-2" style={{ backgroundColor: '#F0F5F0' }} />
         </div>
       </div>
     </div>
@@ -139,7 +210,6 @@ export default function AllFleets() {
     dispatch(fetchTaxiProducts())
   }, [dispatch])
 
-  // Derive filter categories from actual product names
   const categories = ['All', ...Array.from(new Set(products.map(p => getCategory(p.name))))]
 
   const filtered = activeFilter === 'All'
@@ -147,35 +217,74 @@ export default function AllFleets() {
     : products.filter(p => getCategory(p.name) === activeFilter)
 
   return (
-    <section className="py-12 md:py-[30px]" style={{ backgroundColor: '#F0F5F0' }}>
-      <div className="max-w-container mx-auto px-6">
+    <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
+      {/* ── Hero header band ── */}
+      <div
+        className="relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}
+      >
+        {/* Subtle decorative circle */}
+        <div
+          className="absolute -right-24 -top-24 rounded-full pointer-events-none"
+          style={{ width: 320, height: 320, background: 'rgba(189,217,191,0.06)' }}
+        />
+        <div
+          className="absolute -left-16 -bottom-16 rounded-full pointer-events-none"
+          style={{ width: 240, height: 240, background: 'rgba(189,217,191,0.04)' }}
+        />
+
+        <div className="relative max-w-container mx-auto px-6 py-12 md:py-16 text-center">
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-3 font-body" style={{ color: '#BDD9BF' }}>
             Ride in Comfort
           </p>
-          <h2 className="font-head text-heading text-primary leading-none mb-3">
+          <h1 className="font-head text-heading text-white leading-none mb-4">
             Our Fleet
-          </h2>
-          <p className="text-[14px] text-muted font-body max-w-md mx-auto leading-relaxed">
-            From compact minibuses to spacious coaches — clean, premium vehicles for every journey.
+          </h1>
+          <p className="text-[14px] font-body leading-relaxed max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            From compact minibuses to spacious coaches — clean, premium vehicles driven by professional chauffeurs.
           </p>
-        </div>
 
-        {/* Filter tabs — only shown once products load */}
+          {/* Stats row */}
+          {!loading && !error && products.length > 0 && (
+            <div className="flex items-center justify-center gap-8 mt-8">
+              {[
+                { val: `${products.length}+`, label: 'Vehicles' },
+                { val: '5★', label: 'Rated Service' },
+                { val: '24/7', label: 'Available' },
+              ].map(({ val, label }) => (
+                <div key={label} className="text-center">
+                  <div className="font-head text-[22px] font-bold text-white leading-none">{val}</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    {label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="max-w-container mx-auto px-6 py-10">
+
+        {/* ── Filter tabs ── */}
         {!loading && !error && products.length > 0 && (
           <div className="flex justify-center gap-2 mb-8 flex-wrap">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
-                className={`flex items-center gap-1.5 px-5 py-2 rounded-xl text-[13px] font-semibold transition-all border ${
-                  activeFilter === cat
-                    ? 'text-white border-transparent shadow-sm'
-                    : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
-                }`}
-                style={activeFilter === cat ? { backgroundColor: '#2E4052' } : {}}
+                className="px-5 py-2 rounded-full text-[12px] font-bold transition-all duration-200 border-none cursor-pointer"
+                style={activeFilter === cat
+                  ? { backgroundColor: '#2E4052', color: '#ffffff', boxShadow: '0 4px 14px rgba(46,64,82,0.25)' }
+                  : { backgroundColor: '#ffffff', color: '#2E4052', boxShadow: '0 1px 6px rgba(46,64,82,0.08)' }
+                }
+                onMouseEnter={e => {
+                  if (activeFilter !== cat) e.currentTarget.style.boxShadow = '0 4px 14px rgba(46,64,82,0.14)'
+                }}
+                onMouseLeave={e => {
+                  if (activeFilter !== cat) e.currentTarget.style.boxShadow = '0 1px 6px rgba(46,64,82,0.08)'
+                }}
               >
                 {cat}
               </button>
@@ -183,23 +292,32 @@ export default function AllFleets() {
           </div>
         )}
 
-        {/* Loading */}
+        {/* ── Skeleton loading ── */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <Loader2 size={28} className="animate-spin" style={{ color: '#2E4052' }} />
-            <p className="text-[13px] text-slate-500">Loading fleet…</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         )}
 
-        {/* Error */}
+        {/* ── Error ── */}
         {!loading && error && (
-          <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
-            <AlertCircle size={24} className="text-red-400" />
-            <p className="text-[14px] font-semibold text-slate-700">Could not load fleet</p>
-            <p className="text-[12px] text-slate-400">{error}</p>
+          <div
+            className="bg-white rounded-[20px] px-8 py-14 flex flex-col items-center gap-4 text-center max-w-sm mx-auto"
+            style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.08)' }}
+          >
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center"
+              style={{ backgroundColor: '#FEE2E2' }}
+            >
+              <AlertCircle size={24} className="text-red-400" />
+            </div>
+            <div>
+              <p className="text-[15px] font-bold font-head" style={{ color: '#2E4052' }}>Could not load fleet</p>
+              <p className="text-[12px] text-muted mt-1 font-body">{error}</p>
+            </div>
             <button
               onClick={() => dispatch(fetchTaxiProducts())}
-              className="text-[12px] font-semibold px-4 py-2 rounded-xl text-white"
+              className="text-[13px] font-bold px-6 py-2.5 rounded-xl text-white border-none cursor-pointer"
               style={{ backgroundColor: '#2E4052' }}
             >
               Retry
@@ -207,21 +325,35 @@ export default function AllFleets() {
           </div>
         )}
 
-        {/* Grid */}
+        {/* ── Grid ── */}
         {!loading && !error && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-10">
-            {filtered.map(fleet => (
-              <FleetCard key={fleet.id} fleet={fleet} />
-            ))}
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {filtered.map(fleet => (
+                <FleetCard key={fleet.id} fleet={fleet} />
+              ))}
+            </div>
+
             {filtered.length === 0 && products.length > 0 && (
-              <div className="col-span-full text-center py-12 text-slate-400 text-[14px]">
-                No vehicles found for this category.
+              <div
+                className="bg-white rounded-[20px] py-16 text-center"
+                style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.08)' }}
+              >
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                  style={{ backgroundColor: '#F0F5F0' }}
+                >
+                  <Car size={24} style={{ color: '#BDD9BF' }} />
+                </div>
+                <p className="text-[15px] font-bold font-head" style={{ color: '#2E4052' }}>
+                  No vehicles in this category
+                </p>
+                <p className="text-[12px] text-muted mt-1 font-body">Try selecting a different filter above.</p>
               </div>
             )}
-          </div>
+          </>
         )}
-
       </div>
-    </section>
+    </div>
   )
 }
