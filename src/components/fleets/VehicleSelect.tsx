@@ -184,7 +184,7 @@ function VehicleCard({
               <div className="text-[11px] text-slate-400 mt-0.5 truncate">{vehicle.vehicleType}</div>
               {vehicle.rating > 0 && (
                 <div className="flex items-center gap-1 mt-1">
-                  <Star size={10} style={{ color: '#FFC857' }} fill="#FFC857" />
+                  <Star size={10} style={{ color: '#2E4052' }} fill="#2E4052" />
                   <span className="text-[10px] font-semibold text-slate-500">
                     {vehicle.rating.toFixed(1)} ({vehicle.reviews})
                   </span>
@@ -226,7 +226,7 @@ function VehicleCard({
           selected ? '' : 'text-slate-300 group-hover:text-slate-400'
         }`}>
           {selected
-            ? <CheckCircle2 size={20} style={{ color: '#FFC857' }} />
+            ? <CheckCircle2 size={20} style={{ color: '#2E4052' }} />
             : <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
           }
         </div>

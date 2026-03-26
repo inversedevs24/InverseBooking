@@ -14,7 +14,7 @@ export default function Logo({ onClick, light }: LogoProps) {
         I
       </div>
       <span className={`font-head font-bold text-[19px] tracking-[-0.5px] ${light ? 'text-white' : 'text-primary'}`}>
-        INV<span className="text-secondary">E</span>RSE
+        INV<span className={light ? 'text-secondary' : 'text-primary'}>E</span>RSE
       </span>
     </div>
   )

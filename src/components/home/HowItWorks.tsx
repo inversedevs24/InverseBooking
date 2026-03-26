@@ -26,7 +26,7 @@ export default function HowItWorks() {
     <section className="py-10 md:py-[60px]">
       <div className="max-w-container mx-auto px-6">
 
-        <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2 text-center">
+        <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2 text-center">
           Simple Process
         </p>
         <h2 className="font-head text-heading text-primary text-center leading-none mb-3">
@@ -41,7 +41,7 @@ export default function HowItWorks() {
             <div key={i} className="bg-white rounded-2xl p-5 shadow-[0_2px_8px_rgba(15,23,42,0.07)]" >
               <div className="flex items-center gap-3 mb-3">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-secondary flex-shrink-0"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-primary flex-shrink-0"
                   style={{ backgroundColor: '#BDD9BF' }}
                 >
                   <s.Icon size={17} />

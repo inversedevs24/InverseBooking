@@ -101,7 +101,7 @@ export default function PartnerPage() {
 
           {/* Page heading */}
           <div className="text-center mb-10">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Join Our Network</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Join Our Network</p>
             <h1 className="font-head text-heading text-primary leading-none mb-3">Become a Partner</h1>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               Drive your success with us. Join the InverseRide partner network and grow your business.
@@ -261,7 +261,7 @@ export default function PartnerPage() {
         <div className="max-w-container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[60px] items-center">
             <div>
-              <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Why Join Us</p>
+              <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Why Join Us</p>
               <h2 className="font-head text-heading text-primary leading-none mb-3">
                 Why Partner with InverseRide?
               </h2>
@@ -298,7 +298,7 @@ export default function PartnerPage() {
       <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#BDD9BF' }}>
         <div className="max-w-container mx-auto px-6">
           <div className="text-center mb-10">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Open to All</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Open to All</p>
             <h2 className="font-head text-heading text-primary leading-none mb-3">Who Can Join?</h2>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               We welcome all professional and reliable transport partners.
@@ -336,7 +336,7 @@ export default function PartnerPage() {
               />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">What We Need</p>
+              <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">What We Need</p>
               <h2 className="font-head text-heading text-primary leading-none mb-3">Partner Requirements</h2>
               <p className="text-muted text-[14px] font-body leading-relaxed mb-5">
                 To ensure quality service for every passenger, we require:
@@ -357,7 +357,7 @@ export default function PartnerPage() {
 
           {/* Benefits */}
           <div className="text-center mb-8">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">What You Get</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">What You Get</p>
             <h2 className="font-head text-heading text-primary leading-none mb-2">Partner Benefits</h2>
             <p className="text-muted text-[14px] italic font-semibold">Earn More. Work Smart.</p>
           </div>
@@ -379,7 +379,7 @@ export default function PartnerPage() {
       {/*  FAQ  */}
       <section className="py-10 md:py-[60px] bg-secondaryBg">
         <div className="max-w-container mx-auto px-6">
-          <p className="text-[11px] font-bold text-secondary uppercase tracking-widest text-center mb-2">
+          <p className="text-[11px] font-bold text-primary uppercase tracking-widest text-center mb-2">
             Got Questions?
           </p>
           <h2 className="font-head text-heading text-primary text-center leading-none mb-10">

@@ -82,7 +82,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
           </span>
           {fleet.rating > 0 && (
             <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500">
-              <Star size={9} style={{ color: '#FFC857' }} fill="#FFC857" />
+              <Star size={9} style={{ color: '#2E4052' }} fill="#2E4052" />
               {fleet.rating.toFixed(1)}
             </span>
           )}

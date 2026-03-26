@@ -15,7 +15,7 @@ export default function BookingConditionsPage() {
             { h: 'Support & Assistance', items: [`Email: ${brandEmail}`, `Phone: ${brandPhone}`, 'Available 24/7 for urgent booking issues'] },
           ].map(({ h, items }) => (
             <div key={h}>
-              <h3 className="font-head text-span font-bold text-secondary mt-6 mb-[10px]">{h}</h3>
+              <h3 className="font-head text-span font-bold text-primary mt-6 mb-[10px]">{h}</h3>
               <ul className="pl-5 my-2">
                 {items.map(item => <li key={item} className="text-label text-primary mb-[6px] leading-[1.6]">{item}</li>)}
               </ul>

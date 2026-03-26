@@ -13,11 +13,11 @@ export default function FAQ({ items }: FAQProps) {
       {items.map((item, i) => (
         <div className="border-b border-border" key={i}>
           <div
-            className="py-4 flex items-center justify-between cursor-pointer font-medium text-span hover:text-secondary transition-colors"
+            className="py-4 flex items-center justify-between cursor-pointer font-medium text-span hover:text-primary transition-colors"
             onClick={() => setOpen(open === i ? -1 : i)}
           >
             <span>{item.q}</span>
-            <span className="text-secondary text-xl font-light flex-shrink-0 ml-4">
+            <span className="text-primary text-xl font-light flex-shrink-0 ml-4">
               {open === i ? '×' : '+'}
             </span>
           </div>

@@ -25,7 +25,7 @@ export default function WhyChooseUs() {
 
           {/* Left — text + reason cards */}
           <div>
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
               Why Choose Us
             </p>
             <h2 className="font-head text-heading text-primary leading-none mb-3">
@@ -42,7 +42,7 @@ export default function WhyChooseUs() {
                   className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
                 >
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-secondary flex-shrink-0"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-primary flex-shrink-0"
                     style={{ backgroundColor: '#BDD9BF' }}
                   >
                     <r.Icon size={17} />
@@ -51,7 +51,7 @@ export default function WhyChooseUs() {
                     <div className="text-[14px] font-bold font-head text-primary leading-tight">{r.title}</div>
                     <div className="text-[12px] text-muted font-body mt-[2px]">{r.sub}</div>
                   </div>
-                  <Check size={14} className="text-secondary ml-auto flex-shrink-0" />
+                  <Check size={14} className="text-primary ml-auto flex-shrink-0" />
                 </div>
               ))}
             </div>
@@ -76,7 +76,7 @@ export default function WhyChooseUs() {
                   key={i}
                   className="flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 text-[12px] font-semibold text-primary flex-shrink-0"
                 >
-                  <b.Icon size={13} className="text-secondary flex-shrink-0" />
+                  <b.Icon size={13} className="text-primary flex-shrink-0" />
                   {b.text}
                 </div>
               ))}

@@ -15,7 +15,7 @@ export default function PrivacyPage() {
             { h: 'Contact Us', content: <ul className="pl-5 my-2"><li className="text-label text-primary mb-[6px] leading-[1.6]">Email: {brandEmail}</li><li className="text-label text-primary mb-[6px] leading-[1.6]">Phone: {brandPhone}</li></ul> },
           ].map(({ h, content }) => (
             <div key={h}>
-              <h3 className="font-head text-span font-bold text-secondary mt-6 mb-[10px]">{h}</h3>
+              <h3 className="font-head text-span font-bold text-primary mt-6 mb-[10px]">{h}</h3>
               {content}
             </div>
           ))}
