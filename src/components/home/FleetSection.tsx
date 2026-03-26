@@ -26,14 +26,14 @@ function FleetCard({ car }: { car: TaxiOption }) {
     <div
       onClick={() => navigate(bookRoute)}
       className="group bg-white rounded-[20px] overflow-hidden cursor-pointer flex flex-col h-full"
-      style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.09)', transition: 'transform 0.25s ease, box-shadow 0.25s ease' }}
+      style={{ boxShadow: '0 3px 18px rgba(46,64,82,0.11)', transition: 'transform 0.25s ease, box-shadow 0.25s ease' }}
       onMouseEnter={e => {
         e.currentTarget.style.transform = 'translateY(-5px)'
-        e.currentTarget.style.boxShadow = '0 16px 44px rgba(46,64,82,0.16)'
+        e.currentTarget.style.boxShadow = '0 18px 48px rgba(46,64,82,0.18)'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = '0 2px 16px rgba(46,64,82,0.09)'
+        e.currentTarget.style.boxShadow = '0 3px 18px rgba(46,64,82,0.11)'
       }}
     >
       {/* Image */}
@@ -138,18 +138,25 @@ export default function FleetSection() {
   const display = products.slice(0, 8)
 
   return (
-    // No overflow-hidden here — it clips the pagination dots below slides
-    <section className="py-10 md:py-[60px] bg-white">
+    // 4px sage top border + F0F5F0 bg clearly separates this from surrounding white sections
+    <section
+      className="py-10 md:py-[60px]"
+      style={{ backgroundColor: '#F0F5F0', borderTop: '4px solid #BDD9BF' }}
+    >
       {/* overflow-x-hidden on inner wrapper stops horizontal carousel bleed */}
       <div style={{ overflowX: 'hidden' }}>
         <div className="max-w-container mx-auto px-6">
 
           {/* ── Section header ── */}
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8">
             <div>
-              <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
+              {/* Eyebrow as a pill badge */}
+              <span
+                className="inline-flex items-center text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3"
+                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+              >
                 Premium Vehicles
-              </p>
+              </span>
               <h2 className="font-head text-heading text-primary leading-none mb-3">
                 Our Fleet
               </h2>
@@ -175,6 +182,9 @@ export default function FleetSection() {
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
             </button>
           </div>
+
+          {/* Divider rule between header and cards */}
+          <div className="border-t mb-8" style={{ borderColor: 'rgba(46,64,82,0.12)' }} />
 
           {/* ── Loading ── */}
           {loading && products.length === 0 && (
@@ -207,14 +217,14 @@ export default function FleetSection() {
                 .fleet-swiper .swiper-pagination-bullet {
                   width: 8px; height: 8px;
                   border-radius: 9999px;
-                  background: rgba(46,64,82,0.2);
+                  background: rgba(46,64,82,0.25);
                   opacity: 1;
                   transition: all 0.3s ease;
                   flex-shrink: 0;
                 }
                 .fleet-swiper .swiper-pagination-bullet-active {
                   width: 28px;
-                  background: #2E4052;
+                  background: #BDD9BF;
                 }
                 .fleet-swiper .swiper-pagination-bullet:hover {
                   background: rgba(46,64,82,0.45);
