@@ -261,8 +261,8 @@ export default function HeroBooking() {
 
         {/* Payment methods — below form, left-aligned to form width */}
         <div className="max-w-[420px] mt-4 flex items-center gap-3">
-          <span className="text-[10px] font-bold text-primary/40 uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">We Accept</span>
-          <div className="w-px h-5 bg-primary/15 flex-shrink-0" />
+          <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">We Accept</span>
+          <div className="w-px h-5 bg-border flex-shrink-0" />
           <div className="flex items-center gap-3">
             <Visa style={{ height: 28, width: 'auto' }} />
             <Mastercard style={{ height: 28, width: 'auto' }} />
