@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, Luggage, Loader2, AlertCircle, Star, Car, ArrowRight } from 'lucide-react'
+import { Users, Luggage, Loader2, AlertCircle, Star, Car, ArrowRight, Check } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 import type { TaxiOption } from '../../types'
@@ -103,39 +103,32 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
       </div>
 
       {/* ── Body ── */}
-      <div className="p-4 flex flex-col flex-1 gap-3">
+      <div className="p-4 flex flex-col flex-1">
 
-        {/* Specs + rating row */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span
-            className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full"
-            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-          >
-            <Users size={10} /> {fleet.passengers} pax
+        {/* Specs row — clean icon + label, no pill backgrounds */}
+        <div className="flex items-center gap-4 pb-3 border-b" style={{ borderColor: 'rgba(46,64,82,0.08)' }}>
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
+            <Users size={13} style={{ color: '#BDD9BF' }} />
+            {fleet.passengers} Passengers
           </span>
-          <span
-            className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full"
-            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-          >
-            <Luggage size={10} /> {fleet.luggage} bags
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
+            <Luggage size={13} style={{ color: '#BDD9BF' }} />
+            {fleet.luggage} Bags
           </span>
           {fleet.rating > 0 && (
-            <span className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: '#2E4052' }}>
-              <Star size={10} fill="#2E4052" stroke="none" />
+            <span className="flex items-center gap-1 ml-auto text-[11px] font-semibold" style={{ color: '#2E4052' }}>
+              <Star size={11} fill="#2E4052" stroke="none" />
               {fleet.rating.toFixed(1)}
             </span>
           )}
         </div>
 
-        {/* Feature chips */}
+        {/* Features — checklist style */}
         {fleet.features.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {fleet.features.slice(0, 3).map(f => (
-              <span
-                key={f}
-                className="text-[9px] font-semibold px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
-              >
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 py-3">
+            {fleet.features.slice(0, 4).map(f => (
+              <span key={f} className="flex items-center gap-1.5 text-[11px] font-medium font-body truncate" style={{ color: 'rgba(46,64,82,0.7)' }}>
+                <Check size={10} strokeWidth={2.5} style={{ color: '#BDD9BF', flexShrink: 0 }} />
                 {f}
               </span>
             ))}

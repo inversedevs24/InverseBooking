@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Users, Luggage, Loader2, Car } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination, Autoplay, Navigation } from 'swiper/modules'
+import { Pagination, Autoplay } from 'swiper/modules'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 import type { TaxiOption } from '../../types'
@@ -16,7 +16,7 @@ const SERVICE_ROUTE_MAP: Record<string, string> = {
   'Desert Safari':    '/book?service=desert-safari',
 }
 
-// ─── Internal Fleet Card (on dark bg) ─────────────────────────────────────────
+// ─── Internal Fleet Card ──────────────────────────────────────────────────────
 
 function FleetCard({ car }: { car: TaxiOption }) {
   const navigate = useNavigate()
@@ -25,25 +25,25 @@ function FleetCard({ car }: { car: TaxiOption }) {
   return (
     <div
       onClick={() => navigate(bookRoute)}
-      className="group relative bg-white rounded-[20px] overflow-hidden cursor-pointer flex flex-col h-full"
-      style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.18)', transition: 'transform 0.25s ease, box-shadow 0.25s ease' }}
+      className="group bg-white rounded-[20px] overflow-hidden cursor-pointer flex flex-col h-full"
+      style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.09)', transition: 'transform 0.25s ease, box-shadow 0.25s ease' }}
       onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translateY(-6px)'
-        e.currentTarget.style.boxShadow = '0 20px 52px rgba(0,0,0,0.32)'
+        e.currentTarget.style.transform = 'translateY(-5px)'
+        e.currentTarget.style.boxShadow = '0 16px 44px rgba(46,64,82,0.16)'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)'
+        e.currentTarget.style.boxShadow = '0 2px 16px rgba(46,64,82,0.09)'
       }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden flex-shrink-0" style={{ height: 200, backgroundColor: '#EAF0EA' }}>
+      <div className="relative overflow-hidden flex-shrink-0" style={{ height: 190, backgroundColor: '#EAF0EA' }}>
         {car.image ? (
           <img
             src={car.image}
             alt={car.name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.07]"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -54,13 +54,13 @@ function FleetCard({ car }: { car: TaxiOption }) {
         {/* Gradient overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(46,64,82,0.85) 0%, rgba(46,64,82,0.12) 50%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(to top, rgba(46,64,82,0.82) 0%, rgba(46,64,82,0.1) 50%, transparent 100%)' }}
         />
 
-        {/* Service type badge */}
+        {/* Service badge */}
         {car.serviceType && (
           <div
-            className="absolute top-3 left-3 text-[10px] font-extrabold uppercase tracking-widest px-3 py-[5px] rounded-full"
+            className="absolute top-3 left-3 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-[5px] rounded-full"
             style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
           >
             {car.serviceType}
@@ -83,7 +83,7 @@ function FleetCard({ car }: { car: TaxiOption }) {
             {car.name}
           </h3>
           {car.vehicleType && (
-            <p className="text-[10px] mt-0.5 font-body" style={{ color: 'rgba(255,255,255,0.68)' }}>
+            <p className="text-[10px] mt-0.5 font-body" style={{ color: 'rgba(255,255,255,0.65)' }}>
               {car.vehicleType}
             </p>
           )}
@@ -91,22 +91,22 @@ function FleetCard({ car }: { car: TaxiOption }) {
       </div>
 
       {/* Body */}
-      <div className="p-4 flex flex-col flex-1 gap-3">
-        {/* Specs */}
-        <div className="flex items-center gap-2">
-          <span
-            className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full"
-            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-          >
-            <Users size={10} /> {car.passengers} pax
+      <div className="px-4 pt-3 pb-4 flex flex-col flex-1">
+
+        {/* Specs row — clean icon + text, no pills */}
+        <div className="flex items-center gap-4 mb-3">
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
+            <Users size={13} style={{ color: '#BDD9BF' }} />
+            {car.passengers} Passengers
           </span>
-          <span
-            className="flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1.5 rounded-full"
-            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-          >
-            <Luggage size={10} /> {car.luggage} bags
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
+            <Luggage size={13} style={{ color: '#BDD9BF' }} />
+            {car.luggage} Bags
           </span>
         </div>
+
+        {/* Divider */}
+        <div className="border-t mb-3" style={{ borderColor: 'rgba(46,64,82,0.08)' }} />
 
         {/* CTA */}
         <button
@@ -138,139 +138,118 @@ export default function FleetSection() {
   const display = products.slice(0, 8)
 
   return (
-    <section className="py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#2E4052' }}>
-      <div className="max-w-container mx-auto px-6">
+    // No overflow-hidden here — it clips the pagination dots below slides
+    <section className="py-10 md:py-[60px] bg-white">
+      {/* overflow-x-hidden on inner wrapper stops horizontal carousel bleed */}
+      <div style={{ overflowX: 'hidden' }}>
+        <div className="max-w-container mx-auto px-6">
 
-        {/* ── Section header ── */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest mb-3 font-body" style={{ color: '#BDD9BF' }}>
-              Premium Vehicles
-            </p>
-            <h2 className="font-head text-heading text-white leading-none mb-3">
-              Our Fleet
-            </h2>
-            <p className="text-[14px] max-w-[400px] font-body leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
-              From executive saloons to spacious coaches — every vehicle driven by a professional chauffeur.
-            </p>
-          </div>
-
-          <button
-            onClick={() => navigate('/fleet')}
-            className="group flex items-center gap-2 text-[13px] font-bold px-5 py-2.5 rounded-full self-start sm:self-auto flex-shrink-0 cursor-pointer border-2 transition-all duration-250 text-white"
-            style={{ borderColor: 'rgba(255,255,255,0.5)', backgroundColor: 'transparent' }}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#ffffff'
-              e.currentTarget.style.borderColor = '#ffffff'
-              e.currentTarget.style.color = '#2E4052'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
-              e.currentTarget.style.color = '#ffffff'
-            }}
-          >
-            View All Fleet
-            <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-          </button>
-        </div>
-
-        {/* ── Loading ── */}
-        {loading && products.length === 0 && (
-          <div className="flex items-center justify-center py-24">
-            <div className="flex flex-col items-center gap-3">
-              <Loader2 size={28} className="animate-spin" style={{ color: '#BDD9BF' }} />
-              <p className="text-[13px] font-body" style={{ color: 'rgba(255,255,255,0.5)' }}>Loading fleet…</p>
+          {/* ── Section header ── */}
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
+            <div>
+              <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
+                Premium Vehicles
+              </p>
+              <h2 className="font-head text-heading text-primary leading-none mb-3">
+                Our Fleet
+              </h2>
+              <p className="text-muted text-[14px] max-w-[380px] font-body leading-relaxed">
+                From executive saloons to spacious coaches — every vehicle driven by a professional chauffeur.
+              </p>
             </div>
-          </div>
-        )}
 
-        {/* ── Swiper carousel ── */}
-        {display.length > 0 && (
-          <>
-            <style>{`
-              .fleet-swiper { touch-action: pan-y; }
-              .fleet-swiper .swiper-slide { height: auto; }
-              .fleet-swiper .swiper-wrapper { align-items: stretch; }
-
-              /* Pagination */
-              .fleet-swiper .swiper-pagination {
-                bottom: 0;
-                display: flex;
-                justify-content: center;
-                gap: 6px;
-              }
-              .fleet-swiper .swiper-pagination-bullet {
-                width: 8px; height: 8px;
-                border-radius: 9999px;
-                background: rgba(255,255,255,0.25);
-                opacity: 1;
-                transition: all 0.3s ease;
-              }
-              .fleet-swiper .swiper-pagination-bullet-active {
-                width: 28px;
-                background: #BDD9BF;
-              }
-              .fleet-swiper .swiper-pagination-bullet:hover {
-                background: rgba(255,255,255,0.55);
-              }
-
-              /* Navigation arrows */
-              .fleet-swiper .swiper-button-prev,
-              .fleet-swiper .swiper-button-next {
-                width: 40px; height: 40px;
-                background: rgba(255,255,255,0.12);
-                border-radius: 50%;
-                top: 50%;
-                margin-top: -60px;
-                backdrop-filter: blur(8px);
-                border: 1px solid rgba(255,255,255,0.18);
-                transition: background 0.2s ease;
-              }
-              .fleet-swiper .swiper-button-prev:hover,
-              .fleet-swiper .swiper-button-next:hover {
-                background: rgba(255,255,255,0.22);
-              }
-              .fleet-swiper .swiper-button-prev::after,
-              .fleet-swiper .swiper-button-next::after {
-                font-size: 14px;
-                font-weight: 700;
-                color: #ffffff;
-              }
-              .fleet-swiper .swiper-button-disabled {
-                opacity: 0.3;
-              }
-            `}</style>
-            <Swiper
-              modules={[Pagination, Autoplay, Navigation]}
-              spaceBetween={16}
-              slidesPerView={1.15}
-              breakpoints={{
-                480: { slidesPerView: 1.6, spaceBetween: 16 },
-                640: { slidesPerView: 2.2, spaceBetween: 18 },
-                900: { slidesPerView: 2.9, spaceBetween: 20 },
-                1024: { slidesPerView: 3.3, spaceBetween: 20 },
-                1280: { slidesPerView: 4, spaceBetween: 24 },
+            <button
+              onClick={() => navigate('/fleet')}
+              className="group flex items-center gap-2 border-2 text-[13px] font-bold px-5 py-2.5 rounded-full transition-colors duration-300 self-start sm:self-auto flex-shrink-0 cursor-pointer"
+              style={{ borderColor: '#2E4052', color: '#2E4052', backgroundColor: 'transparent' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = '#2E4052'
+                e.currentTarget.style.color = '#ffffff'
               }}
-              pagination={{ clickable: true }}
-              navigation
-              autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-              grabCursor
-              touchEventsTarget="container"
-              touchStartPreventDefault={false}
-              simulateTouch
-              allowTouchMove
-              className="fleet-swiper !pb-10"
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+                e.currentTarget.style.color = '#2E4052'
+              }}
             >
-              {display.map(car => (
-                <SwiperSlide key={car.id}>
-                  <FleetCard car={car} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </>
-        )}
+              View All Fleet
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+            </button>
+          </div>
 
+          {/* ── Loading ── */}
+          {loading && products.length === 0 && (
+            <div className="flex items-center justify-center py-20">
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 size={28} className="animate-spin" style={{ color: '#2E4052' }} />
+                <p className="text-[13px] text-muted font-body">Loading fleet…</p>
+              </div>
+            </div>
+          )}
+
+          {/* ── Swiper carousel ── */}
+          {display.length > 0 && (
+            <>
+              <style>{`
+                .fleet-swiper { touch-action: pan-y; }
+                .fleet-swiper .swiper-slide { height: auto; }
+                .fleet-swiper .swiper-wrapper { align-items: stretch; }
+
+                /* Pagination — navy dots on white background */
+                .fleet-swiper .swiper-pagination {
+                  position: relative;
+                  bottom: auto;
+                  margin-top: 20px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 6px;
+                }
+                .fleet-swiper .swiper-pagination-bullet {
+                  width: 8px; height: 8px;
+                  border-radius: 9999px;
+                  background: rgba(46,64,82,0.2);
+                  opacity: 1;
+                  transition: all 0.3s ease;
+                  flex-shrink: 0;
+                }
+                .fleet-swiper .swiper-pagination-bullet-active {
+                  width: 28px;
+                  background: #2E4052;
+                }
+                .fleet-swiper .swiper-pagination-bullet:hover {
+                  background: rgba(46,64,82,0.45);
+                }
+              `}</style>
+              <Swiper
+                modules={[Pagination, Autoplay]}
+                spaceBetween={16}
+                slidesPerView={1.15}
+                breakpoints={{
+                  480: { slidesPerView: 1.6, spaceBetween: 16 },
+                  640: { slidesPerView: 2.1, spaceBetween: 16 },
+                  900: { slidesPerView: 2.8, spaceBetween: 20 },
+                  1024: { slidesPerView: 3.2, spaceBetween: 20 },
+                  1280: { slidesPerView: 4, spaceBetween: 20 },
+                }}
+                pagination={{ clickable: true }}
+                autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+                grabCursor
+                touchEventsTarget="container"
+                touchStartPreventDefault={false}
+                simulateTouch
+                allowTouchMove
+                className="fleet-swiper"
+              >
+                {display.map(car => (
+                  <SwiperSlide key={car.id}>
+                    <FleetCard car={car} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </>
+          )}
+
+        </div>
       </div>
     </section>
   )
