@@ -66,7 +66,7 @@ export default function ContactPage() {
   return (
     <>
       {/*  Main section  */}
-      <div className="py-12 md:py-[30px]" style={{ backgroundColor: '#BDD9BF' }}>
+      <div className="py-12 md:py-[30px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
 
           {/* Page heading */}

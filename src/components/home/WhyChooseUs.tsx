@@ -19,7 +19,7 @@ const BADGES: Badge[] = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#BDD9BF' }}>
+    <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>
       <div className="max-w-container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
 

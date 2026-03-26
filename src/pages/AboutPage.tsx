@@ -56,7 +56,7 @@ export default function AboutPage() {
       </section>
 
       {/* What We Offer */}
-      <section className="py-10 md:py-[60px] bg-secondaryBg" style={{ backgroundColor:  '#BDD9BF' }}>
+      <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
           <h2 className="font-head text-heading text-primary text-center mb-10 leading-none">What We Offer</h2>
           <div className="flex flex-col gap-6 max-w-[700px] mx-auto">

@@ -96,7 +96,7 @@ export default function PartnerPage() {
   return (
     <>
       {/*  Hero + Form  */}
-      <div className="py-12 md:py-[64px]" style={{ backgroundColor: '#BDD9BF' }}>
+      <div className="py-12 md:py-[64px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
 
           {/* Page heading */}
@@ -295,7 +295,7 @@ export default function PartnerPage() {
       </section>
 
       {/*  Who Can Join  */}
-      <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#BDD9BF' }}>
+      <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Open to All</p>

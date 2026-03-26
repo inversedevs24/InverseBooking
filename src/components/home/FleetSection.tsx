@@ -138,11 +138,7 @@ export default function FleetSection() {
   const display = products.slice(0, 8)
 
   return (
-    // 4px sage top border + F0F5F0 bg clearly separates this from surrounding white sections
-    <section
-      className="py-10 md:py-[60px]"
-      style={{ backgroundColor: '#F0F5F0', borderTop: '4px solid #BDD9BF' }}
-    >
+    <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>
       {/* overflow-x-hidden on inner wrapper stops horizontal carousel bleed */}
       <div style={{ overflowX: 'hidden' }}>
         <div className="max-w-container mx-auto px-6">
@@ -183,8 +179,6 @@ export default function FleetSection() {
             </button>
           </div>
 
-          {/* Divider rule between header and cards */}
-          <div className="border-t mb-8" style={{ borderColor: 'rgba(46,64,82,0.12)' }} />
 
           {/* ── Loading ── */}
           {loading && products.length === 0 && (
