@@ -28,13 +28,13 @@ function DarkInfoRow({
         className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
         style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
       >
-        <Icon size={14} className="text-white/70" />
+        <Icon size={14} className="text-white" />
       </div>
       <div className="min-w-0">
-        <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <div className="text-[10px] font-bold uppercase tracking-widest mb-1 text-white">
           {label}
         </div>
-        <div className="text-[13px] text-white/80 font-body leading-relaxed">{children}</div>
+        <div className="text-[13px] text-white font-body leading-relaxed">{children}</div>
       </div>
     </div>
   )
@@ -44,7 +44,7 @@ function DarkInfoRow({
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl px-4 pt-3 pb-4 shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
-      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{label}</div>
+      <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-2">{label}</div>
       {children}
     </div>
   )
@@ -94,8 +94,7 @@ export default function ContactPage() {
 
               <div className="relative">
                 {/* Label */}
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1"
-                  style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-1 text-white">
                   Contact Information
                 </p>
                 <h2 className="font-head text-[22px] font-bold text-white leading-tight mb-6">
@@ -105,7 +104,7 @@ export default function ContactPage() {
                 {/* Info rows */}
                 <DarkInfoRow icon={Phone} label="Phone">
                   <a href={`tel:${brandPhone}`}
-                    className="no-underline text-white/80 hover:text-white transition-colors">
+                    className="no-underline text-white hover:text-white/80 transition-colors">
                     {brandPhone}
                   </a>
                 </DarkInfoRow>
@@ -132,9 +131,9 @@ export default function ContactPage() {
                   style={{ backgroundColor: 'rgba(255,200,87,0.15)', border: '1px solid rgba(255,200,87,0.25)' }}
                 >
                   <CheckCircle2 size={14} style={{ color: '#FFC857' }} className="flex-shrink-0 mt-0.5" />
-                  <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                  <p className="text-[12px] leading-relaxed text-white">
                     We typically respond within{' '}
-                    <span className="text-white font-semibold">2 hours</span>{' '}
+                    <span className="font-semibold">2 hours</span>{' '}
                     during business hours.
                   </p>
                 </div>
