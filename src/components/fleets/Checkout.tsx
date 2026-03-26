@@ -3,11 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, MapPin, Clock, Ruler, Car, Users,
   Luggage, User, Mail, Phone, Plane, MessageSquare,
-  CheckCircle2, ArrowRight, ShieldCheck, CreditCard, ExternalLink, Loader2,
+  CheckCircle2, ShieldCheck, CreditCard, ExternalLink, Loader2,
   AlertCircle,
 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { createCheckout } from '../../store/slices/cartSlice'
+import { useAuth } from '../../context/AuthContext'
 import type { BookingState, TaxiOption, SearchDetails } from '../../types'
 
 //  Step bar (shared pattern with BookingDetails) 
@@ -86,50 +87,14 @@ function InfoChip({ icon: Icon, label, value }: { icon: typeof User; label: stri
   )
 }
 
-//  Confirmed screen 
-function ConfirmedScreen({ firstName, email }: { firstName: string; email: string }) {
-  const navigate = useNavigate()
-  const ref = `INV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
-  return (
-    <div className="min-h-screen flex items-center justify-center px-4 font-body" style={{ backgroundColor: '#F0F5F0' }}>
-      <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(15,23,42,0.12)] px-8 py-10 text-center max-w-[420px] w-full">
-        {/* Check circle */}
-        <div
-          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-[0_4px_20px_rgba(46,64,82,0.25)]"
-          style={{ backgroundColor: '#2E4052' }}
-        >
-          <CheckCircle2 size={30} className="text-white" />
-        </div>
 
-        <h2 className="font-head text-[22px] font-bold text-slate-800 mb-2">Booking Confirmed!</h2>
-        <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
-          Thank you, <span className="font-semibold text-slate-700">{firstName}</span>!
-          Your ride has been booked. A confirmation has been sent to{' '}
-          <span className="font-semibold text-slate-700">{email}</span>.
-        </p>
-
-        {/* Reference chip */}
-        <div
-          className="inline-flex items-center gap-2 rounded-xl px-5 py-3 mb-7 border border-dashed"
-          style={{ backgroundColor: '#BDD9BF', borderColor: '#A8C9AA' }}
-        >
-          <span className="text-[11px] text-slate-500">Booking Ref</span>
-          <span className="text-[14px] font-bold font-mono tracking-widest" style={{ color: '#2E4052' }}>{ref}</span>
-        </div>
-
-        <button
-          onClick={() => navigate('/')}
-          className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90"
-          style={{ backgroundColor: '#2E4052' }}
-        >
-          Back to Home <ArrowRight size={15} />
-        </button>
-      </div>
-    </div>
-  )
+//  Derive currency symbol from a variant price currencyCode
+function currencySymbol(code?: string): string {
+  const map: Record<string, string> = { GBP: '£', USD: '$', EUR: '€', AED: 'AED ' }
+  return map[code ?? ''] ?? (code ? code + ' ' : '£')
 }
 
-//  Main 
+//  Main
 export default function Checkout() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -139,9 +104,14 @@ export default function Checkout() {
 
   const dispatch = useAppDispatch()
   const { checkoutUrl, loading: cartLoading, error: cartError } = useAppSelector(s => s.cart)
+  const { customer } = useAuth()
 
-  const [done, setDone] = useState(false)
   const [showSummary, setShowSummary] = useState(false)
+
+  // Derive currency from the taxiOption variant price, fall back to GBP
+  const taxiOption = (booking as any).taxiOption as TaxiOption | undefined
+  const variantCurrency = taxiOption?.variants?.[0]?.price?.currencyCode
+  const sym = currencySymbol(variantCurrency)
 
   const subtotal = Number(booking.price || 0)
   const tax = +(subtotal * 0.05).toFixed(2)
@@ -155,7 +125,7 @@ export default function Checkout() {
     })
   }
 
-  // Redirect to Shopify when checkoutUrl arrives
+  // Redirect to Shopify as soon as checkoutUrl is ready
   useEffect(() => {
     if (checkoutUrl) {
       window.location.href = checkoutUrl
@@ -163,39 +133,30 @@ export default function Checkout() {
   }, [checkoutUrl])
 
   const handleShopifyRedirect = () => {
-    // If Shopify taxi option was threaded through from VehicleSelect, use real checkout
-    const taxiOption = (booking as any).taxiOption as TaxiOption | undefined
     const selectedVariantId = (booking as any).selectedVariantId as string | undefined
     const rawSearchDetails = (booking as any).searchDetails as SearchDetails | undefined
     const quantity: number = (booking as any).quantity ?? 1
 
     if (taxiOption && selectedVariantId && rawSearchDetails) {
+      // Use the email from the passenger form, or from the logged-in customer as fallback
+      const email = p.email || customer?.email || undefined
       const item = {
         taxi: {
           ...taxiOption,
-          // Override shopifyId with the distance-matched variant for checkout
           shopifyId: selectedVariantId,
         },
         search: {
           ...rawSearchDetails,
-          // Thread flight number from passenger form if not already set
-          flightNumber: rawSearchDetails.flightNumber || p.flightNumber || undefined,
+          flightNumber: p.flightNumber || rawSearchDetails.flightNumber || undefined,
         },
-        totalPrice: Number(booking.price || 0),
+        totalPrice: subtotal,
         quantity,
       }
-      dispatch(createCheckout({ item, email: p.email || undefined }))
-    } else {
-      // Fallback: simulate completion if Shopify is not yet configured
-      setTimeout(() => setDone(true), 1500)
+      dispatch(createCheckout({ item, email }))
     }
   }
 
   const redirecting = cartLoading
-
-  if (done) {
-    return <ConfirmedScreen firstName={p.firstName || 'there'} email={p.email || ''} />
-  }
 
   return (
     <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
@@ -241,7 +202,7 @@ export default function Checkout() {
       {showSummary && (
         <div className="lg:hidden px-4 pt-4 pb-2 max-w-5xl mx-auto">
           <PaymentPanel
-            subtotal={subtotal} tax={tax} total={total}
+            sym={sym} subtotal={subtotal} tax={tax} total={total}
             redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
           />
         </div>
@@ -321,7 +282,7 @@ export default function Checkout() {
             {/* Mobile CTA (below cards, above sidebar) */}
             <div className="lg:hidden">
               <PaymentPanel
-                subtotal={subtotal} tax={tax} total={total}
+                sym={sym} subtotal={subtotal} tax={tax} total={total}
                 redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
               />
             </div>
@@ -330,7 +291,7 @@ export default function Checkout() {
           {/*  Right: payment sidebar (desktop)  */}
           <div className="hidden lg:block w-[300px] xl:w-[320px] flex-shrink-0 sticky top-[112px]">
             <PaymentPanel
-              subtotal={subtotal} tax={tax} total={total}
+              sym={sym} subtotal={subtotal} tax={tax} total={total}
               redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
             />
           </div>
@@ -341,11 +302,11 @@ export default function Checkout() {
   )
 }
 
-//  Payment panel (extracted so it can be used in both mobile + desktop) 
+//  Payment panel (extracted so it can be used in both mobile + desktop)
 function PaymentPanel({
-  subtotal, tax, total, redirecting, error, onPay,
+  sym, subtotal, tax, total, redirecting, error, onPay,
 }: {
-  subtotal: number; tax: number; total: string
+  sym: string; subtotal: number; tax: number; total: string
   redirecting: boolean; error?: string | null; onPay: () => void
 }) {
   return (
@@ -362,7 +323,7 @@ function PaymentPanel({
             Payment Summary
           </div>
           <div className="text-[28px] font-bold text-white font-head leading-none">
-            ${total}
+            {sym}{total}
           </div>
           <div className="text-[11px] mt-1" style={{ color: '#BDD9BF' }}>Total inc. VAT</div>
         </div>
@@ -370,9 +331,9 @@ function PaymentPanel({
         {/* Breakdown rows */}
         <div className="px-5 py-4">
           {[
-            { label: 'Base fare', value: `$${subtotal.toFixed(2)}`, highlight: false },
-            { label: 'VAT (5%)', value: `$${tax.toFixed(2)}`, highlight: false },
-            { label: 'Discount', value: '–$0.00', highlight: true },
+            { label: 'Base fare', value: `${sym}${subtotal.toFixed(2)}`, highlight: false },
+            { label: 'VAT (5%)', value: `${sym}${tax.toFixed(2)}`, highlight: false },
+            { label: 'Discount', value: `–${sym}0.00`, highlight: true },
           ].map(row => (
             <div key={row.label} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
               <span className="text-[12px] text-slate-500">{row.label}</span>
@@ -384,7 +345,7 @@ function PaymentPanel({
 
           <div className="flex items-center justify-between pt-3 mt-1 border-t border-slate-200">
             <span className="text-[13px] font-bold text-slate-800">Total</span>
-            <span className="text-[20px] font-bold font-head" style={{ color: '#2E4052' }}>${total}</span>
+            <span className="text-[20px] font-bold font-head" style={{ color: '#2E4052' }}>{sym}{total}</span>
           </div>
         </div>
 

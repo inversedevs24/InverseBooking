@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
     X, Clock, Car, ChevronRight, LogOut, User,
     CalendarDays, CheckCircle2, XCircle, Loader2,
@@ -6,6 +7,8 @@ import {
     MapPin, Navigation, Ruler, Timer, AlertCircle,
     Download, RotateCcw, MessageCircle, ChevronLeft,
 } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
+import { getCustomerOrders, ShopifyOrder } from '../../services/shopifyAuthService'
 
 //  Types 
 export type BookingStatus = 'confirmed' | 'completed' | 'cancelled' | 'in-progress'
@@ -39,102 +42,92 @@ const STATUS_CONFIG: Record<BookingStatus, { label: string; color: string; bg: s
     cancelled: { label: 'Cancelled', color: '#b91c1c', bg: '#fee2e2', Icon: XCircle },
 }
 
-//  Data 
-const USER = {
-    name: 'James Harrington', email: 'james.h@email.com',
-    phone: '+971 50 123 4567', avatar: 'JH',
-    memberSince: 'March 2023', totalRides: 14, totalSpent: 'AED 8,340',
+// ─── Order mapping helpers ────────────────────────────────────────────────────
+
+function fmtPrice(amount: string, currencyCode: string): string {
+    const n = parseFloat(amount)
+    const symbols: Record<string, string> = { GBP: '£', USD: '$', EUR: '€', AED: 'AED ' }
+    return `${symbols[currencyCode] ?? currencyCode + ' '}${n.toFixed(2)}`
 }
 
-const BOOKINGS: Booking[] = [
-    {
-        id: '1', reference: 'INV-2024-0091',
-        date: '22 Mar 2025', time: '09:00',
-        from: 'Dubai Intl Airport, T3', fromFull: 'Dubai International Airport, Terminal 3, Dubai',
-        to: 'Downtown Dubai', toFull: 'Downtown Dubai, Burj Khalifa Blvd, Dubai',
-        vehicle: 'Executive Saloon', vehicleImage: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
-        passengers: 2, luggage: 2, status: 'in-progress', price: 'AED 285',
-        breakdown: [{ label: 'Base fare', amount: 'AED 220' }, { label: 'Meet & greet', amount: 'AED 40' }, { label: 'Service charge', amount: 'AED 25' }],
-        driver: 'Robert W.', driverPhone: '+971 50 900 1234', driverAvatar: 'RW',
-        notes: 'Flight EK0471 — please monitor for delays.',
-        timeline: [
-            { time: '08:45', label: 'Driver en route to pickup', done: true },
-            { time: '09:00', label: 'Passenger picked up', done: true },
-            { time: '09:30', label: 'En route to destination', done: false },
-            { time: '09:55', label: 'Arrived at destination', done: false },
-        ],
-        bookedOn: '15 Mar 2025', paymentMethod: 'Visa •••• 4242',
-        distance: '14.8 mi', duration: '~35 min',
-    },
-    {
-        id: '2', reference: 'INV-2024-0087',
-        date: '18 Mar 2025', time: '14:30',
-        from: 'Dubai Mall', fromFull: 'The Dubai Mall, Financial Centre Rd, Dubai',
-        to: 'Abu Dhabi Intl Airport', toFull: 'Abu Dhabi International Airport, Abu Dhabi',
-        vehicle: 'MPV (7 Seater)', vehicleImage: 'https://images.pexels.com/photos/210019/pexels-photo-210019.jpeg',
-        passengers: 5, luggage: 6, status: 'confirmed', price: 'AED 520',
-        breakdown: [{ label: 'Base fare', amount: 'AED 430' }, { label: 'Extra luggage', amount: 'AED 50' }, { label: 'Service charge', amount: 'AED 40' }],
-        driver: 'Sarah M.', driverPhone: '+971 50 900 4567', driverAvatar: 'SM',
-        timeline: [
-            { time: '14:00', label: 'Driver assigned', done: true },
-            { time: '14:30', label: 'Passenger pickup scheduled', done: false },
-            { time: '16:15', label: 'Arrival at Abu Dhabi Airport', done: false },
-        ],
-        bookedOn: '10 Mar 2025', paymentMethod: 'Mastercard •••• 8810',
-        distance: '78.4 mi', duration: '~100 min',
-    },
-    {
-        id: '3', reference: 'INV-2024-0074',
-        date: '4 Mar 2025', time: '07:15',
-        from: 'Palm Jumeirah', fromFull: 'Palm Jumeirah, Atlantis The Palm, Dubai',
-        to: 'Dubai Intl Airport, T1', toFull: 'Dubai International Airport, Terminal 1, Dubai',
-        vehicle: 'Executive Saloon', vehicleImage: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
-        passengers: 1, luggage: 1, status: 'completed', price: 'AED 195',
-        breakdown: [{ label: 'Base fare', amount: 'AED 160' }, { label: 'Early morning', amount: 'AED 20' }, { label: 'Service charge', amount: 'AED 15' }],
-        driver: 'David K.', driverPhone: '+971 50 900 7890', driverAvatar: 'DK',
-        rating: 5, ratingNote: 'Incredibly professional. Car was immaculate. Will definitely book again.',
-        timeline: [
-            { time: '07:00', label: 'Driver arrived at pickup', done: true },
-            { time: '07:15', label: 'Journey started', done: true },
-            { time: '07:55', label: 'Arrived at Airport T1', done: true },
-        ],
-        bookedOn: '28 Feb 2025', paymentMethod: 'Visa •••• 4242',
-        distance: '22.6 mi', duration: '~40 min',
-    },
-    {
-        id: '4', reference: 'INV-2024-0068',
-        date: '19 Feb 2025', time: '11:00',
-        from: 'Dubai Marina', fromFull: 'Dubai Marina Mall, Sheikh Zayed Rd, Dubai',
-        to: 'Sharjah City Centre', toFull: 'City Centre Sharjah, Al Wahda St, Sharjah',
-        vehicle: 'Luxury SUV', vehicleImage: 'https://images.pexels.com/photos/1638459/pexels-photo-1638459.jpeg',
-        passengers: 3, luggage: 3, status: 'completed', price: 'AED 240',
-        breakdown: [{ label: 'Base fare', amount: 'AED 200' }, { label: 'Service charge', amount: 'AED 40' }],
-        driver: 'Lisa T.', driverPhone: '+971 50 900 3210', driverAvatar: 'LT',
-        rating: 4, ratingNote: 'Great ride, very smooth. Slightly delayed start but communicated well.',
-        timeline: [
-            { time: '10:55', label: 'Driver arrived at pickup', done: true },
-            { time: '11:00', label: 'Journey started', done: true },
-            { time: '11:45', label: 'Arrived at Sharjah', done: true },
-        ],
-        bookedOn: '12 Feb 2025', paymentMethod: 'Amex •••• 1005',
-        distance: '18.2 mi', duration: '~45 min',
-    },
-    {
-        id: '5', reference: 'INV-2024-0055',
-        date: '2 Feb 2025', time: '16:45',
-        from: 'Business Bay', fromFull: 'Business Bay, Al Abraj St, Dubai',
-        to: 'Dubai Hills Mall', toFull: 'Dubai Hills Mall, Dubai Hills Estate, Dubai',
-        vehicle: 'Executive Saloon', vehicleImage: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
-        passengers: 2, luggage: 1, status: 'cancelled', price: 'AED 120',
-        breakdown: [{ label: 'Base fare', amount: 'AED 100' }, { label: 'Service charge', amount: 'AED 20' }],
-        timeline: [
-            { time: '16:30', label: 'Booking confirmed', done: true },
-            { time: '16:45', label: 'Booking cancelled', done: true },
-        ],
-        bookedOn: '30 Jan 2025', paymentMethod: 'Visa •••• 4242',
-        distance: '9.4 mi', duration: '~25 min',
-    },
-]
+function mapOrderToBooking(order: ShopifyOrder): Booking | null {
+    const lines = order.lineItems.edges.map(e => e.node)
+    const mainLine = lines.find(li =>
+        li.customAttributes.find(a => a.key === 'Type')?.value !== 'Airport Parking Fee'
+    )
+    if (!mainLine) return null
+
+    const attrs: Record<string, string> = Object.fromEntries(
+        mainLine.customAttributes.map(a => [a.key, a.value])
+    )
+
+    const fs = order.financialStatus
+    const ff = order.fulfillmentStatus
+    let status: BookingStatus
+    if (fs === 'REFUNDED' || fs === 'PARTIALLY_REFUNDED' || fs === 'VOIDED') {
+        status = 'cancelled'
+    } else if (ff === 'FULFILLED') {
+        status = 'completed'
+    } else if (ff === 'IN_PROGRESS') {
+        status = 'in-progress'
+    } else {
+        status = 'confirmed'
+    }
+
+    const processedDate = new Date(order.processedAt)
+    const bookedOn = processedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+
+    const breakdown = lines.map(li => ({
+        label: li.customAttributes.find(a => a.key === 'Type')?.value === 'Airport Parking Fee'
+            ? 'Airport Parking Fee'
+            : li.title,
+        amount: li.variant
+            ? fmtPrice(String(parseFloat(li.variant.price.amount) * li.quantity), li.variant.price.currencyCode)
+            : '—',
+    }))
+
+    const timeline: BookingEvent[] = status === 'completed'
+        ? [
+            { time: attrs['Pickup Time'] ?? '', label: 'Journey started', done: true },
+            { time: '', label: 'Arrived at destination', done: true },
+        ]
+        : status === 'in-progress'
+            ? [
+                { time: attrs['Pickup Time'] ?? '', label: 'Driver en route to pickup', done: true },
+                { time: attrs['Pickup Time'] ?? '', label: 'Journey started', done: false },
+            ]
+            : status === 'cancelled'
+                ? [{ time: bookedOn, label: 'Booking cancelled', done: true }]
+                : [{ time: bookedOn, label: 'Booking confirmed', done: true }]
+
+    return {
+        id: order.id,
+        reference: `INV-${order.orderNumber}`,
+        date: attrs['Pickup Date'] ?? bookedOn,
+        time: attrs['Pickup Time'] ?? '',
+        from: attrs['From'] ?? '',
+        fromFull: attrs['From'] ?? '',
+        to: attrs['To'] ?? '',
+        toFull: attrs['To'] ?? '',
+        vehicle: attrs['Vehicle'] ?? mainLine.title,
+        vehicleImage: mainLine.variant?.image?.url ?? 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg',
+        passengers: 1,
+        luggage: 0,
+        status,
+        price: fmtPrice(order.totalPrice.amount, order.totalPrice.currencyCode),
+        breakdown,
+        notes: attrs['Flight Number'] ? `Flight ${attrs['Flight Number']}` : undefined,
+        timeline,
+        bookedOn,
+        paymentMethod: 'Paid online',
+        distance: attrs['Distance'] ?? '',
+        duration: attrs['Duration'] ?? '',
+    }
+}
+
+//  Fallback user display
+const DEFAULT_AVATAR = '?'
+
 
 // BOOKING DETAILS PANEL
 function StarRatingLg({ rating }: { rating: number }) {
@@ -507,9 +500,49 @@ function BookingCard({ booking, onDetails }: { booking: Booking; onDetails: () =
 type FilterTab = 'all' | BookingStatus
 
 export default function UserDashboard() {
+    const navigate = useNavigate()
+    const { customer, accessToken, logout } = useAuth()
     const [activeTab, setActiveTab] = useState<FilterTab>('all')
     const [search, setSearch] = useState('')
     const [selected, setSelected] = useState<Booking | null>(null)
+    const [orders, setOrders] = useState<Booking[]>([])
+    const [ordersLoading, setOrdersLoading] = useState(false)
+
+    useEffect(() => {
+        if (!accessToken) return
+        setOrdersLoading(true)
+        getCustomerOrders(accessToken)
+            .then(raw => {
+                const mapped = raw.flatMap(o => {
+                    const b = mapOrderToBooking(o)
+                    return b ? [b] : []
+                })
+                setOrders(mapped)
+            })
+            .catch(console.error)
+            .finally(() => setOrdersLoading(false))
+    }, [accessToken])
+
+    async function handleSignOut() {
+        await logout()
+        navigate('/')
+    }
+
+    const avatarInitials = customer
+        ? `${customer.firstName?.[0] ?? ''}${customer.lastName?.[0] ?? ''}`.toUpperCase() || DEFAULT_AVATAR
+        : DEFAULT_AVATAR
+    const displayName = customer
+        ? `${customer.firstName} ${customer.lastName}`.trim() || customer.email
+        : ''
+    const displayEmail = customer?.email ?? ''
+
+    const totalRides = orders.filter(b => b.status !== 'cancelled').length
+    const totalSpentPence = orders
+        .filter(b => b.status !== 'cancelled')
+        .reduce((sum, b) => sum + parseFloat(b.price.replace(/[^0-9.]/g, '')), 0)
+    const totalSpentDisplay = orders[0]
+        ? `${orders[0].price.replace(/[\d.,]+$/, '')}${totalSpentPence.toFixed(2)}`
+        : '£0.00'
 
     const tabs: { key: FilterTab; label: string }[] = [
         { key: 'all', label: 'All' },
@@ -519,7 +552,7 @@ export default function UserDashboard() {
         { key: 'cancelled', label: 'Cancelled' },
     ]
 
-    const filtered = BOOKINGS.filter(b => {
+    const filtered = orders.filter(b => {
         const matchesTab = activeTab === 'all' || b.status === activeTab
         const matchesSearch = !search || [b.reference, b.from, b.to, b.vehicle]
             .some(f => f.toLowerCase().includes(search.toLowerCase()))
@@ -543,10 +576,10 @@ export default function UserDashboard() {
                         <button className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors">
                             <Settings size={16} className="text-slate-500" />
                         </button>
-                        <button className="hidden sm:flex items-center gap-1.5 text-[12px] text-slate-500 hover:text-red-500 transition-colors font-semibold ml-1">
+                        <button onClick={handleSignOut} className="hidden sm:flex items-center gap-1.5 text-[12px] text-slate-500 hover:text-red-500 transition-colors font-semibold ml-1">
                             <LogOut size={13} /> Sign out
                         </button>
-                        <button className="sm:hidden w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100">
+                        <button onClick={handleSignOut} className="sm:hidden w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100">
                             <LogOut size={15} className="text-slate-500" />
                         </button>
                     </div>
@@ -568,16 +601,17 @@ export default function UserDashboard() {
                             className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold font-head text-lg flex-shrink-0 shadow-lg"
                             style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                         >
-                            {USER.avatar}
+                            {avatarInitials}
                         </div>
 
                         <div className="flex-1 min-w-0">
                             <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#BDD9BF' }}>My Account</p>
-                            <h1 className="font-head text-white text-xl sm:text-2xl font-bold leading-none mb-1">{USER.name}</h1>
+                            <h1 className="font-head text-white text-xl sm:text-2xl font-bold leading-none mb-1">{displayName}</h1>
                             <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1.5" style={{ color: '#BDD9BF' }}>
-                                <span className="flex items-center gap-1 text-[11px] sm:text-[12px]"><Mail size={10} />{USER.email}</span>
-                                <span className="flex items-center gap-1 text-[11px] sm:text-[12px]"><Phone size={10} />{USER.phone}</span>
-                                <span className="hidden sm:flex items-center gap-1 text-[12px]"><CalendarDays size={10} />Member since {USER.memberSince}</span>
+                                <span className="flex items-center gap-1 text-[11px] sm:text-[12px]"><Mail size={10} />{displayEmail}</span>
+                                {customer?.phone && (
+                                    <span className="flex items-center gap-1 text-[11px] sm:text-[12px]"><Phone size={10} />{customer.phone}</span>
+                                )}
                             </div>
                         </div>
 
@@ -592,10 +626,10 @@ export default function UserDashboard() {
 
                 {/*  Stats  */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <StatCard icon={Car} label="Total Rides" value={String(USER.totalRides)} sub="all time" />
-                    <StatCard icon={CreditCard} label="Total Spent" value={USER.totalSpent} sub="all time" />
-                    <StatCard icon={CheckCircle2} label="Completed" value={String(BOOKINGS.filter(b => b.status === 'completed').length)} />
-                    <StatCard icon={TrendingUp} label="Upcoming" value={String(BOOKINGS.filter(b => ['confirmed', 'in-progress'].includes(b.status)).length)} />
+                    <StatCard icon={Car} label="Total Rides" value={String(totalRides)} sub="all time" />
+                    <StatCard icon={CreditCard} label="Total Spent" value={totalSpentDisplay} sub="all time" />
+                    <StatCard icon={CheckCircle2} label="Completed" value={String(orders.filter(b => b.status === 'completed').length)} />
+                    <StatCard icon={TrendingUp} label="Upcoming" value={String(orders.filter(b => ['confirmed', 'in-progress'].includes(b.status)).length)} />
                 </div>
 
                 {/*  Bookings list  */}
@@ -618,7 +652,7 @@ export default function UserDashboard() {
                     {/* Filter tabs */}
                     <div className="flex gap-1.5 mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
                         {tabs.map(tab => {
-                            const count = tab.key === 'all' ? BOOKINGS.length : BOOKINGS.filter(b => b.status === tab.key).length
+                            const count = tab.key === 'all' ? orders.length : orders.filter(b => b.status === tab.key).length
                             const active = activeTab === tab.key
                             return (
                                 <button

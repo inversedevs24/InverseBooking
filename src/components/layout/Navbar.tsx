@@ -2,19 +2,14 @@ import { useState, useRef, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Menu, X, User, ChevronDown, LogOut, CalendarDays } from 'lucide-react'
 import Logo from '../ui/Logo'
-
-// ─── Mock auth state — swap with your real auth context / Shopify customer hook ─
-const MOCK_USER = {
-  isLoggedIn: true,           // set false to preview logged-out state
-  name: 'James Harrington',
-  email: 'james.h@email.com',
-  avatar: 'JH',               // initials fallback
-}
+import { useAuth } from '../../context/AuthContext'
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const [isOpen, setIsOpen] = useState(false)   // mobile menu
-  const [dropOpen, setDropOpen] = useState(false)   // desktop user dropdown
+  const { customer, isLoggedIn, logout } = useAuth()
+
+  const [isOpen, setIsOpen] = useState(false)
+  const [dropOpen, setDropOpen] = useState(false)
   const dropRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown on outside click
@@ -28,8 +23,23 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  // Close mobile menu on route change
   const closeMobile = () => setIsOpen(false)
+
+  async function handleSignOut() {
+    closeMobile()
+    setDropOpen(false)
+    await logout()
+    navigate('/')
+  }
+
+  // Build avatar initials from customer name
+  const avatarInitials = customer
+    ? `${customer.firstName?.[0] ?? ''}${customer.lastName?.[0] ?? ''}`.toUpperCase() || '?'
+    : ''
+
+  const displayName = customer
+    ? `${customer.firstName} ${customer.lastName}`.trim() || customer.email
+    : ''
 
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `no-underline font-medium text-label transition-colors cursor-pointer py-1 border-b-2 ${isActive
@@ -41,23 +51,21 @@ export default function Navbar() {
     `no-underline font-medium text-[14px] transition-colors cursor-pointer py-2 border-b border-transparent ${isActive ? 'text-primary font-semibold' : 'text-primary/70 hover:text-primary'
     }`
 
-  //  Logged-in user section (desktop) 
+  // Logged-in user dropdown (desktop)
   const UserDropdown = () => (
     <div className="relative" ref={dropRef}>
       <button
         onClick={() => setDropOpen(v => !v)}
         className="hidden md:flex items-center gap-2 cursor-pointer px-2 py-[6px] rounded-lg transition-colors hover:bg-secondaryBg"
       >
-        {/* Avatar */}
         <div
           className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
           style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
         >
-          {MOCK_USER.avatar}
+          {avatarInitials}
         </div>
-        {/* Name — hidden on narrower desktop to avoid crowding */}
         <span className="text-[12px] font-semibold text-primary whitespace-nowrap hidden lg:block">
-          {MOCK_USER.name.split(' ')[0]}
+          {customer?.firstName || displayName.split(' ')[0]}
         </span>
         <ChevronDown
           size={13}
@@ -65,16 +73,14 @@ export default function Navbar() {
         />
       </button>
 
-      {/* Dropdown panel */}
       {dropOpen && (
         <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-2xl shadow-[0_8px_30px_rgba(15,23,42,0.12)] border border-slate-100 overflow-hidden z-50">
           {/* User info header */}
           <div className="px-4 py-3 border-b border-slate-100" style={{ backgroundColor: '#F0F5F0' }}>
-            <div className="text-[13px] font-bold text-slate-800 truncate">{MOCK_USER.name}</div>
-            <div className="text-[11px] text-slate-400 truncate mt-0.5">{MOCK_USER.email}</div>
+            <div className="text-[13px] font-bold text-slate-800 truncate">{displayName}</div>
+            <div className="text-[11px] text-slate-400 truncate mt-0.5">{customer?.email}</div>
           </div>
 
-          {/* Menu items */}
           <div className="py-1.5">
             <button
               onClick={() => { setDropOpen(false); navigate('/account') }}
@@ -85,10 +91,9 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Sign out */}
           <div className="border-t border-slate-100 py-1.5">
             <button
-              onClick={() => { setDropOpen(false); /* call your signOut() here */ }}
+              onClick={handleSignOut}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-500 hover:bg-red-50 transition-colors text-left"
             >
               <LogOut size={14} className="flex-shrink-0" />
@@ -100,7 +105,7 @@ export default function Navbar() {
     </div>
   )
 
-  //  Guest sign-in button (desktop) 
+  // Guest sign-in button (desktop)
   const SignInButton = () => (
     <div
       className="hidden md:flex items-center gap-2 cursor-pointer px-3 py-[6px] rounded-lg transition-colors hover:bg-secondaryBg"
@@ -129,8 +134,7 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Desktop: show user dropdown or sign-in depending on auth */}
-          {MOCK_USER.isLoggedIn ? <UserDropdown /> : <SignInButton />}
+          {isLoggedIn ? <UserDropdown /> : <SignInButton />}
 
           {/* Mobile hamburger */}
           <button
@@ -143,12 +147,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile menu — absolute overlay so it doesn't push page content down ── */}
+      {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-border shadow-[0_8px_24px_rgba(0,0,0,0.10)] z-[99]">
 
           {/* Logged-in user info strip */}
-          {MOCK_USER.isLoggedIn && (
+          {isLoggedIn && (
             <div
               className="flex items-center gap-3 px-5 py-4 border-b border-border"
               style={{ backgroundColor: '#F0F5F0' }}
@@ -157,11 +161,11 @@ export default function Navbar() {
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-[12px] font-bold flex-shrink-0"
                 style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
               >
-                {MOCK_USER.avatar}
+                {avatarInitials}
               </div>
               <div className="min-w-0">
-                <div className="text-[13px] font-bold text-slate-800 truncate">{MOCK_USER.name}</div>
-                <div className="text-[11px] text-slate-400 truncate">{MOCK_USER.email}</div>
+                <div className="text-[13px] font-bold text-slate-800 truncate">{displayName}</div>
+                <div className="text-[11px] text-slate-400 truncate">{customer?.email}</div>
               </div>
             </div>
           )}
@@ -178,7 +182,7 @@ export default function Navbar() {
 
           {/* Auth actions */}
           <div className="px-5 py-3 border-t border-border flex flex-col gap-1">
-            {MOCK_USER.isLoggedIn ? (
+            {isLoggedIn ? (
               <>
                 <button
                   onClick={() => { closeMobile(); navigate('/account') }}
@@ -188,7 +192,7 @@ export default function Navbar() {
                   My Bookings
                 </button>
                 <button
-                  onClick={() => { closeMobile(); /* call your signOut() here */ }}
+                  onClick={handleSignOut}
                   className="flex items-center gap-3 py-2.5 text-[14px] font-medium text-red-500 hover:text-red-600 transition-colors text-left"
                 >
                   <LogOut size={15} className="flex-shrink-0" />

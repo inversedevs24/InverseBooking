@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react'
 import Logo from '../components/ui/Logo'
+import { useAuth } from '../context/AuthContext'
 
 const GRID_BG = 'linear-gradient(rgba(46,64,82,0.92), rgba(46,64,82,0.92)), repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px)'
 
@@ -11,7 +12,44 @@ const inputCls = 'flex-1 text-[14px] text-primary font-body outline-none border-
 
 export default function SignUpPage() {
   const navigate = useNavigate()
-  const [showPw, setShowPw] = useState(false)
+  const location = useLocation()
+  const { register } = useAuth()
+  const returnState = location.state as { from?: string; bookingState?: unknown } | null
+  const from = returnState?.from ?? '/'
+  const bookingState = returnState?.bookingState
+
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName]   = useState('')
+  const [email, setEmail]         = useState('')
+  const [password, setPassword]   = useState('')
+  const [showPw, setShowPw]       = useState(false)
+  const [error, setError]         = useState('')
+  const [loading, setLoading]     = useState(false)
+
+  async function handleRegister() {
+    if (!firstName || !lastName || !email || !password) {
+      setError('Please fill in all fields.')
+      return
+    }
+    if (password.length < 5) {
+      setError('Password must be at least 5 characters.')
+      return
+    }
+    setError('')
+    setLoading(true)
+    try {
+      const errors = await register(firstName, lastName, email, password)
+      if (errors.length > 0) {
+        setError(errors[0].message)
+      } else {
+        navigate(from, { replace: true, state: bookingState ?? undefined })
+      }
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div
@@ -31,12 +69,39 @@ export default function SignUpPage() {
         <h1 className="font-head text-heading text-white leading-none mb-1">Create Account</h1>
         <p className="text-[14px] text-white/70 font-body mb-7">Fill in your details to get started.</p>
 
-        {/* Full Name */}
-        <div className={cardCls}>
-          <label className={labelCls}>Full Name</label>
-          <div className="flex items-center gap-2">
-            <User size={14} className="text-[#aaa] flex-shrink-0" />
-            <input className={inputCls} type="text" placeholder="John Doe" />
+        {/* Error */}
+        {error && (
+          <div className="bg-red-500/20 border border-red-400/40 text-red-200 text-[13px] rounded-xl px-4 py-3 mb-4">
+            {error}
+          </div>
+        )}
+
+        {/* First Name + Last Name */}
+        <div className="flex gap-2">
+          <div className={`${cardCls} flex-1`}>
+            <label className={labelCls}>First Name</label>
+            <div className="flex items-center gap-2">
+              <User size={14} className="text-[#aaa] flex-shrink-0" />
+              <input
+                className={inputCls}
+                type="text"
+                placeholder="John"
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className={`${cardCls} flex-1`}>
+            <label className={labelCls}>Last Name</label>
+            <div className="flex items-center gap-2">
+              <input
+                className={inputCls}
+                type="text"
+                placeholder="Doe"
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
@@ -45,7 +110,13 @@ export default function SignUpPage() {
           <label className={labelCls}>Email Address</label>
           <div className="flex items-center gap-2">
             <Mail size={14} className="text-[#aaa] flex-shrink-0" />
-            <input className={inputCls} type="email" placeholder="you@example.com" />
+            <input
+              className={inputCls}
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
           </div>
         </div>
 
@@ -54,7 +125,14 @@ export default function SignUpPage() {
           <label className={labelCls}>Password</label>
           <div className="flex items-center gap-2">
             <Lock size={14} className="text-[#aaa] flex-shrink-0" />
-            <input className={inputCls} type={showPw ? 'text' : 'password'} placeholder="••••••••" />
+            <input
+              className={inputCls}
+              type={showPw ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleRegister()}
+            />
             <button
               type="button"
               onClick={() => setShowPw(v => !v)}
@@ -67,11 +145,12 @@ export default function SignUpPage() {
 
         {/* Submit */}
         <button
-          className="w-full border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body text-white mb-2 mt-1"
+          className="w-full border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body text-white mb-2 mt-1 disabled:opacity-60"
           style={{ background: '#FFC857', color: '#2E4052' }}
-          onClick={() => navigate('/')}
+          onClick={handleRegister}
+          disabled={loading}
         >
-          Create Account
+          {loading ? 'Creating account…' : 'Create Account'}
         </button>
 
         {/* Divider */}
