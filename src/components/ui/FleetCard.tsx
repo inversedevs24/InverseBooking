@@ -95,18 +95,12 @@ export default function FleetCard({ car, index = 0 }: { car: FleetItem; index?: 
       <div className="p-4 flex flex-col flex-1 gap-3">
 
         {/* Specs row */}
-        <div className="flex items-center gap-2">
-          <span
-            className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full"
-            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-          >
-            <Users size={11} /> {car.pax} Passengers
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#0F172A' }}>
+            <Users size={13} style={{ color: '#2E4052' }} /> {car.pax} Passengers
           </span>
-          <span
-            className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full"
-            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-          >
-            <Briefcase size={11} /> {car.lug} Bags
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#0F172A' }}>
+            <Briefcase size={13} style={{ color: '#2E4052' }} /> {car.lug} Bags
           </span>
         </div>
 

@@ -191,7 +191,7 @@ export default function PromoBanners() {
           slidesPerView={1}
           spaceBetween={16}
           breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 16 } }}
-          autoplay={{ delay: 3800, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          autoplay={{ delay: 1200, disableOnInteraction: false, pauseOnMouseEnter: true }}
           pagination={{ clickable: true }}
           loop
           className="promo-swiper !pb-8"

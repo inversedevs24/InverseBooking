@@ -95,12 +95,12 @@ function FleetCard({ car }: { car: TaxiOption }) {
 
         {/* Specs row — clean icon + text, no pills */}
         <div className="flex items-center gap-4 mb-3">
-          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
-            <Users size={13} style={{ color: '#BDD9BF' }} />
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#0F172A' }}>
+            <Users size={13} style={{ color: '#2E4052' }} />
             {car.passengers} Passengers
           </span>
-          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
-            <Luggage size={13} style={{ color: '#BDD9BF' }} />
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#0F172A' }}>
+            <Luggage size={13} style={{ color: '#2E4052' }} />
             {car.luggage} Bags
           </span>
         </div>
@@ -144,39 +144,16 @@ export default function FleetSection() {
         <div className="max-w-container mx-auto px-6">
 
           {/* ── Section header ── */}
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8">
-            <div>
-              {/* Eyebrow as a pill badge */}
-              <span
-                className="inline-flex items-center text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full mb-3"
-                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
-              >
-                Premium Vehicles
-              </span>
-              <h2 className="font-head text-heading text-primary leading-none mb-3">
-                Our Fleet
-              </h2>
-              <p className="text-muted text-[14px] max-w-[380px] font-body leading-relaxed">
-                From executive saloons to spacious coaches — every vehicle driven by a professional chauffeur.
-              </p>
-            </div>
-
-            <button
-              onClick={() => navigate('/fleet')}
-              className="group flex items-center gap-2 border-2 text-[13px] font-bold px-5 py-2.5 rounded-full transition-colors duration-300 self-start sm:self-auto flex-shrink-0 cursor-pointer"
-              style={{ borderColor: '#2E4052', color: '#2E4052', backgroundColor: 'transparent' }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = '#2E4052'
-                e.currentTarget.style.color = '#ffffff'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = '#2E4052'
-              }}
-            >
-              View All Fleet
-              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
-            </button>
+          <div className="flex flex-col items-center text-center mb-8">
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
+              Premium Vehicles
+            </p>
+            <h2 className="font-head text-heading text-primary leading-none mb-3">
+              Our Fleet
+            </h2>
+            <p className="text-muted text-[14px] max-w-[420px] font-body leading-relaxed">
+              From executive saloons to spacious coaches — every vehicle driven by a professional chauffeur.
+            </p>
           </div>
 
 

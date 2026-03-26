@@ -10,9 +10,30 @@
   }
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   body {
     @apply font-body text-primary bg-white leading-relaxed overflow-x-hidden;
+  }
+
+  /*
+   * iOS Safari auto-zooms the viewport when any focused <input> has font-size < 16px.
+   * Forcing 16px on mobile prevents the zoom-on-tap / zoom-on-refresh behaviour.
+   * The visual size stays controlled by the component's own Tailwind classes at larger
+   * breakpoints (md+), where this rule no longer applies.
+   */
+  @media (max-width: 767px) {
+    input,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
   }
 }
 
@@ -20,6 +41,20 @@
   .scrollbar-dark {
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.08) transparent;
+  }
+
+  /*
+   * Override Tailwind's min-h-screen (100vh) with 100dvh on browsers that support it.
+   * 100dvh accounts for the iOS Safari dynamic address bar — 100vh does not,
+   * causing content to be taller than the visible area and producing scroll jumps.
+   */
+  .min-h-screen {
+    min-height: 100vh;       /* fallback for older browsers */
+    min-height: 100dvh;      /* dynamic viewport height — correct on iOS Safari 15.4+ */
+  }
+  .h-screen {
+    height: 100vh;
+    height: 100dvh;
   }
 }
 

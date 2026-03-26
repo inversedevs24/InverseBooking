@@ -51,7 +51,7 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
 }
 
 const inputCls =
-  'w-full text-[14px] text-slate-700 font-body outline-none border-none bg-transparent placeholder:text-slate-300'
+  'w-full text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#bbb]'
 
 export default function ContactPage() {
   const [subject, setSubject] = useState('general')
@@ -72,7 +72,7 @@ export default function ContactPage() {
           {/* Page heading */}
           <div className="text-center mb-10">
             <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Get in Touch</p>
-            <h1 className="font-head text-heading text-primary leading-none mb-3">Contact Us</h1>
+            <h1 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.4rem, 5.5vw, 2rem)' }}>Contact Us</h1>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               Got something on your mind? We'd love to hear from you.
             </p>
@@ -162,13 +162,13 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <FormField label="First Name">
                     <div className="flex items-center gap-2">
-                      <User size={13} className="text-slate-300 flex-shrink-0" />
+                      <User size={13} className="text-[#aaa] flex-shrink-0" />
                       <input className={inputCls} placeholder="John" />
                     </div>
                   </FormField>
                   <FormField label="Last Name">
                     <div className="flex items-center gap-2">
-                      <User size={13} className="text-slate-300 flex-shrink-0" />
+                      <User size={13} className="text-[#aaa] flex-shrink-0" />
                       <input className={inputCls} placeholder="Doe" />
                     </div>
                   </FormField>
@@ -178,14 +178,14 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <FormField label="Email">
                     <div className="flex items-center gap-2">
-                      <Mail size={13} className="text-slate-300 flex-shrink-0" />
+                      <Mail size={13} className="text-[#aaa] flex-shrink-0" />
                       <input className={inputCls} type="email" placeholder="john@email.com" />
                     </div>
                   </FormField>
                   <FormField label="Phone Number">
                     <div className="flex items-center gap-2">
-                      <Phone size={13} className="text-slate-300 flex-shrink-0" />
-                      <span className="text-[14px] text-slate-300 font-body flex-shrink-0">+971</span>
+                      <Phone size={13} className="text-[#aaa] flex-shrink-0" />
+                      <span className="text-[14px] text-[#aaa] font-body flex-shrink-0">+971</span>
                       <input className={inputCls} placeholder="050 123 4567" />
                     </div>
                   </FormField>
@@ -214,9 +214,9 @@ export default function ContactPage() {
                 {/* Message */}
                 <FormField label="Message">
                   <div className="flex items-start gap-2">
-                    <MessageSquare size={13} className="text-slate-300 flex-shrink-0 mt-0.5" />
+                    <MessageSquare size={13} className="text-[#aaa] flex-shrink-0 mt-0.5" />
                     <textarea
-                      className="flex-1 text-[14px] text-slate-700 font-body outline-none border-none bg-transparent resize-y min-h-[90px] placeholder:text-slate-300"
+                      className="flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent resize-y min-h-[90px] placeholder:text-[#bbb]"
                       placeholder="Write your message…"
                       rows={4}
                     />
@@ -252,7 +252,7 @@ export default function ContactPage() {
           <p className="text-[11px] font-bold text-primary uppercase tracking-widest text-center mb-2">
             Got Questions?
           </p>
-          <h2 className="font-head text-heading text-primary text-center leading-none mb-10">
+          <h2 className="font-head font-bold text-primary text-center leading-tight mb-10" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>
             Frequently Asked Questions
           </h2>
           <FAQ items={CONTACT_FAQS} />

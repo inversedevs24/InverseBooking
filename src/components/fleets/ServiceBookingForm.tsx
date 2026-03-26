@@ -359,8 +359,10 @@ export default function ServiceBookingForm() {
                 <button
                     type="button"
                     onClick={handleSubmit}
-                    className="w-full flex items-center justify-center gap-2 text-white border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-all hover:brightness-105 mt-1 shadow-[0_4px_16px_rgba(15,76,62,0.25)]"
+                    className="w-full flex items-center justify-center gap-2 text-white border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-all mt-1 shadow-[0_4px_16px_rgba(46,64,82,0.28)]"
                     style={{ backgroundColor: '#2E4052' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#3A5268' }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#2E4052' }}
                 >
                     Check Availability <ArrowRight size={16} />
                 </button>

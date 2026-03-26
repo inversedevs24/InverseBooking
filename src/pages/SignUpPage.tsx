@@ -77,8 +77,8 @@ export default function SignUpPage() {
         )}
 
         {/* First Name + Last Name */}
-        <div className="flex gap-2">
-          <div className={`${cardCls} flex-1`}>
+        <div className="grid grid-cols-1 xs:grid-cols-2 gap-2" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+          <div className={`${cardCls} min-w-0`}>
             <label className={labelCls}>First Name</label>
             <div className="flex items-center gap-2">
               <User size={14} className="text-[#aaa] flex-shrink-0" />
@@ -91,9 +91,10 @@ export default function SignUpPage() {
               />
             </div>
           </div>
-          <div className={`${cardCls} flex-1`}>
+          <div className={`${cardCls} min-w-0`}>
             <label className={labelCls}>Last Name</label>
             <div className="flex items-center gap-2">
+              <User size={14} className="text-[#aaa] flex-shrink-0" />
               <input
                 className={inputCls}
                 type="text"

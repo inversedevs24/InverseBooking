@@ -33,7 +33,7 @@ const LEGAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#111C26' }} className="pt-14 pb-6">
+    <footer style={{ backgroundColor: '#010407' }} className="pt-14 pb-6">
       <div className="max-w-container mx-auto px-6">
 
         {/* ── Main grid ── */}
