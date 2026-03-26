@@ -89,7 +89,7 @@ export default function HeroBooking() {
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(110deg, rgba(248,250,252,0.92) 0%, rgba(248,250,252,0.78) 35%, rgba(248,250,252,0.35) 65%, rgba(248,250,252,0.1) 100%)' }}
+          style={{ background: 'linear-gradient(110deg, rgba(189,217,191,0.82) 0%, rgba(189,217,191,0.65) 35%, rgba(189,217,191,0.2) 65%, rgba(189,217,191,0.05) 100%)' }}
         />
         <div className="absolute inset-0 opacity-[0.018] pointer-events-none" style={{ backgroundImage: GRAIN_SVG }} />
       </div>
@@ -122,7 +122,7 @@ export default function HeroBooking() {
               <button
                 type="button"
                 className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-                style={tab === 'transfer' ? { background: '#0F172A' } : undefined}
+                style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
                 onClick={() => setTab('transfer')}
               >
                 Private Transfer
@@ -130,7 +130,7 @@ export default function HeroBooking() {
               <button
                 type="button"
                 className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'hourly' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-                style={tab === 'hourly' ? { background: '#0F172A' } : undefined}
+                style={tab === 'hourly' ? { background: '#2E4052' } : undefined}
                 onClick={() => { setTab('hourly'); setShowReturn(false) }}
               >
                 Hourly Hire
@@ -208,7 +208,7 @@ export default function HeroBooking() {
             <button
               type="button"
               className="w-full text-white border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-all hover:brightness-105"
-              style={{ background: '#0F172A' }}
+              style={{ background: '#2E4052' }}
               onClick={handleCheckFare}
             >
               Check Fare
@@ -274,13 +274,13 @@ export default function HeroBooking() {
       </div>
 
       {/* Stats pill — mobile only */}
-      <div className="md:hidden absolute bottom-4 right-4 left-4 z-[3] flex justify-center bg-white/80 backdrop-blur-[12px] border border-[#E2E8F0] rounded-[14px] overflow-hidden">
+      <div className="md:hidden absolute bottom-4 right-4 left-4 z-[3] flex justify-center bg-white/80 backdrop-blur-[12px] border border-[#D4DDE5] rounded-[14px] overflow-hidden">
         {[
           { num: '4.9★', lbl: 'Rating' },
           { num: '12k+', lbl: 'Rides' },
           { num: '24/7', lbl: 'Support' },
         ].map((s, i) => (
-          <div key={i} className={`flex-1 px-4 py-[14px] text-center ${i < 2 ? 'border-r border-[#E2E8F0]' : ''}`}>
+          <div key={i} className={`flex-1 px-4 py-[14px] text-center ${i < 2 ? 'border-r border-[#D4DDE5]' : ''}`}>
             <div className="font-head text-xl font-bold text-primary leading-none">{s.num}</div>
             <div className="text-[10px] text-muted mt-1 uppercase tracking-[0.8px]">{s.lbl}</div>
           </div>

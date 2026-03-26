@@ -54,7 +54,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
         </span>
         {fleet.popular && (
           <span className="absolute top-2 left-2 text-[9px] font-extrabold px-2 py-0.5 rounded-full text-white uppercase tracking-wide"
-            style={{ backgroundColor: '#f59e0b' }}>
+            style={{ backgroundColor: '#FFC857', color: '#2E4052' }}>
             Popular
           </span>
         )}
@@ -67,7 +67,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
         {/* Service type badge */}
         {fleet.serviceType && (
           <span className="inline-block self-start text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2"
-            style={{ color: '#0f766e', backgroundColor: '#e8eeec' }}>
+            style={{ color: '#2E4052', backgroundColor: '#BDD9BF' }}>
             {fleet.serviceType}
           </span>
         )}
@@ -82,7 +82,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
           </span>
           {fleet.rating > 0 && (
             <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500">
-              <Star size={9} style={{ color: '#f59e0b' }} fill="#f59e0b" />
+              <Star size={9} style={{ color: '#FFC857' }} fill="#FFC857" />
               {fleet.rating.toFixed(1)}
             </span>
           )}
@@ -94,7 +94,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
             <span
               key={f}
               className="text-[10px] font-semibold px-2 py-0.5 rounded-full border"
-              style={{ color: '#0f766e', backgroundColor: '#e8eeec', borderColor: '#c8dbd8' }}
+              style={{ color: '#2E4052', backgroundColor: '#BDD9BF', borderColor: '#A8C9AA' }}
             >
               {f}
             </span>
@@ -116,9 +116,9 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
           <button
             onClick={() => navigate(getBookRoute(fleet))}
             className="flex items-center gap-1.5 text-[12px] font-bold px-4 py-2 rounded-xl transition-all"
-            style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#0f4c3e'; e.currentTarget.style.color = '#fff' }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#e8eeec'; e.currentTarget.style.color = '#0f4c3e' }}
+            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2E4052'; e.currentTarget.style.color = '#fff' }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#BDD9BF'; e.currentTarget.style.color = '#2E4052' }}
           >
             Book →
           </button>
@@ -147,12 +147,12 @@ export default function AllFleets() {
     : products.filter(p => getCategory(p.name) === activeFilter)
 
   return (
-    <section className="py-12 md:py-[30px]" style={{ backgroundColor: '#f0f5f4' }}>
+    <section className="py-12 md:py-[30px]" style={{ backgroundColor: '#F0F5F0' }}>
       <div className="max-w-container mx-auto px-6">
 
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">
+          <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
             Ride in Comfort
           </p>
           <h2 className="font-head text-heading text-primary leading-none mb-3">
@@ -175,7 +175,7 @@ export default function AllFleets() {
                     ? 'text-white border-transparent shadow-sm'
                     : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
                 }`}
-                style={activeFilter === cat ? { backgroundColor: '#0f4c3e' } : {}}
+                style={activeFilter === cat ? { backgroundColor: '#2E4052' } : {}}
               >
                 {cat}
               </button>
@@ -186,7 +186,7 @@ export default function AllFleets() {
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <Loader2 size={28} className="animate-spin" style={{ color: '#0f766e' }} />
+            <Loader2 size={28} className="animate-spin" style={{ color: '#2E4052' }} />
             <p className="text-[13px] text-slate-500">Loading fleet…</p>
           </div>
         )}
@@ -200,7 +200,7 @@ export default function AllFleets() {
             <button
               onClick={() => dispatch(fetchTaxiProducts())}
               className="text-[12px] font-semibold px-4 py-2 rounded-xl text-white"
-              style={{ backgroundColor: '#0f4c3e' }}
+              style={{ backgroundColor: '#2E4052' }}
             >
               Retry
             </button>

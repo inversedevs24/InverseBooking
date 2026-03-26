@@ -66,9 +66,9 @@ function FleetCard({ car }: { car: TaxiOption }) {
           <button
             onClick={() => navigate(bookRoute)}
             className="w-full flex items-center justify-center gap-1.5 text-[12px] font-bold py-2 rounded-xl transition-all"
-            style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#0f4c3e'; e.currentTarget.style.color = '#ffffff' }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#e8eeec'; e.currentTarget.style.color = '#0f4c3e' }}
+            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#2E4052'; e.currentTarget.style.color = '#ffffff' }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#BDD9BF'; e.currentTarget.style.color = '#2E4052' }}
           >
             Book Now <ArrowRight size={12} />
           </button>
@@ -93,7 +93,7 @@ export default function FleetSection() {
   const display = products.slice(0, 6)
 
   return (
-    <div className="py-10 md:py-[60px] overflow-hidden" style={{ backgroundColor: '#d5e0de' }}>
+    <div className="py-10 md:py-[60px] overflow-hidden" style={{ backgroundColor: '#BDD9BF' }}>
       <div className="max-w-container mx-auto px-6">
 
         {/* Header row */}
@@ -107,10 +107,10 @@ export default function FleetSection() {
           <button
             onClick={() => navigate('/fleet')}
             className="group relative overflow-hidden flex items-center gap-2 border-none text-white text-[13px] font-semibold px-5 py-2.5 rounded-full transition-colors duration-300 self-start sm:self-auto flex-shrink-0"
-            style={{ background: '#0F172A' }}
+            style={{ background: '#2E4052' }}
           >
             <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-in-out rounded-full"
-              style={{ backgroundColor: '#0f4c3e' }} />
+              style={{ backgroundColor: '#3A5268' }} />
             <span className="relative z-10 flex items-center gap-2">
               View All Fleet
               <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
@@ -121,7 +121,7 @@ export default function FleetSection() {
         {/* Loading skeleton */}
         {loading && products.length === 0 && (
           <div className="flex items-center justify-center py-16">
-            <Loader2 size={24} className="animate-spin" style={{ color: '#0f4c3e' }} />
+            <Loader2 size={24} className="animate-spin" style={{ color: '#2E4052' }} />
           </div>
         )}
 
@@ -134,7 +134,7 @@ export default function FleetSection() {
                 background: rgba(15,23,42,0.25); opacity: 1; transition: all 0.3s;
               }
               .fleet-swiper .swiper-pagination-bullet-active {
-                background: #0f172a; width: 18px; border-radius: 9999px;
+                background: #2E4052; width: 18px; border-radius: 9999px;
               }
             `}</style>
             <Swiper

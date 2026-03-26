@@ -11,7 +11,7 @@ import { Booking, BookingStatus } from '../../types/bookings.types';
 const STATUS_CONFIG: Record<BookingStatus, {
     label: string; color: string; bg: string; border: string; Icon: typeof CheckCircle2
 }> = {
-    'in-progress': { label: 'In Progress', color: '#0f766e', bg: '#ccfbf1', border: '#99f6e4', Icon: Loader2 },
+    'in-progress': { label: 'In Progress', color: '#2E4052', bg: '#BDD9BF', border: '#A8C9AA', Icon: Loader2 },
     confirmed: { label: 'Confirmed', color: '#1d4ed8', bg: '#dbeafe', border: '#bfdbfe', Icon: CalendarDays },
     completed: { label: 'Completed', color: '#15803d', bg: '#dcfce7', border: '#bbf7d0', Icon: CheckCircle2 },
     cancelled: { label: 'Cancelled', color: '#b91c1c', bg: '#fee2e2', border: '#fecaca', Icon: XCircle },
@@ -23,8 +23,8 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
         <div className="flex gap-0.5">
             {[1, 2, 3, 4, 5].map(i => (
                 <Star key={i} size={size}
-                    fill={i <= rating ? '#f59e0b' : 'none'}
-                    stroke={i <= rating ? '#f59e0b' : '#d1d5db'}
+                    fill={i <= rating ? '#FFC857' : 'none'}
+                    stroke={i <= rating ? '#FFC857' : '#d1d5db'}
                 />
             ))}
         </div>
@@ -81,7 +81,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
             {/*  Header  */}
             <div
                 className="relative flex-shrink-0 px-5 pt-5 pb-0"
-                style={{ background: 'linear-gradient(135deg, #0f4c3e 0%, #1a6b5a 60%, #2d9c84 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}
             >
                 {/* Decorative circles */}
                 <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full opacity-10 bg-white pointer-events-none" />
@@ -92,12 +92,12 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                     <button
                         onClick={onClose}
                         className="flex items-center gap-1.5 text-[12px] font-semibold transition-opacity hover:opacity-70"
-                        style={{ color: '#a7c8c2' }}
+                        style={{ color: '#BDD9BF' }}
                     >
                         <ChevronLeft size={15} />
                         {fullPage ? 'Back to bookings' : 'Close'}
                     </button>
-                    <span className="text-[11px] font-mono font-bold" style={{ color: '#a7c8c2' }}>{booking.reference}</span>
+                    <span className="text-[11px] font-mono font-bold" style={{ color: '#BDD9BF' }}>{booking.reference}</span>
                 </div>
 
                 {/* Status + route summary */}
@@ -120,12 +120,12 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                         {/* Locations */}
                         <div className="flex flex-col gap-4 flex-1 min-w-0">
                             <div>
-                                <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#a7c8c2' }}>Pickup</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Pickup</div>
                                 <div className="text-[14px] font-bold text-white font-head leading-tight">{booking.from}</div>
-                                <div className="text-[11px] mt-0.5" style={{ color: '#a7c8c2' }}>{booking.date} · {booking.time}</div>
+                                <div className="text-[11px] mt-0.5" style={{ color: '#BDD9BF' }}>{booking.date} · {booking.time}</div>
                             </div>
                             <div>
-                                <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#a7c8c2' }}>Drop-off</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Drop-off</div>
                                 <div className="text-[14px] font-bold text-white font-head leading-tight">{booking.to}</div>
                             </div>
                         </div>
@@ -164,7 +164,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
             </div>
 
             {/*  Scrollable body  */}
-            <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#f0f5f4' }}>
+            <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#F0F5F0' }}>
                 <div className="p-4 space-y-3">
 
                     {/*  OVERVIEW tab  */}
@@ -209,7 +209,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                                     <div className="flex items-center gap-4">
                                         <div
                                             className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-[14px] font-head flex-shrink-0"
-                                            style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}
+                                            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                                         >
                                             {booking.driverAvatar}
                                         </div>
@@ -221,7 +221,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                                             <a
                                                 href={`tel:${booking.driverPhone}`}
                                                 className="w-9 h-9 rounded-xl flex items-center justify-center transition-opacity hover:opacity-70 flex-shrink-0"
-                                                style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}
+                                                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                                             >
                                                 <Phone size={15} />
                                             </a>
@@ -267,14 +267,14 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                                             <div className="flex flex-col items-center flex-shrink-0">
                                                 <div
                                                     className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 border-2 transition-colors ${event.done
-                                                        ? 'border-teal-600 bg-teal-600'
+                                                        ? 'border-[#2E4052] bg-[#2E4052]'
                                                         : 'border-slate-300 bg-white'
                                                         }`}
                                                 />
                                                 {!isLast && (
                                                     <div
                                                         className="w-px flex-1 my-1"
-                                                        style={{ backgroundColor: event.done ? '#0f766e' : '#e2e8f0', minHeight: '28px' }}
+                                                        style={{ backgroundColor: event.done ? '#2E4052' : '#e2e8f0', minHeight: '28px' }}
                                                     />
                                                 )}
                                             </div>
@@ -283,13 +283,13 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                                                 <div className="flex items-center justify-between gap-2">
                                                     <span className={`text-[13px] font-semibold font-head leading-tight ${event.done ? 'text-slate-700' : 'text-slate-400'
                                                         }`}>{event.label}</span>
-                                                    <span className={`text-[11px] font-mono font-bold flex-shrink-0 ${event.done ? 'text-teal-600' : 'text-slate-400'
+                                                    <span className={`text-[11px] font-mono font-bold flex-shrink-0 ${event.done ? 'text-[#2E4052]' : 'text-slate-400'
                                                         }`}>{event.time}</span>
                                                 </div>
                                                 {event.done && (
                                                     <div className="flex items-center gap-1 mt-0.5">
-                                                        <CheckCircle2 size={10} className="text-teal-500" />
-                                                        <span className="text-[10px] text-teal-600 font-body">Completed</span>
+                                                        <CheckCircle2 size={10} className="text-[#2E4052]" />
+                                                        <span className="text-[10px] text-[#2E4052] font-body">Completed</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -314,7 +314,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                                     {/* Total */}
                                     <div className="flex items-center justify-between pt-3 mt-1 border-t border-slate-200">
                                         <span className="text-[14px] font-bold text-slate-800 font-head">Total</span>
-                                        <span className="text-[18px] font-bold font-head" style={{ color: '#0f4c3e' }}>{booking.price}</span>
+                                        <span className="text-[18px] font-bold font-head" style={{ color: '#2E4052' }}>{booking.price}</span>
                                     </div>
                                 </div>
                             </Section>
@@ -327,7 +327,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                             {booking.status === 'completed' && (
                                 <button
                                     className="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold transition-opacity hover:opacity-80"
-                                    style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}
+                                    style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                                 >
                                     <Download size={14} /> Download Receipt
                                 </button>
@@ -340,7 +340,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                         {(booking.status === 'confirmed' || booking.status === 'in-progress') && (
                             <>
                                 <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white transition-opacity hover:opacity-80"
-                                    style={{ backgroundColor: '#0f4c3e' }}>
+                                    style={{ backgroundColor: '#2E4052' }}>
                                     <MessageCircle size={13} /> Contact Support
                                 </button>
                                 {booking.status === 'confirmed' && (
@@ -352,13 +352,13 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
                         )}
                         {booking.status === 'completed' && (
                             <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white transition-opacity hover:opacity-80"
-                                style={{ backgroundColor: '#0f4c3e' }}>
+                                style={{ backgroundColor: '#2E4052' }}>
                                 <RotateCcw size={13} /> Book Again
                             </button>
                         )}
                         {booking.status === 'cancelled' && (
                             <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white transition-opacity hover:opacity-80"
-                                style={{ backgroundColor: '#0f4c3e' }}>
+                                style={{ backgroundColor: '#2E4052' }}>
                                 <RotateCcw size={13} /> Rebook This Journey
                             </button>
                         )}
@@ -371,7 +371,7 @@ export default function BookingDetailsPanel({ booking, onClose, fullPage = false
 
     if (fullPage) {
         return (
-            <div className="min-h-screen" style={{ backgroundColor: '#f0f5f4' }}>
+            <div className="min-h-screen" style={{ backgroundColor: '#F0F5F0' }}>
                 <div className="max-w-2xl mx-auto h-screen">{content}</div>
             </div>
         )

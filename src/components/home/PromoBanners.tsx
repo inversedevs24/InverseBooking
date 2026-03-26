@@ -28,17 +28,17 @@ const BANNERS: Banner[] = [
     to: '/book?service=transfer',
     eyebrow: 'Private Transfer',
     headline: (
-      <span className="font-head text-[24px] sm:text-[28px] font-bold leading-tight" style={{ color: '#0F172A' }}>
+      <span className="font-head text-[24px] sm:text-[28px] font-bold leading-tight" style={{ color: '#2E4052' }}>
         Luxury Door-to-Door<br />Service
       </span>
     ),
     sub: 'Premium private transfers with professional chauffeurs.',
     cta: 'Book Private Transfer',
     dark: false,
-    ctaBg: '#0f4c3e',
+    ctaBg: '#2E4052',
     ctaText: '#ffffff',
-    ringColor: '#0f766e',
-    eyebrowColor: '#0f766e',
+    ringColor: '#FFC857',
+    eyebrowColor: '#2E4052',
   },
   {
     id: 2,
@@ -53,10 +53,10 @@ const BANNERS: Banner[] = [
     sub: 'Comfortable transfers between cities with premium vehicles.',
     cta: 'Book Intercity',
     dark: true,
-    ctaBg: '#2d9c84',
+    ctaBg: '#2E4052',
     ctaText: '#ffffff',
-    ringColor: '#2d9c84',
-    eyebrowColor: '#6ee7d8',
+    ringColor: '#FFC857',
+    eyebrowColor: '#BDD9BF',
   },
   {
     id: 3,
@@ -71,10 +71,10 @@ const BANNERS: Banner[] = [
     sub: 'Stress-free airport pickups & drop-offs with flight tracking.',
     cta: 'Book Airport Ride',
     dark: true,
-    ctaBg: '#1e3a5f',
+    ctaBg: '#2E4052',
     ctaText: '#ffffff',
-    ringColor: '#334e80',
-    eyebrowColor: '#93b4d8',
+    ringColor: '#FFC857',
+    eyebrowColor: '#BDD9BF',
   },
   {
     id: 4,
@@ -82,17 +82,17 @@ const BANNERS: Banner[] = [
     to: '/book?service=city-tour',
     eyebrow: 'City Tour',
     headline: (
-      <span className="font-head text-[24px] sm:text-[28px] font-bold leading-tight" style={{ color: '#0F172A' }}>
+      <span className="font-head text-[24px] sm:text-[28px] font-bold leading-tight" style={{ color: '#2E4052' }}>
         Explore the City<br />In Style
       </span>
     ),
     sub: 'Personalized city tours with expert chauffeur guides.',
     cta: 'Book City Tour',
     dark: false,
-    ctaBg: '#0f4c3e',
+    ctaBg: '#2E4052',
     ctaText: '#ffffff',
-    ringColor: '#1a6b5a',
-    eyebrowColor: '#1a6b5a',
+    ringColor: '#FFC857',
+    eyebrowColor: '#2E4052',
   },
   {
     id: 5,
@@ -107,10 +107,10 @@ const BANNERS: Banner[] = [
     sub: 'Flexible hourly rentals, pay only for what you use.',
     cta: 'Book Hourly',
     dark: true,
-    ctaBg: '#0f766e',
+    ctaBg: '#2E4052',
     ctaText: '#ffffff',
-    ringColor: '#0f766e',
-    eyebrowColor: '#5ecfc6',
+    ringColor: '#FFC857',
+    eyebrowColor: '#BDD9BF',
   },
   {
     id: 6,
@@ -118,17 +118,17 @@ const BANNERS: Banner[] = [
     to: '/book?service=desert-safari',
     eyebrow: 'Desert Safari',
     headline: (
-      <span className="font-head text-[24px] sm:text-[28px] font-bold leading-tight" style={{ color: '#0F172A' }}>
+      <span className="font-head text-[24px] sm:text-[28px] font-bold leading-tight" style={{ color: '#2E4052' }}>
         Desert Adventure<br />Awaits
       </span>
     ),
     sub: 'Experience thrilling dunes & desert adventures in luxury.',
     cta: 'Book Safari',
     dark: false,
-    ctaBg: '#475569',
+    ctaBg: '#2E4052',
     ctaText: '#ffffff',
-    ringColor: '#64748b',
-    eyebrowColor: '#475569',
+    ringColor: '#FFC857',
+    eyebrowColor: '#2E4052',
   },
 ]
 
@@ -171,7 +171,7 @@ export default function PromoBanners() {
           .promo-swiper .swiper-pagination-bullet {
             width: 8px; height: 8px;
             border-radius: 9999px;
-            background: rgba(15,23,42,0.3);
+            background: rgba(46,64,82,0.3);
             opacity: 1;
             transition: all 0.3s;
             cursor: pointer;
@@ -179,10 +179,10 @@ export default function PromoBanners() {
           }
           .promo-swiper .swiper-pagination-bullet-active {
             width: 24px;
-            background: #0F172A;
+            background: #2E4052;
           }
           .promo-swiper .swiper-pagination-bullet:hover {
-            background: rgba(15,23,42,0.6);
+            background: rgba(46,64,82,0.6);
           }
         `}</style>
 
@@ -200,7 +200,7 @@ export default function PromoBanners() {
             <SwiperSlide key={b.id}>
               <div
                 className="relative w-full h-full rounded-2xl overflow-hidden cursor-pointer group shadow-lg transition-shadow hover:shadow-xl"
-                style={{ backgroundColor: b.dark ? '#0F172A' : '#E8F0EF' }}
+                style={{ backgroundColor: b.dark ? '#2E4052' : '#EAF0EA' }}
                 onClick={() => navigate(b.to)}
                 role="button"
                 tabIndex={0}
@@ -220,8 +220,8 @@ export default function PromoBanners() {
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background: b.dark
-                      ? 'linear-gradient(90deg, #0F172A 0%, #0F172A 40%, rgba(15,23,42,0.7) 60%, rgba(15,23,42,0.2) 100%)'
-                      : 'linear-gradient(90deg, #E8F0EF 0%, #E8F0EF 40%, rgba(232,240,239,0.8) 60%, rgba(232,240,239,0.1) 100%)',
+                      ? 'linear-gradient(90deg, #2E4052 0%, #2E4052 40%, rgba(46,64,82,0.7) 60%, rgba(46,64,82,0.2) 100%)'
+                      : 'linear-gradient(90deg, #EAF0EA 0%, #EAF0EA 40%, rgba(234,240,234,0.8) 60%, rgba(234,240,234,0.1) 100%)',
                   }}
                 />
 
@@ -240,7 +240,7 @@ export default function PromoBanners() {
                   {/* Eyebrow */}
                   <p
                     className="text-[11px] font-bold uppercase tracking-wider truncate"
-                    style={{ color: b.eyebrowColor ?? (b.dark ? '#a7c8c2' : '#0f766e') }}
+                    style={{ color: b.eyebrowColor ?? (b.dark ? '#BDD9BF' : '#2E4052') }}
                   >
                     {b.eyebrow}
                   </p>
@@ -251,7 +251,7 @@ export default function PromoBanners() {
                   {/* Sub */}
                   <p
                     className="text-[12px] font-body leading-relaxed line-clamp-2"
-                    style={{ color: b.dark ? 'rgba(255,255,255,0.7)' : 'rgba(15,23,42,0.65)' }}
+                    style={{ color: b.dark ? 'rgba(255,255,255,0.7)' : 'rgba(46,64,82,0.65)' }}
                   >
                     {b.sub}
                   </p>

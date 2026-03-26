@@ -24,14 +24,14 @@ function StepBar({ current }: { current: number }) {
             <div key={i} className="flex items-center gap-2 sm:gap-3">
               {i > 0 && (
                 <div className="h-px flex-shrink-0"
-                  style={{ width: done ? 40 : 28, backgroundColor: done ? '#0f766e' : '#e2e8f0' }} />
+                  style={{ width: done ? 40 : 28, backgroundColor: done ? '#FFC857' : '#D4DDE5' }} />
               )}
               <div className={`flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold ${active ? 'text-slate-800' : done ? 'text-slate-400' : 'text-slate-300'
                 }`}>
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                  style={active ? { backgroundColor: '#0f4c3e', color: 'white' }
-                    : done ? { backgroundColor: '#0f766e', color: 'white' }
+                  style={active ? { backgroundColor: '#2E4052', color: 'white' }
+                    : done ? { backgroundColor: '#2E4052', color: 'white' }
                       : { backgroundColor: '#f1f5f9', color: '#94a3b8' }}
                 >
                   {done ? <CheckCircle2 size={13} /> : i + 1}
@@ -52,8 +52,8 @@ function SectionCard({ title, icon: Icon, children }: {
 }) {
   return (
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
-      <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-100" style={{ backgroundColor: '#f8fafa' }}>
-        <Icon size={14} style={{ color: '#0f766e' }} />
+      <div className="flex items-center gap-2 px-5 py-3.5 border-b border-slate-100" style={{ backgroundColor: '#FAFAFA' }}>
+        <Icon size={14} style={{ color: '#2E4052' }} />
         <span className="text-[12px] font-bold text-slate-700 uppercase tracking-widest">{title}</span>
       </div>
       <div className="px-5 py-4">{children}</div>
@@ -76,9 +76,9 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 function InfoChip({ icon: Icon, label, value }: { icon: typeof User; label: string; value?: string }) {
   if (!value) return null
   return (
-    <div className="rounded-xl px-3 py-2.5" style={{ backgroundColor: '#f0f5f4' }}>
+    <div className="rounded-xl px-3 py-2.5" style={{ backgroundColor: '#F0F5F0' }}>
       <div className="flex items-center gap-1.5 mb-0.5">
-        <Icon size={11} style={{ color: '#0f766e' }} />
+        <Icon size={11} style={{ color: '#2E4052' }} />
         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
       </div>
       <div className="text-[12px] font-semibold text-slate-700 truncate">{value}</div>
@@ -91,12 +91,12 @@ function ConfirmedScreen({ firstName, email }: { firstName: string; email: strin
   const navigate = useNavigate()
   const ref = `INV-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 font-body" style={{ backgroundColor: '#f0f5f4' }}>
+    <div className="min-h-screen flex items-center justify-center px-4 font-body" style={{ backgroundColor: '#F0F5F0' }}>
       <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(15,23,42,0.12)] px-8 py-10 text-center max-w-[420px] w-full">
         {/* Check circle */}
         <div
-          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-[0_4px_20px_rgba(15,118,110,0.25)]"
-          style={{ backgroundColor: '#0f4c3e' }}
+          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-[0_4px_20px_rgba(46,64,82,0.25)]"
+          style={{ backgroundColor: '#2E4052' }}
         >
           <CheckCircle2 size={30} className="text-white" />
         </div>
@@ -111,16 +111,16 @@ function ConfirmedScreen({ firstName, email }: { firstName: string; email: strin
         {/* Reference chip */}
         <div
           className="inline-flex items-center gap-2 rounded-xl px-5 py-3 mb-7 border border-dashed"
-          style={{ backgroundColor: '#e8eeec', borderColor: '#a7c8c2' }}
+          style={{ backgroundColor: '#BDD9BF', borderColor: '#A8C9AA' }}
         >
           <span className="text-[11px] text-slate-500">Booking Ref</span>
-          <span className="text-[14px] font-bold font-mono tracking-widest" style={{ color: '#0f4c3e' }}>{ref}</span>
+          <span className="text-[14px] font-bold font-mono tracking-widest" style={{ color: '#2E4052' }}>{ref}</span>
         </div>
 
         <button
           onClick={() => navigate('/')}
           className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90"
-          style={{ backgroundColor: '#0f4c3e' }}
+          style={{ backgroundColor: '#2E4052' }}
         >
           Back to Home <ArrowRight size={15} />
         </button>
@@ -198,7 +198,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen font-body" style={{ backgroundColor: '#f0f5f4' }}>
+    <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
 
       {/*  Top bar  */}
       <div className="bg-white border-b border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sticky top-0 z-10">
@@ -223,8 +223,8 @@ export default function Checkout() {
           <button
             className="lg:hidden flex items-center gap-1.5 text-[12px] font-semibold rounded-xl px-2.5 sm:px-3 py-1.5 transition-colors flex-shrink-0"
             style={showSummary
-              ? { backgroundColor: '#0f4c3e', color: 'white' }
-              : { backgroundColor: '#e8eeec', color: '#0f4c3e' }
+              ? { backgroundColor: '#2E4052', color: 'white' }
+              : { backgroundColor: '#BDD9BF', color: '#2E4052' }
             }
             onClick={() => setShowSummary(s => !s)}
           >
@@ -260,14 +260,14 @@ export default function Checkout() {
               <InfoRow label="To" value={booking.to} />
               <InfoRow label="Date & Time" value={formatDatetime(booking.datetime)} />
               <div className="flex gap-3 pt-1 mt-1">
-                <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#f0f5f4' }}>
-                  <Ruler size={12} style={{ color: '#0f766e' }} />
+                <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#F0F5F0' }}>
+                  <Ruler size={12} style={{ color: '#2E4052' }} />
                   <span className="text-[12px] font-semibold text-slate-700">
                     {booking.distance ? `${booking.distance} km` : '—'}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#f0f5f4' }}>
-                  <Clock size={12} style={{ color: '#0f766e' }} />
+                <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#F0F5F0' }}>
+                  <Clock size={12} style={{ color: '#2E4052' }} />
                   <span className="text-[12px] font-semibold text-slate-700">
                     {booking.duration ? `${booking.duration} min` : '—'}
                   </span>
@@ -308,9 +308,9 @@ export default function Checkout() {
                 {p.flightNumber && <InfoChip icon={Plane} label="Flight No." value={p.flightNumber} />}
               </div>
               {p.specialRequests && (
-                <div className="mt-3 rounded-xl px-3 py-2.5" style={{ backgroundColor: '#f0f5f4' }}>
+                <div className="mt-3 rounded-xl px-3 py-2.5" style={{ backgroundColor: '#F0F5F0' }}>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <MessageSquare size={11} style={{ color: '#0f766e' }} />
+                    <MessageSquare size={11} style={{ color: '#2E4052' }} />
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Special Requests</span>
                   </div>
                   <p className="text-[12px] text-slate-600 leading-relaxed">{p.specialRequests}</p>
@@ -356,15 +356,15 @@ function PaymentPanel({
         {/* Header */}
         <div
           className="px-5 py-4"
-          style={{ background: 'linear-gradient(135deg, #0f4c3e 0%, #1a6b5a 60%, #2d9c84 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}
         >
-          <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#a7c8c2' }}>
+          <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#BDD9BF' }}>
             Payment Summary
           </div>
           <div className="text-[28px] font-bold text-white font-head leading-none">
             ${total}
           </div>
-          <div className="text-[11px] mt-1" style={{ color: '#a7c8c2' }}>Total inc. VAT</div>
+          <div className="text-[11px] mt-1" style={{ color: '#BDD9BF' }}>Total inc. VAT</div>
         </div>
 
         {/* Breakdown rows */}
@@ -384,7 +384,7 @@ function PaymentPanel({
 
           <div className="flex items-center justify-between pt-3 mt-1 border-t border-slate-200">
             <span className="text-[13px] font-bold text-slate-800">Total</span>
-            <span className="text-[20px] font-bold font-head" style={{ color: '#0f4c3e' }}>${total}</span>
+            <span className="text-[20px] font-bold font-head" style={{ color: '#2E4052' }}>${total}</span>
           </div>
         </div>
 
@@ -411,8 +411,8 @@ function PaymentPanel({
       <button
         onClick={onPay}
         disabled={redirecting}
-        className="w-full flex items-center justify-center gap-2 rounded-xl py-4 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed shadow-[0_4px_16px_rgba(15,76,62,0.3)]"
-        style={{ backgroundColor: '#0f4c3e' }}
+        className="w-full flex items-center justify-center gap-2 rounded-xl py-4 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed shadow-[0_4px_16px_rgba(46,64,82,0.3)]"
+        style={{ backgroundColor: '#2E4052' }}
       >
         {redirecting ? (
           <>
@@ -430,10 +430,10 @@ function PaymentPanel({
       {/* Shopify note */}
       <div
         className="flex items-start gap-2.5 rounded-2xl px-4 py-3"
-        style={{ backgroundColor: '#e8eeec' }}
+        style={{ backgroundColor: '#BDD9BF' }}
       >
-        <ShieldCheck size={14} style={{ color: '#0f766e' }} className="flex-shrink-0 mt-0.5" />
-        <p className="text-[11px] leading-relaxed" style={{ color: '#0f4c3e' }}>
+        <ShieldCheck size={14} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
+        <p className="text-[11px] leading-relaxed" style={{ color: '#2E4052' }}>
           You'll be securely redirected to our Shopify checkout to complete your payment. 256-bit SSL encrypted.
         </p>
       </div>

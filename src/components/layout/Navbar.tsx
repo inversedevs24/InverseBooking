@@ -51,7 +51,7 @@ export default function Navbar() {
         {/* Avatar */}
         <div
           className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-          style={{ backgroundColor: '#d5e0de', color: '#0f4c3e' }}
+          style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
         >
           {MOCK_USER.avatar}
         </div>
@@ -69,7 +69,7 @@ export default function Navbar() {
       {dropOpen && (
         <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-2xl shadow-[0_8px_30px_rgba(15,23,42,0.12)] border border-slate-100 overflow-hidden z-50">
           {/* User info header */}
-          <div className="px-4 py-3 border-b border-slate-100" style={{ backgroundColor: '#f0f5f4' }}>
+          <div className="px-4 py-3 border-b border-slate-100" style={{ backgroundColor: '#F0F5F0' }}>
             <div className="text-[13px] font-bold text-slate-800 truncate">{MOCK_USER.name}</div>
             <div className="text-[11px] text-slate-400 truncate mt-0.5">{MOCK_USER.email}</div>
           </div>
@@ -151,11 +151,11 @@ export default function Navbar() {
           {MOCK_USER.isLoggedIn && (
             <div
               className="flex items-center gap-3 px-5 py-4 border-b border-border"
-              style={{ backgroundColor: '#f0f5f4' }}
+              style={{ backgroundColor: '#F0F5F0' }}
             >
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-[12px] font-bold flex-shrink-0"
-                style={{ backgroundColor: '#d5e0de', color: '#0f4c3e' }}
+                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
               >
                 {MOCK_USER.avatar}
               </div>

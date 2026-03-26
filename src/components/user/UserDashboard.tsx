@@ -33,7 +33,7 @@ export interface Booking {
 
 //  Status config 
 const STATUS_CONFIG: Record<BookingStatus, { label: string; color: string; bg: string; Icon: typeof CheckCircle2 }> = {
-    'in-progress': { label: 'In Progress', color: '#0f766e', bg: '#ccfbf1', Icon: Loader2 },
+    'in-progress': { label: 'In Progress', color: '#2E4052', bg: '#BDD9BF', Icon: Loader2 },
     confirmed: { label: 'Confirmed', color: '#1d4ed8', bg: '#dbeafe', Icon: CalendarDays },
     completed: { label: 'Completed', color: '#15803d', bg: '#dcfce7', Icon: CheckCircle2 },
     cancelled: { label: 'Cancelled', color: '#b91c1c', bg: '#fee2e2', Icon: XCircle },
@@ -142,8 +142,8 @@ function StarRatingLg({ rating }: { rating: number }) {
         <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map(i => (
                 <Star key={i} size={15}
-                    fill={i <= rating ? '#f59e0b' : 'none'}
-                    stroke={i <= rating ? '#f59e0b' : '#d1d5db'}
+                    fill={i <= rating ? '#FFC857' : 'none'}
+                    stroke={i <= rating ? '#FFC857' : '#d1d5db'}
                 />
             ))}
         </div>
@@ -197,7 +197,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                 {/* Header */}
                 <div
                     className="relative flex-shrink-0 px-5 pt-5 pb-0"
-                    style={{ background: 'linear-gradient(135deg, #0f4c3e 0%, #1a6b5a 60%, #2d9c84 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}
                 >
                     <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full opacity-10 bg-white pointer-events-none" />
 
@@ -205,11 +205,11 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                     <div className="relative flex items-center justify-between mb-4">
                         <button onClick={onClose}
                             className="hidden sm:flex items-center gap-1 text-[12px] font-semibold hover:opacity-70 transition-opacity"
-                            style={{ color: '#a7c8c2' }}>
+                            style={{ color: '#BDD9BF' }}>
                             <ChevronLeft size={14} /> Back
                         </button>
                         {/* On mobile the reference is left-aligned since Back is hidden */}
-                        <span className="text-[10px] font-mono font-bold sm:mx-auto" style={{ color: '#a7c8c2' }}>{booking.reference}</span>
+                        <span className="text-[10px] font-mono font-bold sm:mx-auto" style={{ color: '#BDD9BF' }}>{booking.reference}</span>
                         {/* Close × — always rendered, critical for mobile */}
                         <button
                             onClick={onClose}
@@ -235,12 +235,12 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                             </div>
                             <div className="flex flex-col gap-3 flex-1 min-w-0">
                                 <div>
-                                    <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#a7c8c2' }}>Pickup</div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Pickup</div>
                                     <div className="text-[14px] font-bold text-white font-head leading-tight">{booking.from}</div>
-                                    <div className="text-[11px] mt-0.5" style={{ color: '#a7c8c2' }}>{booking.date} · {booking.time}</div>
+                                    <div className="text-[11px] mt-0.5" style={{ color: '#BDD9BF' }}>{booking.date} · {booking.time}</div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#a7c8c2' }}>Drop-off</div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Drop-off</div>
                                     <div className="text-[14px] font-bold text-white font-head leading-tight">{booking.to}</div>
                                 </div>
                             </div>
@@ -270,7 +270,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                 </div>
 
                 {/* Scrollable body */}
-                <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#f0f5f4' }}>
+                <div className="flex-1 overflow-y-auto" style={{ backgroundColor: '#F0F5F0' }}>
                     <div className="p-4 space-y-3">
 
                         {/* OVERVIEW */}
@@ -304,7 +304,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                                     <Section title="Your Driver">
                                         <div className="flex items-center gap-3">
                                             <div className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-[13px] font-head flex-shrink-0"
-                                                style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                                 {booking.driverAvatar}
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -314,7 +314,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                                             {booking.driverPhone && (
                                                 <a href={`tel:${booking.driverPhone}`}
                                                     className="w-9 h-9 rounded-xl flex items-center justify-center hover:opacity-70 transition-opacity flex-shrink-0"
-                                                    style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                                    style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                                     <Phone size={15} />
                                                 </a>
                                             )}
@@ -357,7 +357,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                                     ))}
                                     <div className="flex items-center justify-between pt-3 mt-1 border-t border-slate-200">
                                         <span className="text-[14px] font-bold text-slate-800 font-head">Total</span>
-                                        <span className="text-[18px] font-bold font-head" style={{ color: '#0f4c3e' }}>{booking.price}</span>
+                                        <span className="text-[18px] font-bold font-head" style={{ color: '#2E4052' }}>{booking.price}</span>
                                     </div>
                                 </Section>
 
@@ -368,7 +368,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
 
                                 {booking.status === 'completed' && (
                                     <button className="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold hover:opacity-80 transition-opacity"
-                                        style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                        style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                         <Download size={14} /> Download Receipt
                                     </button>
                                 )}
@@ -380,7 +380,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                             {(booking.status === 'confirmed' || booking.status === 'in-progress') && (
                                 <>
                                     <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white hover:opacity-80 transition-opacity"
-                                        style={{ backgroundColor: '#0f4c3e' }}>
+                                        style={{ backgroundColor: '#2E4052' }}>
                                         <MessageCircle size={13} /> Contact Support
                                     </button>
                                     {booking.status === 'confirmed' && (
@@ -392,7 +392,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                             )}
                             {(booking.status === 'completed' || booking.status === 'cancelled') && (
                                 <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white hover:opacity-80 transition-opacity"
-                                    style={{ backgroundColor: '#0f4c3e' }}>
+                                    style={{ backgroundColor: '#2E4052' }}>
                                     <RotateCcw size={13} /> {booking.status === 'cancelled' ? 'Rebook Journey' : 'Book Again'}
                                 </button>
                             )}
@@ -411,8 +411,8 @@ function StarRatingSm({ rating }: { rating: number }) {
         <div className="flex gap-0.5">
             {[1, 2, 3, 4, 5].map(i => (
                 <Star key={i} size={11}
-                    fill={i <= rating ? '#f59e0b' : 'none'}
-                    stroke={i <= rating ? '#f59e0b' : '#d1d5db'}
+                    fill={i <= rating ? '#FFC857' : 'none'}
+                    stroke={i <= rating ? '#FFC857' : '#d1d5db'}
                 />
             ))}
         </div>
@@ -422,8 +422,8 @@ function StarRatingSm({ rating }: { rating: number }) {
 function StatCard({ icon: Icon, label, value, sub }: { icon: typeof User; label: string; value: string; sub?: string }) {
     return (
         <div className="bg-white rounded-2xl px-4 py-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#e8eeec' }}>
-                <Icon size={18} style={{ color: '#0f766e' }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#BDD9BF' }}>
+                <Icon size={18} style={{ color: '#2E4052' }} />
             </div>
             <div className="min-w-0">
                 <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold truncate">{label}</div>
@@ -452,8 +452,8 @@ function BookingCard({ booking, onDetails }: { booking: Booking; onDetails: () =
             <div className="px-4 py-4">
                 <div className="flex gap-3">
                     <div className="flex flex-col items-center pt-1 flex-shrink-0">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#0f766e' }} />
-                        <div className="w-px flex-1 my-1" style={{ backgroundColor: '#d5e0de' }} />
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#2E4052' }} />
+                        <div className="w-px flex-1 my-1" style={{ backgroundColor: '#BDD9BF' }} />
                         <div className="w-2 h-2 rounded-full bg-slate-300" />
                     </div>
                     <div className="flex flex-col gap-3 flex-1 min-w-0">
@@ -492,7 +492,7 @@ function BookingCard({ booking, onDetails }: { booking: Booking; onDetails: () =
                         <button
                             onClick={onDetails}
                             className="flex items-center gap-1 text-[12px] font-bold transition-opacity hover:opacity-70 rounded-lg px-2.5 py-1.5"
-                            style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}
+                            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                         >
                             Details <ChevronRight size={12} />
                         </button>
@@ -527,13 +527,13 @@ export default function UserDashboard() {
     })
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: '#f0f5f4' }}>
+        <div className="min-h-screen" style={{ backgroundColor: '#F0F5F0' }}>
 
             {/*  Nav  */}
             <header className="bg-white border-b border-slate-100 fixed top-0 left-0 right-0 z-20 shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <Car size={20} style={{ color: '#0f766e' }} />
+                        <Car size={20} style={{ color: '#2E4052' }} />
                         <span className="font-head font-bold text-slate-800 text-[15px] sm:text-[16px]">Coach Hire Compare</span>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-2">
@@ -558,7 +558,7 @@ export default function UserDashboard() {
                 {/*  Profile hero  */}
                 <div
                     className="rounded-2xl sm:rounded-3xl overflow-hidden relative"
-                    style={{ background: 'linear-gradient(135deg, #0f4c3e 0%, #1a6b5a 60%, #2d9c84 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}
                 >
                     <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full opacity-10 bg-white pointer-events-none" />
                     <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full opacity-10 bg-white pointer-events-none" />
@@ -566,15 +566,15 @@ export default function UserDashboard() {
                     <div className="relative px-5 sm:px-8 py-5 sm:py-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
                         <div
                             className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold font-head text-lg flex-shrink-0 shadow-lg"
-                            style={{ backgroundColor: '#d5e0de', color: '#0f4c3e' }}
+                            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                         >
                             {USER.avatar}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#a7c8c2' }}>My Account</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#BDD9BF' }}>My Account</p>
                             <h1 className="font-head text-white text-xl sm:text-2xl font-bold leading-none mb-1">{USER.name}</h1>
-                            <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1.5" style={{ color: '#a7c8c2' }}>
+                            <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1.5" style={{ color: '#BDD9BF' }}>
                                 <span className="flex items-center gap-1 text-[11px] sm:text-[12px]"><Mail size={10} />{USER.email}</span>
                                 <span className="flex items-center gap-1 text-[11px] sm:text-[12px]"><Phone size={10} />{USER.phone}</span>
                                 <span className="hidden sm:flex items-center gap-1 text-[12px]"><CalendarDays size={10} />Member since {USER.memberSince}</span>
@@ -583,7 +583,7 @@ export default function UserDashboard() {
 
                         <button
                             className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 rounded-xl px-5 py-2.5 text-[13px] font-bold hover:opacity-90 transition-opacity shadow flex-shrink-0"
-                            style={{ backgroundColor: '#d5e0de', color: '#0f4c3e' }}
+                            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                         >
                             New Booking <ArrowRight size={13} />
                         </button>
@@ -609,7 +609,7 @@ export default function UserDashboard() {
                                 <input
                                     type="text" placeholder="Search bookings…"
                                     value={search} onChange={e => setSearch(e.target.value)}
-                                    className="pl-8 pr-3 py-2 text-[12px] rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-teal-200 w-full sm:w-52 text-slate-700 placeholder-slate-400"
+                                    className="pl-8 pr-3 py-2 text-[12px] rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#BDD9BF] w-full sm:w-52 text-slate-700 placeholder-slate-400"
                                 />
                             </div>
                         </div>
@@ -626,7 +626,7 @@ export default function UserDashboard() {
                                     onClick={() => setActiveTab(tab.key)}
                                     className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-bold whitespace-nowrap flex-shrink-0 transition-all ${active ? 'text-white shadow-sm' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200'
                                         }`}
-                                    style={active ? { backgroundColor: '#0f4c3e' } : {}}
+                                    style={active ? { backgroundColor: '#2E4052' } : {}}
                                 >
                                     {tab.label}
                                     <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${active ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'

@@ -4,15 +4,15 @@ const config = {
   theme: {
     extend: {
       colors: {
-        primary: '#0F172A',        // Deep navy (brand authority)
-        secondary: '#1E293B',
-        accent: '#2563EB',         // Premium blue for CTAs
-        primaryBg: '#F8FAFC',
-        secondaryBg: '#FFFFFF',
-        muted: '#64748B',
-        border: '#E2E8F0',
-        textPrimary: '#0F172A',
-        textSecondary: '#475569'
+        primary: '#2E4052',        // Dark navy (brand authority)
+        secondary: '#FFC857',      // Golden yellow (accent/highlight)
+        accent: '#BDD9BF',         // Sage green (chips, soft accents)
+        primaryBg: '#FFFFFF',
+        secondaryBg: '#F0F5F0',
+        muted: '#6B7A8A',
+        border: '#D4DDE5',
+        textPrimary: '#2E4052',
+        textSecondary: '#5A6775'
       },
       fontFamily: {
         head: ['Outfit', 'sans-serif'],
@@ -31,8 +31,8 @@ const config = {
         'card-lg': '20px',
       },
       boxShadow: {
-        card: '0 4px 24px rgba(15,23,42,0.1)',
-        'card-lg': '0 8px 40px rgba(15,23,42,0.15)',
+        card: '0 4px 24px rgba(46,64,82,0.1)',
+        'card-lg': '0 8px 40px rgba(46,64,82,0.15)',
       },
       maxWidth: {
         container: '1200px',

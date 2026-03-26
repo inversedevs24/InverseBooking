@@ -42,7 +42,7 @@ export default function HowItWorks() {
               <div className="flex items-center gap-3 mb-3">
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-secondary flex-shrink-0"
-                  style={{ backgroundColor: '#d5e0de' }}
+                  style={{ backgroundColor: '#BDD9BF' }}
                 >
                   <s.Icon size={17} />
                 </div>

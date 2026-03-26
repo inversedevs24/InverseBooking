@@ -19,7 +19,7 @@ const BADGES: Badge[] = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#d5e0de' }}>
+    <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#BDD9BF' }}>
       <div className="max-w-container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
 
@@ -43,7 +43,7 @@ export default function WhyChooseUs() {
                 >
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-secondary flex-shrink-0"
-                    style={{ backgroundColor: '#e8eeec' }}
+                    style={{ backgroundColor: '#BDD9BF' }}
                   >
                     <r.Icon size={17} />
                   </div>

@@ -128,7 +128,7 @@ const INITIAL_ORDERS: Order[] = [
 const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string; bg: string; Icon: typeof CheckCircle2 }> = {
     pending: { label: 'Pending', color: '#92400e', bg: '#fef3c7', Icon: Clock },
     confirmed: { label: 'Confirmed', color: '#1d4ed8', bg: '#dbeafe', Icon: CalendarDays },
-    'in-progress': { label: 'In Progress', color: '#0f766e', bg: '#ccfbf1', Icon: Loader2 },
+    'in-progress': { label: 'In Progress', color: '#2E4052', bg: '#BDD9BF', Icon: Loader2 },
     completed: { label: 'Completed', color: '#15803d', bg: '#dcfce7', Icon: CheckCircle2 },
     cancelled: { label: 'Cancelled', color: '#b91c1c', bg: '#fee2e2', Icon: XCircle },
 }
@@ -168,7 +168,7 @@ function AssignDriverModal({ order, onAssign, onClose }: {
             <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between"
-                    style={{ backgroundColor: '#f0f5f4' }}>
+                    style={{ backgroundColor: '#F0F5F0' }}>
                     <div>
                         <h3 className="font-head font-bold text-slate-800 text-[16px]">Assign Driver</h3>
                         <p className="text-[12px] text-slate-400 mt-0.5">{order.reference} · {order.from} → {order.to}</p>
@@ -185,12 +185,12 @@ function AssignDriverModal({ order, onAssign, onClose }: {
                             key={d.id}
                             onClick={() => setSelected(d.id)}
                             className={`flex items-center gap-3 p-3 rounded-xl text-left transition-all border-2 ${selected === d.id
-                                    ? 'border-teal-500 bg-teal-50'
+                                    ? 'border-[#2E4052] bg-[#EAF0EA]'
                                     : 'border-transparent bg-slate-50 hover:bg-slate-100'
                                 }`}
                         >
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[12px] flex-shrink-0"
-                                style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                 {d.avatar}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -201,7 +201,7 @@ function AssignDriverModal({ order, onAssign, onClose }: {
                                 }`}>
                                 {d.available ? 'Available' : 'On Ride'}
                             </div>
-                            {selected === d.id && <CheckCircle2 size={16} className="text-teal-600 flex-shrink-0" />}
+                            {selected === d.id && <CheckCircle2 size={16} className="text-[#2E4052] flex-shrink-0" />}
                         </button>
                     ))}
                 </div>
@@ -219,7 +219,7 @@ function AssignDriverModal({ order, onAssign, onClose }: {
                         }}
                         disabled={!selected}
                         className="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-                        style={{ backgroundColor: '#0f4c3e' }}
+                        style={{ backgroundColor: '#2E4052' }}
                     >
                         Assign Driver
                     </button>
@@ -276,10 +276,10 @@ function OrderDetailPanel({ order, onClose, onAssignDriver, onStatusChange, onCa
             {/* Panel — starts below navbar on all sizes, full width on mobile, drawer on sm+ */}
             <div className="fixed top-14 bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:w-[420px] z-40 flex flex-col bg-white shadow-2xl">
                 {/* Header */}
-                <div className="flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0f4c3e 0%, #1a6b5a 60%, #2d9c84 100%)' }}>
+                <div className="flex-shrink-0" style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}>
                     <div className="px-5 pt-5 pb-0">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-[10px] font-mono font-bold" style={{ color: '#a7c8c2' }}>{order.reference}</span>
+                            <span className="text-[10px] font-mono font-bold" style={{ color: '#BDD9BF' }}>{order.reference}</span>
                             <button onClick={onClose} className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors flex-shrink-0">
                                 <X size={15} className="text-white" />
                             </button>
@@ -301,12 +301,12 @@ function OrderDetailPanel({ order, onClose, onAssignDriver, onStatusChange, onCa
                             </div>
                             <div className="flex flex-col gap-3 flex-1 min-w-0">
                                 <div>
-                                    <div className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: '#a7c8c2' }}>Pickup</div>
+                                    <div className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Pickup</div>
                                     <div className="text-[13px] font-bold text-white">{order.from}</div>
-                                    <div className="text-[11px] mt-0.5" style={{ color: '#a7c8c2' }}>{order.date} · {order.time}</div>
+                                    <div className="text-[11px] mt-0.5" style={{ color: '#BDD9BF' }}>{order.date} · {order.time}</div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: '#a7c8c2' }}>Drop-off</div>
+                                    <div className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Drop-off</div>
                                     <div className="text-[13px] font-bold text-white">{order.to}</div>
                                 </div>
                             </div>
@@ -320,7 +320,7 @@ function OrderDetailPanel({ order, onClose, onAssignDriver, onStatusChange, onCa
                 </div>
 
                 {/* Scrollable body */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#f0f5f4' }}>
+                <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#F0F5F0' }}>
 
                     {/* Customer */}
                     <div className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
@@ -373,7 +373,7 @@ function OrderDetailPanel({ order, onClose, onAssignDriver, onStatusChange, onCa
                             {order.status !== 'cancelled' && order.status !== 'completed' && (
                                 <button onClick={onAssignDriver}
                                     className="text-[11px] font-bold px-2.5 py-1 rounded-lg transition-colors"
-                                    style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                    style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                     {order.driver ? 'Reassign' : 'Assign Driver'}
                                 </button>
                             )}
@@ -382,7 +382,7 @@ function OrderDetailPanel({ order, onClose, onAssignDriver, onStatusChange, onCa
                             {order.driver ? (
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[12px] flex-shrink-0"
-                                        style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                        style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                         {order.driver.split(' ').map(n => n[0]).join('')}
                                     </div>
                                     <div className="flex-1">
@@ -412,7 +412,7 @@ function OrderDetailPanel({ order, onClose, onAssignDriver, onStatusChange, onCa
                                 <button
                                     onClick={() => setStatusOpen(v => !v)}
                                     className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[13px] font-bold text-white transition-opacity hover:opacity-90"
-                                    style={{ backgroundColor: '#0f4c3e' }}
+                                    style={{ backgroundColor: '#2E4052' }}
                                 >
                                     <span className="flex items-center gap-2"><RefreshCw size={14} /> Update Status</span>
                                     <ChevronDown size={14} className={`transition-transform ${statusOpen ? 'rotate-180' : ''}`} />
@@ -517,13 +517,13 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="min-h-screen font-body" style={{ backgroundColor: '#f0f5f4' }}>
+        <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
 
             {/*  Top bar  */}
             <header className="bg-white border-b border-slate-100 sticky top-0 z-20 shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-center gap-3">
                     <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#0f4c3e' }}>
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#2E4052' }}>
                             <LayoutDashboard size={14} className="text-white" />
                         </div>
                         <span className="font-head font-bold text-slate-800 text-[15px] sm:text-[16px]">Admin Dashboard</span>
@@ -535,7 +535,7 @@ export default function AdminDashboard() {
 
                 {/*  Stats  */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <StatCard icon={ShoppingBag} label="Total Orders" value={String(stats.total)} sub="all time" color="#0f766e" />
+                    <StatCard icon={ShoppingBag} label="Total Orders" value={String(stats.total)} sub="all time" color="#2E4052" />
                     <StatCard icon={Clock} label="Pending" value={String(stats.pending)} sub="need action" color="#d97706" />
                     <StatCard icon={TrendingUp} label="Active" value={String(stats.active)} sub="in progress" color="#1d4ed8" />
                     <StatCard icon={DollarSign} label="Revenue" value={stats.revenue} sub="excl. cancelled" color="#15803d" />
@@ -553,7 +553,7 @@ export default function AdminDashboard() {
                                 <input
                                     type="text" placeholder="Search orders…"
                                     value={search} onChange={e => setSearch(e.target.value)}
-                                    className="pl-8 pr-3 py-2 text-[12px] rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-teal-200 w-full sm:w-52 text-slate-700 placeholder-slate-400"
+                                    className="pl-8 pr-3 py-2 text-[12px] rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#BDD9BF] w-full sm:w-52 text-slate-700 placeholder-slate-400"
                                 />
                             </div>
                         </div>
@@ -568,7 +568,7 @@ export default function AdminDashboard() {
                                 <button key={tab.key} onClick={() => setActiveTab(tab.key)}
                                     className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-bold whitespace-nowrap flex-shrink-0 transition-all ${active ? 'text-white shadow-sm' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                                         }`}
-                                    style={active ? { backgroundColor: '#0f4c3e' } : {}}>
+                                    style={active ? { backgroundColor: '#2E4052' } : {}}>
                                     {tab.label}
                                     <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${active ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-500'
                                         }`}>{count}</span>
@@ -634,9 +634,9 @@ export default function AdminDashboard() {
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center gap-1.5">
                                                     <button onClick={() => setSelected(order)}
-                                                        className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-teal-50 transition-colors"
+                                                        className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#EAF0EA] transition-colors"
                                                         title="View Details">
-                                                        <Eye size={13} style={{ color: '#0f766e' }} />
+                                                        <Eye size={13} style={{ color: '#2E4052' }} />
                                                     </button>
                                                     {order.status !== 'cancelled' && order.status !== 'completed' && (
                                                         <>
@@ -691,8 +691,8 @@ export default function AdminDashboard() {
                                     {/* Route */}
                                     <div className="flex gap-2.5">
                                         <div className="flex flex-col items-center flex-shrink-0 mt-1">
-                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#0f766e' }} />
-                                            <div className="w-px flex-1 my-1" style={{ backgroundColor: '#d5e0de', minHeight: 16 }} />
+                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#2E4052' }} />
+                                            <div className="w-px flex-1 my-1" style={{ backgroundColor: '#BDD9BF', minHeight: 16 }} />
                                             <div className="w-2 h-2 rounded-full bg-slate-300" />
                                         </div>
                                         <div className="flex flex-col gap-2 flex-1 min-w-0">
@@ -716,7 +716,7 @@ export default function AdminDashboard() {
                                             <Car size={10} />{order.vehicle}
                                         </span>
                                         {order.driver
-                                            ? <span className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                            ? <span className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                                 <Users size={10} />{order.driver}
                                             </span>
                                             : <span className="flex items-center gap-1 bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">
@@ -731,7 +731,7 @@ export default function AdminDashboard() {
                                         <div className="flex items-center gap-1.5">
                                             <button onClick={() => setSelected(order)}
                                                 className="flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-xl transition-colors"
-                                                style={{ backgroundColor: '#e8eeec', color: '#0f4c3e' }}>
+                                                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
                                                 <Eye size={12} /> View
                                             </button>
                                             {canAct && (

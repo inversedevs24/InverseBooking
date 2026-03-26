@@ -4,10 +4,10 @@ import { Users, Briefcase, Heart } from 'lucide-react'
 import type { FleetItem } from '../../types'
 
 const GRADIENTS = [
-  'linear-gradient(135deg, #f0f4ff, #e0e7ff)',
-  'linear-gradient(135deg, #f1f5f9, #e2e8f0)',
-  'linear-gradient(135deg, #fce7f3, #fbcfe8)',
-  'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+  'linear-gradient(135deg, #EAF0EA, #BDD9BF)',
+  'linear-gradient(135deg, #F0F5F0, #D4E8D6)',
+  'linear-gradient(135deg, #BDD9BF, #A8C9AA)',
+  'linear-gradient(135deg, #D4E8D6, #EAF0EA)',
 ]
 
 function deriveType(name: string): string {
@@ -61,7 +61,7 @@ export default function FleetCard({ car, index = 0 }: { car: FleetItem; index?: 
         <button
           onClick={() => navigate('/vehicles')}
           className="w-full text-white border-none text-[13px] font-bold cursor-pointer hover:opacity-85 transition-opacity duration-200 font-body"
-          style={{ background: 'linear-gradient(135deg, #0F172A, #1e293b)', borderRadius: '12px', padding: '9px 18px' }}
+          style={{ background: 'linear-gradient(135deg, #2E4052, #3A5268)', borderRadius: '12px', padding: '9px 18px' }}
         >
           Rent Now
         </button>
