@@ -34,10 +34,10 @@ export default function AboutPage() {
               <h1 className="font-head text-heading leading-none mb-4 ">Welcome to InverseRide</h1>
               <p className="text-muted text-span mb-[0px] leading-[1.7]">Your trusted platform for smooth and reliable travel experiences in the UAE. <br></br>We specialize in providing premium ride services, including city, airport, and intercity transfers, along with hourly chauffeur services. <br></br>In the UAE, we also offer exclusive Desert Safari and City Tour experiences. <br></br>Whether you're a resident or a visitor, InverseRide is here to make every ride easy, comfortable, and stress-free.</p>
               <div className="mt-5 flex items-center gap-3">
-                <span className="text-[10px] font-bold uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0" style={{ color: 'rgba(46,64,82,0.4)' }}>
+                <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">
                   We Accept
                 </span>
-                <div className="w-px h-5 flex-shrink-0" style={{ backgroundColor: 'rgba(46,64,82,0.15)' }} />
+                <div className="w-px h-5 bg-border flex-shrink-0" />
                 <div className="flex items-center gap-3 flex-wrap">
                   <Visa style={{ height: 28, width: 'auto' }} />
                   <Mastercard style={{ height: 28, width: 'auto' }} />
