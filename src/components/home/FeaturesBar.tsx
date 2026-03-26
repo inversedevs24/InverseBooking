@@ -47,7 +47,7 @@ export default function FeaturesBar() {
     <section className="py-10 md:py-[20px]">
       <div className="max-w-container mx-auto px-6">
 
-        <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2 text-center">
+        <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2 text-center">
           What We Offer
         </p>
         <h2 className="font-head text-heading text-primary text-center leading-none mb-10">
@@ -63,12 +63,12 @@ export default function FeaturesBar() {
             >
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary"
-                style={{ backgroundColor: '#d5e0de' }}
+                style={{ backgroundColor: '#BDD9BF' }}
               >
                 <Icon
                   size={20}
                   className="transition-colors group-hover:text-white"
-                  style={{ color: '#0f766e' }}
+                  style={{ color: '#2E4052' }}
                 />
               </div>
               <div className="min-w-0">

@@ -25,16 +25,16 @@ function StepBar({ current }: { current: number }) {
             <div key={i} className="flex items-center gap-2 sm:gap-3">
               {i > 0 && (
                 <div className={`h-px flex-shrink-0 transition-colors ${done ? 'w-8 sm:w-12' : 'w-6 sm:w-10'}`}
-                  style={{ backgroundColor: done ? '#0f766e' : '#e2e8f0', width: undefined }}
+                  style={{ backgroundColor: done ? '#FFC857' : '#D4DDE5', width: undefined }}
                 >
                   <div className={`h-px ${done ? 'w-8 sm:w-12' : 'w-6 sm:w-10'}`}
-                    style={{ backgroundColor: done ? '#0f766e' : '#e2e8f0' }} />
+                    style={{ backgroundColor: done ? '#FFC857' : '#D4DDE5' }} />
                 </div>
               )}
               <div className={`flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold transition-colors ${active ? 'text-slate-800' : done ? 'text-slate-400' : 'text-slate-300'
                 }`}>
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 transition-all ${active ? 'text-white' : done ? 'text-white' : 'text-slate-400 bg-slate-100'
-                  }`} style={active ? { backgroundColor: '#0f4c3e' } : done ? { backgroundColor: '#0f766e' } : {}}>
+                  }`} style={active ? { backgroundColor: '#2E4052' } : done ? { backgroundColor: '#2E4052' } : {}}>
                   {done ? <CheckCircle2 size={13} /> : i + 1}
                 </div>
                 <span className="hidden sm:block">{step.label}</span>
@@ -68,7 +68,7 @@ function Field({
 const inputCls = (hasError?: string) =>
   `w-full bg-white border rounded-xl px-4 py-2.5 text-[13px] text-slate-700 font-body outline-none transition-all placeholder:text-slate-300 ${hasError
     ? 'border-red-400 focus:ring-2 focus:ring-red-100'
-    : 'border-slate-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-50'
+    : 'border-slate-200 focus:border-[#2E4052] focus:ring-2 focus:ring-[#EAF0EA]'
   }`
 
 const iconInputWrapper = 'relative'
@@ -104,8 +104,8 @@ function BookingSummary({ booking }: { booking: BookingState }) {
           {/* Route */}
           <div className="flex gap-2.5 mb-3">
             <div className="flex flex-col items-center flex-shrink-0 mt-1">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#0f766e' }} />
-              <div className="w-px flex-1 my-1" style={{ backgroundColor: '#d5e0de', minHeight: 20 }} />
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#FFC857' }} />
+              <div className="w-px flex-1 my-1" style={{ backgroundColor: '#BDD9BF', minHeight: 20 }} />
               <div className="w-2 h-2 rounded-full bg-slate-300" />
             </div>
             <div className="flex flex-col gap-3 flex-1 min-w-0">
@@ -126,8 +126,8 @@ function BookingSummary({ booking }: { booking: BookingState }) {
               { Icon: Ruler, val: booking.distance ? `${booking.distance} km` : '—' },
               { Icon: Clock, val: booking.duration ? `${booking.duration} min` : '—' },
             ].map(({ Icon, val }, i) => (
-              <div key={i} className="flex items-center gap-1.5 rounded-xl px-3 py-2" style={{ backgroundColor: '#f0f5f4' }}>
-                <Icon size={12} style={{ color: '#0f766e' }} />
+              <div key={i} className="flex items-center gap-1.5 rounded-xl px-3 py-2" style={{ backgroundColor: '#F0F5F0' }}>
+                <Icon size={12} style={{ color: '#2E4052' }} />
                 <span className="text-[12px] font-semibold text-slate-700">{val}</span>
               </div>
             ))}
@@ -136,7 +136,7 @@ function BookingSummary({ booking }: { booking: BookingState }) {
           {/* Price */}
           <div className="flex items-center justify-between pt-3 border-t border-slate-100">
             <span className="text-[12px] text-slate-500 font-body">Total</span>
-            <span className="text-[20px] font-bold font-head" style={{ color: '#0f4c3e' }}>
+            <span className="text-[20px] font-bold font-head" style={{ color: '#2E4052' }}>
               ${booking.price || '—'}
             </span>
           </div>
@@ -144,9 +144,9 @@ function BookingSummary({ booking }: { booking: BookingState }) {
       </div>
 
       {/* Trust note */}
-      <div className="flex items-start gap-2.5 rounded-2xl px-4 py-3" style={{ backgroundColor: '#e8eeec' }}>
-        <ShieldCheck size={14} style={{ color: '#0f766e' }} className="flex-shrink-0 mt-0.5" />
-        <p className="text-[11px] leading-relaxed" style={{ color: '#0f4c3e' }}>
+      <div className="flex items-start gap-2.5 rounded-2xl px-4 py-3" style={{ backgroundColor: '#BDD9BF' }}>
+        <ShieldCheck size={14} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
+        <p className="text-[11px] leading-relaxed" style={{ color: '#2E4052' }}>
           Your information is secure and will only be used for this booking.
         </p>
       </div>
@@ -188,7 +188,7 @@ export default function BookingDetails() {
   }
 
   return (
-    <div className="min-h-screen font-body" style={{ backgroundColor: '#f0f5f4' }}>
+    <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
 
       {/*  Top bar  */}
       <div className="bg-white border-b border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sticky top-0 z-10">
@@ -213,8 +213,8 @@ export default function BookingDetails() {
           <button
             className="lg:hidden flex items-center gap-1.5 text-[12px] font-semibold rounded-xl px-2.5 sm:px-3 py-1.5 transition-colors flex-shrink-0"
             style={showSummary
-              ? { backgroundColor: '#0f4c3e', color: 'white' }
-              : { backgroundColor: '#e8eeec', color: '#0f4c3e' }
+              ? { backgroundColor: '#2E4052', color: 'white' }
+              : { backgroundColor: '#BDD9BF', color: '#2E4052' }
             }
             onClick={() => setShowSummary(v => !v)}
           >
@@ -245,7 +245,7 @@ export default function BookingDetails() {
               {/* Form header */}
               <div
                 className="px-5 sm:px-6 py-4 border-b border-slate-100"
-                style={{ backgroundColor: '#f8fafa' }}
+                style={{ backgroundColor: '#FAFAFA' }}
               >
                 <h2 className="font-head font-bold text-slate-800 text-[16px]">Your Details</h2>
                 <p className="text-[12px] text-slate-400 mt-0.5">Fill in your information to complete the booking</p>
@@ -352,8 +352,8 @@ export default function BookingDetails() {
                 {/* CTA */}
                 <button
                   onClick={handleContinue}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] shadow-[0_4px_16px_rgba(15,76,62,0.3)]"
-                  style={{ backgroundColor: '#0f4c3e' }}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] shadow-[0_4px_16px_rgba(46,64,82,0.3)]"
+                  style={{ backgroundColor: '#2E4052' }}
                 >
                   Continue to Checkout
                   <ArrowRight size={16} />

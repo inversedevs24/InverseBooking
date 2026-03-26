@@ -281,13 +281,13 @@ export default function DateTimePicker({ value, onChange, min, placeholder = 'Se
                         selected  ? 'text-white font-bold' : '',
                         !selected && !disabled ? 'hover:bg-[#F1F5F9]' : '',
                       ].join(' ')}
-                      style={selected ? { background: '#CBA135' } : undefined}
+                      style={selected ? { background: '#FFC857' } : undefined}
                     >
                       {date.getDate()}
                       {isToday && !selected && (
                         <span
                           className="absolute bottom-[3px] left-1/2 -translate-x-1/2 w-[3px] h-[3px] rounded-full"
-                          style={{ background: '#CBA135' }}
+                          style={{ background: '#FFC857' }}
                         />
                       )}
                     </button>
@@ -374,7 +374,7 @@ export default function DateTimePicker({ value, onChange, min, placeholder = 'Se
               onClick={apply}
               disabled={!draftDate}
               className="px-4 py-1.5 text-[11px] font-bold text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110"
-              style={{ background: '#CBA135' }}
+              style={{ background: '#FFC857' }}
             >
               Apply
             </button>

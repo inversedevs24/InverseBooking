@@ -14,21 +14,21 @@ export default function RideSmileBanner() {
     <section className="py-10 md:py-[60px]">
       <div className="max-w-container mx-auto px-6">
         <div className="relative rounded-2xl overflow-hidden px-8 md:px-14 py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-10"
-          style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1b2c45 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 100%)' }}
         >
           {/* Decorative rings */}
-          <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-30" style={{ backgroundColor: '#CBA135' }} />
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full opacity-20" style={{ backgroundColor: '#CBA135' }} />
+          <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-30" style={{ backgroundColor: '#FFC857' }} />
+          <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full opacity-20" style={{ backgroundColor: '#FFC857' }} />
 
           {/* Left — headline */}
           <div className="relative z-10">
-            <p className="text-[11px] font-bold uppercase tracking-widest mb-4" style={{ color: '#CBA135' }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest mb-4" style={{ color: '#FFC857' }}>
               Premium Ride Service · UAE
             </p>
             <div className="font-head font-extrabold leading-none mb-4">
               <div className="text-[44px] md:text-[60px] text-white">RIDE.</div>
               <div className="text-[44px] md:text-[60px] text-white">SMILE.</div>
-              <div className="text-[44px] md:text-[60px]" style={{ color: '#CBA135' }}>REPEAT.</div>
+              <div className="text-[44px] md:text-[60px]" style={{ color: '#FFC857' }}>REPEAT.</div>
             </div>
             <p className="text-[14px] text-white/80 font-body max-w-[300px] leading-relaxed">
               Premium transfers, professional drivers, unforgettable rides across UAE with {brandName}.
@@ -40,7 +40,7 @@ export default function RideSmileBanner() {
             <button
               onClick={() => navigate('/book')}
               className="border-none rounded-2xl py-[15px] px-10 font-semibold text-[15px] cursor-pointer font-body text-primary self-start md:self-auto"
-              style={{ background: '#CBA135' }}
+              style={{ background: '#FFC857' }}
             >
               Book Now
             </button>

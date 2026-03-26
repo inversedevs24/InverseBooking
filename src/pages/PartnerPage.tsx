@@ -96,12 +96,12 @@ export default function PartnerPage() {
   return (
     <>
       {/*  Hero + Form  */}
-      <div className="py-12 md:py-[64px]" style={{ backgroundColor: '#d5e0de' }}>
+      <div className="py-12 md:py-[64px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
 
           {/* Page heading */}
           <div className="text-center mb-10">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Join Our Network</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Join Our Network</p>
             <h1 className="font-head text-heading text-primary leading-none mb-3">Become a Partner</h1>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               Drive your success with us. Join the InverseRide partner network and grow your business.
@@ -114,13 +114,13 @@ export default function PartnerPage() {
             {/* DARK LEFT */}
             <div
               className="relative px-7 py-8 flex flex-col"
-              style={{ background: 'linear-gradient(160deg, #0f2d24 0%, #0f172a 55%, #0f1f19 100%)' }}
+              style={{ background: 'linear-gradient(160deg, #1E3248 0%, #2E4052 55%, #232F3D 100%)' }}
             >
               {/* Decorative blobs */}
               <div className="absolute -bottom-16 -left-16 w-52 h-52 rounded-full opacity-[0.30] pointer-events-none"
-                style={{ backgroundColor: '#2d9c84' }} />
+                style={{ backgroundColor: '#FFC857' }} />
               <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full opacity-[0.20] pointer-events-none"
-                style={{ backgroundColor: '#2d9c84' }} />
+                style={{ backgroundColor: '#FFC857' }} />
 
               <div className="relative">
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-1"
@@ -145,9 +145,9 @@ export default function PartnerPage() {
                 {/* Response badge */}
                 <div
                   className="mt-5 flex items-start gap-2.5 rounded-2xl px-4 py-3"
-                  style={{ backgroundColor: 'rgba(45,156,132,0.12)', border: '1px solid rgba(45,156,132,0.2)' }}
+                  style={{ backgroundColor: 'rgba(255,200,87,0.12)', border: '1px solid rgba(255,200,87,0.2)' }}
                 >
-                  <CheckCircle2 size={14} style={{ color: '#2d9c84' }} className="flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 size={14} style={{ color: '#FFC857' }} className="flex-shrink-0 mt-0.5" />
                   <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
                     Applications are reviewed within{' '}
                     <span className="text-white font-semibold">3–5 business days</span>.
@@ -157,7 +157,7 @@ export default function PartnerPage() {
             </div>
 
             {/* LIGHT RIGHT — form */}
-            <div className="px-6 py-8 md:px-8" style={{ backgroundColor: '#f0f5f4' }}>
+            <div className="px-6 py-8 md:px-8" style={{ backgroundColor: '#F0F5F0' }}>
 
               {submitted && (
                 <div
@@ -217,7 +217,7 @@ export default function PartnerPage() {
                         <input
                           type="radio" name="partnerType" value={t}
                           defaultChecked={t === 'Individual Chauffeur'}
-                          className="accent-teal-700 w-3.5 h-3.5"
+                          className="accent-primary w-3.5 h-3.5"
                         />
                         {t}
                       </label>
@@ -237,12 +237,12 @@ export default function PartnerPage() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(15,76,62,0.3)]"
-                  style={{ backgroundColor: '#0f172a' }}
+                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(46,64,82,0.3)]"
+                  style={{ backgroundColor: '#2E4052' }}
                 >
                   <span
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] aspect-square rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 ease-in-out pointer-events-none"
-                    style={{ backgroundColor: '#0f4c3e' }}
+                    style={{ backgroundColor: '#3A5268' }}
                   />
                   <span className="relative z-10 flex items-center gap-2">
                     Submit Application <CheckCircle2 size={15} />
@@ -261,7 +261,7 @@ export default function PartnerPage() {
         <div className="max-w-container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[60px] items-center">
             <div>
-              <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Why Join Us</p>
+              <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Why Join Us</p>
               <h2 className="font-head text-heading text-primary leading-none mb-3">
                 Why Partner with InverseRide?
               </h2>
@@ -275,8 +275,8 @@ export default function PartnerPage() {
                     className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
                   >
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: '#e8eeec' }}>
-                      <CheckCircle2 size={14} style={{ color: '#0f766e' }} />
+                      style={{ backgroundColor: '#BDD9BF' }}>
+                      <CheckCircle2 size={14} style={{ color: '#2E4052' }} />
                     </div>
                     <span className="text-[14px] text-primary font-body">{item}</span>
                   </div>
@@ -295,10 +295,10 @@ export default function PartnerPage() {
       </section>
 
       {/*  Who Can Join  */}
-      <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#d5e0de' }}>
+      <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
           <div className="text-center mb-10">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Open to All</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Open to All</p>
             <h2 className="font-head text-heading text-primary leading-none mb-3">Who Can Join?</h2>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               We welcome all professional and reliable transport partners.
@@ -312,9 +312,9 @@ export default function PartnerPage() {
               >
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors group-hover:bg-primary"
-                  style={{ backgroundColor: '#e8eeec' }}
+                  style={{ backgroundColor: '#BDD9BF' }}
                 >
-                  <Icon size={24} style={{ color: '#0f766e' }} className="group-hover:text-white transition-colors" />
+                  <Icon size={24} style={{ color: '#2E4052' }} className="group-hover:text-white transition-colors" />
                 </div>
                 <h4 className="text-[14px] font-bold font-head text-primary mb-1">{label}</h4>
                 <p className="text-[12px] text-muted font-body leading-relaxed">{sub}</p>
@@ -336,7 +336,7 @@ export default function PartnerPage() {
               />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">What We Need</p>
+              <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">What We Need</p>
               <h2 className="font-head text-heading text-primary leading-none mb-3">Partner Requirements</h2>
               <p className="text-muted text-[14px] font-body leading-relaxed mb-5">
                 To ensure quality service for every passenger, we require:
@@ -345,8 +345,8 @@ export default function PartnerPage() {
                 {REQUIREMENTS.map((r, i) => (
                   <div key={i} className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 shadow-[0_2px_8px_rgba(15,23,42,0.06)]">
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: '#e8eeec' }}>
-                      <Check size={13} style={{ color: '#0f766e' }} />
+                      style={{ backgroundColor: '#BDD9BF' }}>
+                      <Check size={13} style={{ color: '#2E4052' }} />
                     </div>
                     <span className="text-[14px] text-primary font-body">{r}</span>
                   </div>
@@ -357,7 +357,7 @@ export default function PartnerPage() {
 
           {/* Benefits */}
           <div className="text-center mb-8">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">What You Get</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">What You Get</p>
             <h2 className="font-head text-heading text-primary leading-none mb-2">Partner Benefits</h2>
             <p className="text-muted text-[14px] italic font-semibold">Earn More. Work Smart.</p>
           </div>
@@ -366,9 +366,9 @@ export default function PartnerPage() {
               <div
                 key={i}
                 className="flex items-center gap-2.5 px-5 py-3 rounded-2xl text-[13px] font-semibold text-white shadow-[0_2px_8px_rgba(15,23,42,0.12)]"
-                style={{ backgroundColor: '#0f172a' }}
+                style={{ backgroundColor: '#2E4052' }}
               >
-                <Check size={13} style={{ color: '#2d9c84' }} className="flex-shrink-0" />
+                <Check size={13} style={{ color: '#FFC857' }} className="flex-shrink-0" />
                 {b}
               </div>
             ))}
@@ -379,7 +379,7 @@ export default function PartnerPage() {
       {/*  FAQ  */}
       <section className="py-10 md:py-[60px] bg-secondaryBg">
         <div className="max-w-container mx-auto px-6">
-          <p className="text-[11px] font-bold text-secondary uppercase tracking-widest text-center mb-2">
+          <p className="text-[11px] font-bold text-primary uppercase tracking-widest text-center mb-2">
             Got Questions?
           </p>
           <h2 className="font-head text-heading text-primary text-center leading-none mb-10">

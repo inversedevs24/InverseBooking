@@ -34,7 +34,7 @@ export default function HelpPage() {
                 key={i}
                 className="border border-border rounded-card p-6 text-center cursor-pointer transition-all hover:border-secondary hover:shadow-card"
               >
-                <div className="w-14 h-14 bg-secondaryBg rounded-full flex items-center justify-center text-secondary mx-auto mb-3">
+                <div className="w-14 h-14 bg-secondaryBg rounded-full flex items-center justify-center text-primary mx-auto mb-3">
                   <c.Icon size={24} />
                 </div>
                 <h4 className="text-span font-bold text-primary mb-1">{c.title}</h4>

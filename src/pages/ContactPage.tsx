@@ -66,12 +66,12 @@ export default function ContactPage() {
   return (
     <>
       {/*  Main section  */}
-      <div className="py-12 md:py-[30px]" style={{ backgroundColor: '#d5e0de' }}>
+      <div className="py-12 md:py-[30px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
 
           {/* Page heading */}
           <div className="text-center mb-10">
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Get in Touch</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Get in Touch</p>
             <h1 className="font-head text-heading text-primary leading-none mb-3">Contact Us</h1>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               Got something on your mind? We'd love to hear from you.
@@ -84,13 +84,13 @@ export default function ContactPage() {
             {/*  DARK LEFT — contact info  */}
             <div
               className="relative px-7 py-8 flex flex-col overflow-hidden"
-              style={{ background: 'linear-gradient(160deg, #0f2d24 0%, #0f172a 55%, #0f1f19 100%)' }}
+              style={{ background: 'linear-gradient(160deg, #1E3248 0%, #2E4052 55%, #232F3D 100%)' }}
             >
               {/* Decorative blobs */}
               <div className="absolute -bottom-16 -left-16 w-52 h-52 rounded-full opacity-[0.30]"
-                style={{ backgroundColor: '#669c2d' }} />
+                style={{ backgroundColor: '#FFC857' }} />
               <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full opacity-[0.36]"
-                style={{ backgroundColor: '#2d9c84' }} />
+                style={{ backgroundColor: '#BDD9BF' }} />
 
               <div className="relative">
                 {/* Label */}
@@ -129,9 +129,9 @@ export default function ContactPage() {
                 {/* Response badge */}
                 <div
                   className="mt-5 flex items-start gap-2.5 rounded-2xl px-4 py-3"
-                  style={{ backgroundColor: 'rgba(45,156,132,0.12)', border: '1px solid rgba(45,156,132,0.2)' }}
+                  style={{ backgroundColor: 'rgba(255,200,87,0.15)', border: '1px solid rgba(255,200,87,0.25)' }}
                 >
-                  <CheckCircle2 size={14} style={{ color: '#2d9c84' }} className="flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 size={14} style={{ color: '#FFC857' }} className="flex-shrink-0 mt-0.5" />
                   <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
                     We typically respond within{' '}
                     <span className="text-white font-semibold">2 hours</span>{' '}
@@ -142,7 +142,7 @@ export default function ContactPage() {
             </div>
 
             {/*  LIGHT RIGHT — contact form  */}
-            <div className="px-6 py-8 md:px-8" style={{ backgroundColor: '#f0f5f4' }}>
+            <div className="px-6 py-8 md:px-8" style={{ backgroundColor: '#F0F5F0' }}>
 
               {/* Success banner */}
               {submitted && (
@@ -204,7 +204,7 @@ export default function ContactPage() {
                           type="radio" name="subject" value={s.value}
                           checked={subject === s.value}
                           onChange={() => setSubject(s.value)}
-                          className="accent-teal-700 w-3.5 h-3.5"
+                          className="accent-primary w-3.5 h-3.5"
                         />
                         {s.label}
                       </label>
@@ -227,13 +227,13 @@ export default function ContactPage() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(15,76,62,0.3)]"
-                  style={{ backgroundColor: '#0f172a' }}
+                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(46,64,82,0.3)]"
+                  style={{ backgroundColor: '#2E4052' }}
                 >
                   {/* Teal wipe on hover */}
                   <span
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] aspect-square rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 ease-in-out pointer-events-none"
-                    style={{ backgroundColor: '#0f4c3e' }}
+                    style={{ backgroundColor: '#3A5268' }}
                   />
                   <span className="relative z-10 flex items-center gap-2">
                     Send Message <Send size={15} />
@@ -250,7 +250,7 @@ export default function ContactPage() {
       {/*  FAQ section  */}
       <section className="py-10 md:py-[60px] bg-secondaryBg">
         <div className="max-w-container mx-auto px-6">
-          <p className="text-[11px] font-bold text-secondary uppercase tracking-widest text-center mb-2">
+          <p className="text-[11px] font-bold text-primary uppercase tracking-widest text-center mb-2">
             Got Questions?
           </p>
           <h2 className="font-head text-heading text-primary text-center leading-none mb-10">

@@ -34,7 +34,7 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         fromPlaceholder: 'Enter pickup location',
         toPlaceholder: 'Enter drop-off location',
         image: 'https://images.pexels.com/photos/35641543/pexels-photo-35641543.jpeg',
-        accentColor: '#0f4c3e',
+        accentColor: '#2E4052',
         description: 'Door-to-door private transfer at a fixed price.',
     },
     'city-to-city': {
@@ -58,7 +58,7 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         fromPlaceholder: 'Airport name or terminal',
         toPlaceholder: 'Hotel / home / office address',
         image: 'https://images.pexels.com/photos/6604557/pexels-photo-6604557.jpeg',
-        accentColor: '#0f766e',
+        accentColor: '#2E4052',
         description: 'Meet & greet, flight tracking, free waiting time.',
     },
     'city-tour': {
@@ -82,7 +82,7 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         fromPlaceholder: 'Your pickup location',
         toPlaceholder: '',
         image: 'https://cdn.prod.website-files.com/656e39bd8b07a811ace24224/656e39bd8b07a811ace2462a_falt.webp',
-        accentColor: '#CBA135',
+        accentColor: '#FFC857',
         description: 'Hire a chauffeur by the hour — minimum 3 hours.',
     },
     'desert-safari': {
@@ -162,7 +162,7 @@ export default function ServiceBookingForm() {
         'flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]'
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: '#f0f5f4' }}>
+        <div className="min-h-screen" style={{ backgroundColor: '#F0F5F0' }}>
 
             {/*  Hero banner  */}
             <div className="relative h-[200px] sm:h-[240px] overflow-hidden">
@@ -360,7 +360,7 @@ export default function ServiceBookingForm() {
                     type="button"
                     onClick={handleSubmit}
                     className="w-full flex items-center justify-center gap-2 text-white border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-all hover:brightness-105 mt-1 shadow-[0_4px_16px_rgba(15,76,62,0.25)]"
-                    style={{ backgroundColor: config.accentColor !== '#CBA135' ? config.accentColor : '#0f4c3e' }}
+                    style={{ backgroundColor: config.accentColor }}
                 >
                     Check Availability <ArrowRight size={16} />
                 </button>

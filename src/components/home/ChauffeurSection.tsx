@@ -27,7 +27,7 @@ export default function ChauffeurSection() {
 
           {/* Right — text content */}
           <div>
-            <p className="text-[11px] font-bold text-secondary uppercase tracking-widest mb-2">Hourly Hire</p>
+            <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Hourly Hire</p>
             <h2 className="font-head text-heading text-primary leading-none mb-3">
               Hourly Chauffeur
             </h2>
@@ -42,8 +42,8 @@ export default function ChauffeurSection() {
                   className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
                 >
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-secondary flex-shrink-0"
-                    style={{ backgroundColor: '#d5e0de' }}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-primary flex-shrink-0"
+                    style={{ backgroundColor: '#BDD9BF' }}
                   >
                     {f.icon}
                   </div>
@@ -54,10 +54,10 @@ export default function ChauffeurSection() {
 
             <button
               className="group relative overflow-hidden text-white border-none rounded-2xl py-[15px] px-8 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-300 hover:text-white"
-              style={{ background: '#0F172A' }}
+              style={{ background: '#2E4052' }}
               onClick={() => navigate('/book?service=hourly')}
             >
-              <span className="absolute inset-0 bg-secondary -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out" />
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out" style={{ backgroundColor: '#3A5268' }} />
               <span className="relative z-10">Check Fare</span>
             </button>
           </div>
