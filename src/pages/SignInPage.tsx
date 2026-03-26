@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react'
 import Logo from '../components/ui/Logo'
+import { useAuth } from '../context/AuthContext'
 
 const GRID_BG = 'linear-gradient(rgba(46,64,82,0.92), rgba(46,64,82,0.92)), repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px)'
 
@@ -11,7 +12,37 @@ const inputCls = 'flex-1 text-[14px] text-primary font-body outline-none border-
 
 export default function SignInPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  // Redirect back to where they came from, or home
+  const returnState = location.state as { from?: string; bookingState?: unknown } | null
+  const from = returnState?.from ?? '/'
+  const bookingState = returnState?.bookingState
+
+  async function handleSignIn() {
+    if (!email || !password) { setError('Please enter your email and password.'); return }
+    setError('')
+    setLoading(true)
+    try {
+      const errors = await login(email, password)
+      if (errors.length > 0) {
+        setError(errors[0].message)
+      } else {
+        navigate(from, { replace: true, state: bookingState ?? undefined })
+      }
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div
@@ -31,12 +62,26 @@ export default function SignInPage() {
         <h1 className="font-head text-heading text-white leading-none mb-1">Sign In</h1>
         <p className="text-[14px] text-white/70 font-body mb-7">Enter your details to continue.</p>
 
+        {/* Error */}
+        {error && (
+          <div className="bg-red-500/20 border border-red-400/40 text-red-200 text-[13px] rounded-xl px-4 py-3 mb-4">
+            {error}
+          </div>
+        )}
+
         {/* Email */}
         <div className={cardCls}>
           <label className={labelCls}>Email Address</label>
           <div className="flex items-center gap-2">
             <Mail size={14} className="text-[#aaa] flex-shrink-0" />
-            <input className={inputCls} type="email" placeholder="you@example.com" />
+            <input
+              className={inputCls}
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSignIn()}
+            />
           </div>
         </div>
 
@@ -45,7 +90,14 @@ export default function SignInPage() {
           <label className={labelCls}>Password</label>
           <div className="flex items-center gap-2">
             <Lock size={14} className="text-[#aaa] flex-shrink-0" />
-            <input className={inputCls} type={showPw ? 'text' : 'password'} placeholder="••••••••" />
+            <input
+              className={inputCls}
+              type={showPw ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSignIn()}
+            />
             <button
               type="button"
               onClick={() => setShowPw(v => !v)}
@@ -66,11 +118,12 @@ export default function SignInPage() {
 
         {/* Submit */}
         <button
-          className="w-full border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body text-white mb-2"
+          className="w-full border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body mb-2 disabled:opacity-60"
           style={{ background: '#FFC857', color: '#2E4052' }}
-          onClick={() => navigate('/')}
+          onClick={handleSignIn}
+          disabled={loading}
         >
-          Sign In
+          {loading ? 'Signing in…' : 'Sign In'}
         </button>
 
         {/* Divider */}
@@ -83,9 +136,9 @@ export default function SignInPage() {
         {/* Guest */}
         <button
           className="w-full bg-white/10 border border-white/20 text-white rounded-2xl py-[13px] font-semibold text-[14px] cursor-pointer font-body flex items-center justify-center gap-2 mb-6"
-          onClick={() => navigate('/')}
+          onClick={() => navigate(from, { state: bookingState ?? undefined })}
         >
-          <User size={15} /> Book as a Guest
+          <User size={15} /> Continue as Guest
         </button>
 
         {/* Sign up link */}

@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, User, Mail, Phone, Users, Plane,
   MessageSquare, Clock, Ruler, CheckCircle2,
-  ShieldCheck, ArrowRight, Car,
+  ShieldCheck, ArrowRight, Car, LogIn, UserPlus, X,
 } from 'lucide-react'
 import type { BookingState, PassengerForm, ValidationErrors } from '../../types'
+import { useAuth } from '../../context/AuthContext'
 
 //  Step indicator
 const STEPS = [
@@ -154,11 +155,12 @@ function BookingSummary({ booking }: { booking: BookingState }) {
   )
 }
 
-//  Main 
+//  Main
 export default function BookingDetails() {
   const navigate = useNavigate()
   const location = useLocation()
   const booking: BookingState = location.state || {}
+  const { customer, isLoggedIn } = useAuth()
 
   const [form, setForm] = useState<PassengerForm>({
     firstName: '', lastName: '', email: '', phone: '',
@@ -166,6 +168,20 @@ export default function BookingDetails() {
   })
   const [errors, setErrors] = useState<ValidationErrors>({})
   const [showSummary, setShowSummary] = useState(false)
+  const [bannerDismissed, setBannerDismissed] = useState(false)
+
+  // Pre-fill from logged-in customer
+  useEffect(() => {
+    if (customer) {
+      setForm(f => ({
+        ...f,
+        firstName: customer.firstName || f.firstName,
+        lastName:  customer.lastName  || f.lastName,
+        email:     customer.email     || f.email,
+        phone:     customer.phone     || f.phone,
+      }))
+    }
+  }, [customer])
 
   const set = (key: keyof PassengerForm, val: string) => {
     setForm(f => ({ ...f, [key]: val }))
@@ -248,8 +264,50 @@ export default function BookingDetails() {
                 style={{ backgroundColor: '#FAFAFA' }}
               >
                 <h2 className="font-head font-bold text-slate-800 text-[16px]">Your Details</h2>
-                <p className="text-[12px] text-slate-400 mt-0.5">Fill in your information to complete the booking</p>
+                <p className="text-[12px] text-slate-400 mt-0.5">
+                  {isLoggedIn
+                    ? `Signed in as ${customer?.email} — details pre-filled`
+                    : 'Fill in your information to complete the booking'}
+                </p>
               </div>
+
+              {/* Sign-in banner (guests only) */}
+              {!isLoggedIn && !bannerDismissed && (
+                <div
+                  className="mx-5 sm:mx-6 mt-5 rounded-2xl px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3"
+                  style={{ backgroundColor: '#EEF4EE', border: '1px solid #BDD9BF' }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-slate-700 font-head mb-0.5">Sign in for a faster checkout</p>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      Your details will be auto-filled and you can track your bookings from your account.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => navigate('/signin', { state: { from: '/booking-details', bookingState: location.state } })}
+                      className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-bold text-white transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: '#2E4052' }}
+                    >
+                      <LogIn size={13} /> Sign In
+                    </button>
+                    <button
+                      onClick={() => navigate('/signup', { state: { from: '/booking-details', bookingState: location.state } })}
+                      className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-bold transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+                    >
+                      <UserPlus size={13} /> Register
+                    </button>
+                    <button
+                      onClick={() => setBannerDismissed(true)}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-black/10 transition-colors flex-shrink-0"
+                      title="Continue as guest"
+                    >
+                      <X size={14} className="text-slate-400" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="px-5 sm:px-6 py-5 space-y-4">
 
