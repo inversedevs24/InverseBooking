@@ -7,29 +7,6 @@ import CashLogo from '../ui/CashLogo'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
-const SLIDER_IMAGES = [
-  {
-    url: 'https://images.pexels.com/photos/5604852/pexels-photo-5604852.jpeg',
-    label: 'Premium Fleet',
-    sub: 'Luxury vehicles for every occasion',
-  },
-  {
-    url: 'https://images.pexels.com/photos/3354648/pexels-photo-3354648.jpeg?auto=compress&cs=tinysrgb&w=900',
-    label: 'Airport Transfers',
-    sub: 'On-time, every time',
-  },
-  {
-    url: 'https://images.pexels.com/photos/1592384/pexels-photo-1592384.jpeg?auto=compress&cs=tinysrgb&w=900',
-    label: 'Chauffeur Service',
-    sub: 'Professional drivers, seamless rides',
-  },
-  {
-    url: 'https://images.pexels.com/photos/210182/pexels-photo-210182.jpeg?auto=compress&cs=tinysrgb&w=900',
-    label: 'City Tours',
-    sub: 'Explore the city in style',
-  },
-]
-
 const GRAIN_SVG = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
 function toLocalISO(date: Date) {
@@ -38,7 +15,6 @@ function toLocalISO(date: Date) {
 }
 
 export default function HeroBooking() {
-  // const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { products, initialized } = useAppSelector(s => s.shopify)
 
@@ -58,15 +34,7 @@ export default function HeroBooking() {
   const [datetime, setDatetime] = useState(minNow)
   const [showReturn, setShowReturn] = useState(false)
   const [returnDatetime, setReturnDatetime] = useState('')
-  const [slideIndex, setSlideIndex] = useState(0)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSlideIndex(i => (i + 1) % SLIDER_IMAGES.length)
-    }, 3000)
-    return () => clearInterval(timer)
-  }, [])
 
   function handlePickupChange(val: string) {
     setDatetime(val)
@@ -97,44 +65,47 @@ export default function HeroBooking() {
       {/* Main content */}
       <div className="relative w-full max-w-container mx-auto px-6 md:px-10 pt-8 pb-20 md:py-16 max-sm:pb-32">
 
-        {/* Heading — above both columns */}
-        <div className="text-center mb-5">
-          <h1 className="font-head text-[2.4rem] md:text-[3.2rem] text-primary font-extrabold leading-[1.1] mb-3">
+        {/* Heading — mobile only (shown above form on small screens) */}
+        <div className="md:hidden text-center mb-5">
+          <h1 className="font-head text-[2.4rem] text-primary font-extrabold leading-[1.1] mb-3">
             Premium Chauffeur Service in UAE
           </h1>
-          <p className="font-head text-[1.1rem] md:text-[1.25rem] font-semibold text-primary/70 leading-snug mb-1">
+          <p className="font-head text-[1.1rem] font-semibold text-primary/70 leading-snug mb-1">
             Book Your Ride in 30 Seconds
           </p>
-          <p className="font-body text-[0.9rem] md:text-[1rem] font-medium text-muted tracking-wide uppercase">
+          <p className="font-body text-[0.9rem] font-medium text-muted tracking-wide uppercase">
             Safe, Reliable &amp; Luxury
           </p>
         </div>
 
-        {/* Two-column row: form fields left, slider card right */}
-        {/* items-stretch makes both columns equal height so card fills exactly tabs→check fare */}
-        <div className="flex items-stretch gap-8 lg:gap-12">
+        {/* Two-column row: form left, hero text right */}
+        <div className="flex items-center gap-8 lg:gap-16">
 
-          {/* Left: form fields only */}
+          {/* Left: form fields */}
           <div className="max-w-[420px] w-full flex-shrink-0 flex flex-col">
 
             {/* Tabs */}
             <div className="flex gap-2 mb-2">
-              <button
-                type="button"
-                className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-                style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
-                onClick={() => setTab('transfer')}
-              >
-                Private Transfer
-              </button>
-              <button
-                type="button"
-                className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'hourly' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-                style={tab === 'hourly' ? { background: '#2E4052' } : undefined}
-                onClick={() => { setTab('hourly'); setShowReturn(false) }}
-              >
-                Hourly Hire
-              </button>
+              {showTransfer && (
+                <button
+                  type="button"
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
+                  onClick={() => setTab('transfer')}
+                >
+                  Private Transfer
+                </button>
+              )}
+              {showHourly && (
+                <button
+                  type="button"
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'hourly' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  style={tab === 'hourly' ? { background: '#2E4052' } : undefined}
+                  onClick={() => { setTab('hourly'); setShowReturn(false) }}
+                >
+                  Hourly Hire
+                </button>
+              )}
             </div>
 
             {/* From */}
@@ -213,62 +184,45 @@ export default function HeroBooking() {
             >
               Check Fare
             </button>
-          </div>
 
-          {/* Right: slider card — desktop only, height matches form column via items-stretch */}
-          <div className="hidden md:block flex-1">
-            <div className="h-full flex justify-end">
-              <div className="relative w-full max-w-[360px] lg:max-w-[440px] h-full rounded-[22px] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.28)]">
-
-                {/* Slides */}
-                {SLIDER_IMAGES.map((img, i) => (
-                  <div
-                    key={i}
-                    className="absolute inset-0 transition-opacity duration-700 ease-in-out"
-                    style={{ opacity: i === slideIndex ? 1 : 0, zIndex: i === slideIndex ? 1 : 0 }}
-                  >
-                    <img
-                      src={img.url}
-                      alt={img.label}
-                      className="w-full h-full object-cover"
-                      draggable={false}
-                    />
-                  </div>
-                ))}
-
-                {/* Dot indicators */}
-                <div className="absolute bottom-[14px] left-0 right-0 flex justify-center items-center gap-[7px] z-10">
-                  {SLIDER_IMAGES.map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setSlideIndex(i)}
-                      className="rounded-full transition-all duration-300 cursor-pointer border-none p-0"
-                      style={{
-                        width: i === slideIndex ? '20px' : '6px',
-                        height: '6px',
-                        background: i === slideIndex ? '#fff' : 'rgba(255,255,255,0.45)',
-                      }}
-                      aria-label={`Go to slide ${i + 1}`}
-                    />
-                  ))}
-                </div>
-
+            {/* Payment methods */}
+            <div className="mt-4 flex items-center gap-3">
+              <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">We Accept</span>
+              <div className="w-px h-5 bg-border flex-shrink-0" />
+              <div className="flex items-center gap-3">
+                <Visa style={{ height: 28, width: 'auto' }} />
+                <Mastercard style={{ height: 28, width: 'auto' }} />
+                <Paypal style={{ height: 28, width: 'auto' }} />
+                <Generic style={{ height: 28, width: 'auto' }} />
+                <CashLogo style={{ height: 28, width: 'auto' }} />
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Payment methods — below form, left-aligned to form width */}
-        <div className="max-w-[420px] mt-4 flex items-center gap-3">
-          <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">We Accept</span>
-          <div className="w-px h-5 bg-border flex-shrink-0" />
-          <div className="flex items-center gap-3">
-            <Visa style={{ height: 28, width: 'auto' }} />
-            <Mastercard style={{ height: 28, width: 'auto' }} />
-            <Paypal style={{ height: 28, width: 'auto' }} />
-            <Generic style={{ height: 28, width: 'auto' }} />
-            <CashLogo style={{ height: 28, width: 'auto' }} />
+          {/* Right: hero heading — desktop only */}
+          <div className="hidden md:flex flex-1 flex-col justify-center">
+            <p className="font-body text-[0.85rem] font-bold text-primary/60 tracking-[2px] uppercase mb-4">
+              Safe, Reliable &amp; Luxury
+            </p>
+            <h1 className="font-head text-[3rem] lg:text-[3.8rem] text-primary font-extrabold leading-[1.08] mb-5">
+              Premium<br />Chauffeur<br />Service in UAE
+            </h1>
+            <p className="font-head text-[1.15rem] lg:text-[1.3rem] font-semibold text-primary/70 leading-snug mb-8">
+              Book Your Ride in 30 Seconds
+            </p>
+            {/* Stats row */}
+            <div className="flex items-center gap-6">
+              {[
+                { num: '4.9★', lbl: 'Rating' },
+                { num: '12k+', lbl: 'Rides' },
+                { num: '24/7', lbl: 'Support' },
+              ].map((s, i) => (
+                <div key={i} className="flex flex-col">
+                  <span className="font-head text-[1.6rem] font-bold text-primary leading-none">{s.num}</span>
+                  <span className="text-[11px] text-muted uppercase tracking-[0.8px] mt-1">{s.lbl}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
