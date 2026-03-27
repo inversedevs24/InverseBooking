@@ -2,8 +2,6 @@ import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import DateTimePicker from '../ui/DateTimePicker'
-import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
-import CashLogo from '../ui/CashLogo'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
@@ -68,7 +66,7 @@ export default function HeroBooking() {
         {/* Heading — mobile only (shown above form on small screens) */}
         <div className="md:hidden text-center mb-5">
           <h1 className="font-head text-[2.4rem] text-primary font-extrabold leading-[1.1] mb-3">
-            Premium Chauffeur Service in UAE
+            Luxury Rides at Affordable Rates
           </h1>
           <p className="font-head text-[1.1rem] font-semibold text-primary/70 leading-snug mb-1">
             Book Your Ride in 30 Seconds
@@ -186,15 +184,21 @@ export default function HeroBooking() {
             </button>
 
             {/* Payment methods */}
-            <div className="mt-4 flex items-center gap-3">
-              <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">We Accept</span>
-              <div className="w-px h-5 bg-border flex-shrink-0" />
-              <div className="flex items-center gap-3">
-                <Visa style={{ height: 28, width: 'auto' }} />
-                <Mastercard style={{ height: 28, width: 'auto' }} />
-                <Paypal style={{ height: 28, width: 'auto' }} />
-                <Generic style={{ height: 28, width: 'auto' }} />
-                <CashLogo style={{ height: 28, width: 'auto' }} />
+            <div className="mt-4 flex flex-col gap-2">
+              <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px]">We Accept</span>
+              <div className="flex items-center gap-2">
+                {[
+                  { src: '/payments/visa-svgrepo-com.svg', alt: 'Visa' },
+                  { src: '/payments/mastercard-svgrepo-com.svg', alt: 'Mastercard' },
+                  { src: '/payments/amex-svgrepo-com.svg', alt: 'American Express' },
+                  { src: '/payments/paypal-3-svgrepo-com.svg', alt: 'PayPal' },
+                  { src: '/payments/apple-pay-svgrepo-com.svg', alt: 'Apple Pay' },
+                  { src: '/payments/google-pay-svgrepo-com.svg', alt: 'Google Pay' },
+                  { src: '/payments/stripe-svgrepo-com.svg', alt: 'Stripe' },
+                  { src: '/payments/cash-svgrepo-com.svg', alt: 'Cash' },
+                ].map(({ src, alt }) => (
+                  <img key={alt} src={src} alt={alt} className="h-9 w-auto rounded object-contain" />
+                ))}
               </div>
             </div>
           </div>
@@ -205,7 +209,7 @@ export default function HeroBooking() {
               Safe, Reliable &amp; Luxury
             </p>
             <h1 className="font-head text-[3rem] lg:text-[3.8rem] text-primary font-extrabold leading-[1.08] mb-5">
-              Premium<br />Chauffeur<br />Service in UAE
+              Luxury Rides<br />at Affordable<br />Rates
             </h1>
             <p className="font-head text-[1.15rem] lg:text-[1.3rem] font-semibold text-primary/70 leading-snug mb-8">
               Book Your Ride in 30 Seconds

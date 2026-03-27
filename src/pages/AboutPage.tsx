@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Car, UserCheck, Compass, Landmark, CalendarDays, Wifi } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
-import CashLogo from '../components/ui/CashLogo'
 
 type OfferItem = { Icon: LucideIcon; title: string; desc: string }
 type WhyCard = { Icon: LucideIcon; title: string; desc: string }
@@ -39,11 +37,18 @@ export default function AboutPage() {
                 </span>
                 <div className="w-px h-5 bg-border flex-shrink-0" />
                 <div className="flex items-center gap-3 flex-wrap">
-                  <Visa style={{ height: 28, width: 'auto' }} />
-                  <Mastercard style={{ height: 28, width: 'auto' }} />
-                  <Paypal style={{ height: 28, width: 'auto' }} />
-                  <Generic style={{ height: 28, width: 'auto' }} />
-                  <CashLogo style={{ height: 28, width: 'auto' }} />
+                  {[
+                    { src: '/payments/visa-svgrepo-com.svg', alt: 'Visa' },
+                    { src: '/payments/mastercard-svgrepo-com.svg', alt: 'Mastercard' },
+                    { src: '/payments/amex-svgrepo-com.svg', alt: 'American Express' },
+                    { src: '/payments/paypal-3-svgrepo-com.svg', alt: 'PayPal' },
+                    { src: '/payments/apple-pay-svgrepo-com.svg', alt: 'Apple Pay' },
+                    { src: '/payments/google-pay-svgrepo-com.svg', alt: 'Google Pay' },
+                    { src: '/payments/stripe-svgrepo-com.svg', alt: 'Stripe' },
+                    { src: '/payments/cash-svgrepo-com.svg', alt: 'Cash' },
+                  ].map(({ src, alt }) => (
+                    <img key={alt} src={src} alt={alt} className="h-7 w-auto rounded object-contain" />
+                  ))}
                 </div>
               </div>
             </div>

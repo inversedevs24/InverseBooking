@@ -3,8 +3,6 @@ import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandEmail, brandPhone } from '../../env'
 import { SERVICES } from '../../data'
-import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
-import CashLogo from '../ui/CashLogo'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -147,14 +145,27 @@ export default function Footer() {
           </p>
 
           {/* Payment methods */}
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-[11px] text-white/30 uppercase tracking-widest">We Accept</span>
-            <div className="flex items-center gap-3">
-              <Visa style={{ height: 28, width: 'auto' }} />
-              <Mastercard style={{ height: 28, width: 'auto' }} />
-              <Paypal style={{ height: 28, width: 'auto' }} />
-              <Generic style={{ height: 28, width: 'auto' }} />
-              <CashLogo style={{ height: 28, width: 'auto' }} />
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] text-white/30 uppercase tracking-widest whitespace-nowrap flex-shrink-0">We Accept</span>
+            <div className="w-px h-5 bg-white/10 flex-shrink-0" />
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { src: '/payments/visa-svgrepo-com.svg', alt: 'Visa' },
+                { src: '/payments/mastercard-svgrepo-com.svg', alt: 'Mastercard' },
+                { src: '/payments/amex-svgrepo-com.svg', alt: 'American Express' },
+                { src: '/payments/paypal-3-svgrepo-com.svg', alt: 'PayPal' },
+                { src: '/payments/apple-pay-svgrepo-com.svg', alt: 'Apple Pay' },
+                { src: '/payments/google-pay-svgrepo-com.svg', alt: 'Google Pay' },
+                { src: '/payments/stripe-svgrepo-com.svg', alt: 'Stripe' },
+                { src: '/payments/cash-svgrepo-com.svg', alt: 'Cash' },
+              ].map(({ src, alt }) => (
+                <img
+                  key={alt}
+                  src={src}
+                  alt={alt}
+                  className="h-7 w-auto rounded object-contain"
+                />
+              ))}
             </div>
           </div>
 
