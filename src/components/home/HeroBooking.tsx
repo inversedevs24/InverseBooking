@@ -1,9 +1,12 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MapPin } from 'lucide-react'
+import { Ruler, Clock } from 'lucide-react'
 import DateTimePicker from '../ui/DateTimePicker'
 import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
 import CashLogo from '../ui/CashLogo'
+import { PlacesInput } from '../ui/PlacesInput'
+import type { PlaceResult } from '../ui/PlacesInput'
+import { loadGoogleMaps } from '../../services/googleMapsLoader'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
@@ -15,26 +18,65 @@ function toLocalISO(date: Date) {
 }
 
 export default function HeroBooking() {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { products, initialized } = useAppSelector(s => s.shopify)
 
-  useEffect(() => {
-    dispatch(fetchTaxiProducts())
-  }, [dispatch])
+  useEffect(() => { dispatch(fetchTaxiProducts()) }, [dispatch])
 
-  // Derive which tabs to show from Shopify service types
+  // Derive tabs from Shopify service types
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
   const showTransfer = !initialized || activeTypes.size === 0 || activeTypes.has('Private Transfer')
   const showHourly = !initialized || activeTypes.size === 0 || activeTypes.has('Hourly Hire')
 
+  // Google Maps
+  const [mapsReady, setMapsReady] = useState(false)
+  useEffect(() => {
+    loadGoogleMaps().then(() => setMapsReady(true)).catch(() => {})
+  }, [])
+
   const [tab, setTab] = useState<'transfer' | 'hourly'>('transfer')
+
+  // Location
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
+  const [fromCoords, setFromCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [toCoords, setToCoords] = useState<{ lat: number; lng: number } | null>(null)
+
+  // Route result
+  const [distanceMiles, setDistanceMiles] = useState<number | null>(null)
+  const [durationText, setDurationText] = useState('')
+
   const minNow = useMemo(() => toLocalISO(new Date()), [])
   const [datetime, setDatetime] = useState(minNow)
   const [showReturn, setShowReturn] = useState(false)
   const [returnDatetime, setReturnDatetime] = useState('')
-  const navigate = useNavigate()
+
+  // Compute distance when both coords are set
+  useEffect(() => {
+    if (!fromCoords || !toCoords) { setDistanceMiles(null); setDurationText(''); return }
+    const maps = (window as any).google?.maps
+    if (!maps?.DistanceMatrixService) return
+
+    new maps.DistanceMatrixService().getDistanceMatrix(
+      {
+        origins: [fromCoords],
+        destinations: [toCoords],
+        travelMode: maps.TravelMode.DRIVING,
+        unitSystem: maps.UnitSystem.IMPERIAL,
+      },
+      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
+        if (status !== 'OK') return
+        const el = response.rows[0]?.elements[0]
+        if (el?.status !== 'OK') return
+        setDistanceMiles(el.distance.value / 1609.34)
+        setDurationText(el.duration.text)
+      }
+    )
+  }, [fromCoords, toCoords])
+
+  function handleFromChange(r: PlaceResult) { setFrom(r.address); setFromCoords(r.coords) }
+  function handleToChange(r: PlaceResult) { setTo(r.address); setToCoords(r.coords) }
 
   function handlePickupChange(val: string) {
     setDatetime(val)
@@ -43,9 +85,20 @@ export default function HeroBooking() {
 
   const handleCheckFare = () => {
     navigate('/vehicles', {
-      state: { from, to, datetime, returnDatetime: showReturn ? returnDatetime : undefined, type: tab },
+      state: {
+        from, to, datetime,
+        returnDatetime: showReturn ? returnDatetime : undefined,
+        type: tab,
+        service: tab === 'transfer' ? 'transfer' : 'hourly',
+        distanceMiles: distanceMiles ?? undefined,
+        duration: durationText || undefined,
+        fromCoords: fromCoords ?? undefined,
+        toCoords: toCoords ?? undefined,
+      },
     })
   }
+
+  const inputCls = 'flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]'
 
   return (
     <div className="relative flex items-center">
@@ -65,7 +118,7 @@ export default function HeroBooking() {
       {/* Main content */}
       <div className="relative w-full max-w-container mx-auto px-6 md:px-10 pt-8 pb-20 md:py-16 max-sm:pb-32">
 
-        {/* Heading — mobile only (shown above form on small screens) */}
+        {/* Heading — mobile only */}
         <div className="md:hidden text-center mb-5">
           <h1 className="font-head text-[2.4rem] text-primary font-extrabold leading-[1.1] mb-3">
             Premium Chauffeur Service in UAE
@@ -78,10 +131,9 @@ export default function HeroBooking() {
           </p>
         </div>
 
-        {/* Two-column row: form left, hero text right */}
         <div className="flex items-center gap-8 lg:gap-16">
 
-          {/* Left: form fields */}
+          {/* Left: form */}
           <div className="max-w-[420px] w-full flex-shrink-0 flex flex-col">
 
             {/* Tabs */}
@@ -112,12 +164,14 @@ export default function HeroBooking() {
             <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">
               <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">From</div>
               <div className="flex items-center gap-2">
-                <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
-                <input
-                  className="flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]"
+                <span className="text-[#aaa] flex-shrink-0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <PlacesInput
                   placeholder="Enter a pickup location"
-                  value={from}
-                  onChange={e => setFrom(e.target.value)}
+                  className={inputCls}
+                  mapsReady={mapsReady}
+                  onPlaceChange={handleFromChange}
                 />
               </div>
             </div>
@@ -127,13 +181,33 @@ export default function HeroBooking() {
               <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">
                 <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">To</div>
                 <div className="flex items-center gap-2">
-                  <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
-                  <input
-                    className="flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]"
+                  <span className="text-[#aaa] flex-shrink-0">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  </span>
+                  <PlacesInput
                     placeholder="Enter a dropoff location"
-                    value={to}
-                    onChange={e => setTo(e.target.value)}
+                    className={inputCls}
+                    mapsReady={mapsReady}
+                    onPlaceChange={handleToChange}
                   />
+                </div>
+              </div>
+            )}
+
+            {/* Route info badge — shows after both locations picked */}
+            {tab === 'transfer' && distanceMiles !== null && (
+              <div
+                className="rounded-2xl px-4 py-2.5 mb-2 flex items-center gap-4"
+                style={{ backgroundColor: '#2E4052' }}
+              >
+                <div className="flex items-center gap-1.5">
+                  <Ruler size={12} style={{ color: '#BDD9BF' }} />
+                  <span className="text-[13px] font-bold text-white font-head">{distanceMiles.toFixed(1)} mi</span>
+                </div>
+                <div className="w-px h-3.5 bg-white/20" />
+                <div className="flex items-center gap-1.5">
+                  <Clock size={12} style={{ color: '#BDD9BF' }} />
+                  <span className="text-[13px] font-bold text-white font-head">{durationText}</span>
                 </div>
               </div>
             )}
@@ -199,7 +273,7 @@ export default function HeroBooking() {
             </div>
           </div>
 
-          {/* Right: hero heading — desktop only */}
+          {/* Right: hero text — desktop only */}
           <div className="hidden md:flex flex-1 flex-col justify-center">
             <p className="font-body text-[0.85rem] font-bold text-primary/60 tracking-[2px] uppercase mb-4">
               Safe, Reliable &amp; Luxury
@@ -210,13 +284,8 @@ export default function HeroBooking() {
             <p className="font-head text-[1.15rem] lg:text-[1.3rem] font-semibold text-primary/70 leading-snug mb-8">
               Book Your Ride in 30 Seconds
             </p>
-            {/* Stats row */}
             <div className="flex items-center gap-6">
-              {[
-                { num: '4.9★', lbl: 'Rating' },
-                { num: '12k+', lbl: 'Rides' },
-                { num: '24/7', lbl: 'Support' },
-              ].map((s, i) => (
+              {[{ num: '4.9★', lbl: 'Rating' }, { num: '12k+', lbl: 'Rides' }, { num: '24/7', lbl: 'Support' }].map((s, i) => (
                 <div key={i} className="flex flex-col">
                   <span className="font-head text-[1.6rem] font-bold text-primary leading-none">{s.num}</span>
                   <span className="text-[11px] text-muted uppercase tracking-[0.8px] mt-1">{s.lbl}</span>
@@ -229,11 +298,7 @@ export default function HeroBooking() {
 
       {/* Stats pill — mobile only */}
       <div className="md:hidden absolute bottom-4 right-4 left-4 z-[3] flex justify-center bg-white/80 backdrop-blur-[12px] border border-[#D4DDE5] rounded-[14px] overflow-hidden">
-        {[
-          { num: '4.9★', lbl: 'Rating' },
-          { num: '12k+', lbl: 'Rides' },
-          { num: '24/7', lbl: 'Support' },
-        ].map((s, i) => (
+        {[{ num: '4.9★', lbl: 'Rating' }, { num: '12k+', lbl: 'Rides' }, { num: '24/7', lbl: 'Support' }].map((s, i) => (
           <div key={i} className={`flex-1 px-4 py-[14px] text-center ${i < 2 ? 'border-r border-[#D4DDE5]' : ''}`}>
             <div className="font-head text-xl font-bold text-primary leading-none">{s.num}</div>
             <div className="text-[10px] text-muted mt-1 uppercase tracking-[0.8px]">{s.lbl}</div>

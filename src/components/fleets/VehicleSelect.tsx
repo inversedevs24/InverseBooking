@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, Users, Luggage, MapPin, CalendarDays,
@@ -7,7 +7,8 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 import { getVariantIdForDistance } from '../../services/shopifyClient'
-import type { TaxiOption, SearchDetails } from '../../types'
+import { loadGoogleMaps } from '../../services/googleMapsLoader'
+import type { TaxiOption, TaxiVariant, SearchDetails } from '../../types'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -33,7 +34,9 @@ function buildSearchDetails(state: Record<string, any>): SearchDetails {
     tripType: type,
     from: state.from ?? '',
     to: state.to ?? '',
-    distance: typeof state.distanceMiles === 'number' ? state.distanceMiles : 0,
+    fromCoords: state.fromCoords ?? undefined,
+    toCoords: state.toCoords ?? undefined,
+    distance: typeof state.distanceKm === 'number' ? state.distanceKm : 0,
     duration: state.duration ?? '',
     date,
     time,
@@ -44,11 +47,123 @@ function buildSearchDetails(state: Record<string, any>): SearchDetails {
   }
 }
 
+// ─── Route Map Preview ────────────────────────────────────────────────────────
+
+const CLEAN_MAP_STYLES = [
+  { elementType: 'geometry', stylers: [{ color: '#f1f5f4' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#f1f5f4' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#8a9bb0' }] },
+  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#dde5e0' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#c5d4cb' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9aabb5' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9dde8' }] },
+  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#eaf0ec' }] },
+]
+
+function RouteMapPreview({
+  fromCoords,
+  toCoords,
+}: {
+  fromCoords: { lat: number; lng: number }
+  toCoords: { lat: number; lng: number }
+}) {
+  const divRef = useRef<HTMLDivElement>(null)
+  const didInit = useRef(false)
+
+  useEffect(() => {
+    if (didInit.current) return
+    didInit.current = true
+
+    loadGoogleMaps()
+      .then(() => {
+        if (!divRef.current) return
+        const maps = (window as any).google.maps
+
+        const center = {
+          lat: (fromCoords.lat + toCoords.lat) / 2,
+          lng: (fromCoords.lng + toCoords.lng) / 2,
+        }
+
+        const map = new maps.Map(divRef.current, {
+          zoom: 9,
+          center,
+          disableDefaultUI: true,
+          gestureHandling: 'none',
+          clickableIcons: false,
+          styles: CLEAN_MAP_STYLES,
+        })
+
+        const renderer = new maps.DirectionsRenderer({
+          map,
+          suppressMarkers: true,
+          polylineOptions: { strokeColor: '#2E4052', strokeWeight: 3, strokeOpacity: 0.9 },
+        })
+
+        new maps.DirectionsService().route(
+          { origin: fromCoords, destination: toCoords, travelMode: maps.TravelMode.DRIVING },
+          (result: any, status: string) => {
+            if (status !== 'OK') return
+            renderer.setDirections(result)
+            const leg = result.routes[0].legs[0]
+
+            // Pickup marker — light green fill
+            new maps.Marker({
+              position: leg.start_location,
+              map,
+              icon: {
+                path: maps.SymbolPath.CIRCLE,
+                scale: 7,
+                fillColor: '#BDD9BF',
+                fillOpacity: 1,
+                strokeColor: '#2E4052',
+                strokeWeight: 2,
+              },
+            })
+
+            // Drop-off marker — dark fill
+            new maps.Marker({
+              position: leg.end_location,
+              map,
+              icon: {
+                path: maps.SymbolPath.CIRCLE,
+                scale: 7,
+                fillColor: '#2E4052',
+                fillOpacity: 1,
+                strokeColor: '#2E4052',
+                strokeWeight: 2,
+              },
+            })
+          }
+        )
+      })
+      .catch(() => {/* silently skip map if Maps fails */})
+  }, [])
+
+  return (
+    <div
+      ref={divRef}
+      style={{ height: 170, borderRadius: 20, overflow: 'hidden' }}
+    />
+  )
+}
+
 // ─── Trip Summary Sidebar ─────────────────────────────────────────────────────
 
 function TripSummary({ search }: { search: SearchDetails }) {
+  const hasRoute = !!(search.fromCoords && search.toCoords)
+
   return (
     <div className="flex flex-col gap-3">
+
+      {/* Route map */}
+      {hasRoute && (
+        <RouteMapPreview
+          fromCoords={search.fromCoords!}
+          toCoords={search.toCoords!}
+        />
+      )}
 
       {/* Route card */}
       <div className="rounded-[20px] overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(46,64,82,0.12)' }}>
@@ -98,7 +213,7 @@ function TripSummary({ search }: { search: SearchDetails }) {
         <div className="grid grid-cols-3 divide-x bg-white" style={{ borderColor: '#F0F5F0' }}>
           {[
             { Icon: CalendarDays, val: formatDate(search.date), sub: 'Date' },
-            { Icon: Ruler, val: search.distance ? `${search.distance.toFixed(1)} mi` : '—', sub: 'Distance' },
+            { Icon: Ruler, val: search.distance ? `${search.distance.toFixed(1)} km` : '—', sub: 'Distance' },
             { Icon: Clock, val: search.duration || '—', sub: 'Est. time' },
           ].map(({ Icon, val, sub }, i) => (
             <div key={i} className="px-3 py-3.5 text-center" style={{ borderColor: '#F0F5F0' }}>
@@ -139,8 +254,8 @@ function TripSummary({ search }: { search: SearchDetails }) {
         <Zap size={13} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
         <p className="text-[11px] leading-relaxed font-body" style={{ color: '#2E4052' }}>
           {search.distance
-            ? `Prices based on a ${search.distance.toFixed(1)} mile journey.`
-            : 'Prices shown for the selected distance band.'}
+            ? `Prices based on a ${search.distance.toFixed(1)} km journey.`
+            : 'Prices shown for the nearest distance band.'}
           {' '}Free cancellation up to 1 hour before pickup.
         </p>
       </div>
@@ -156,15 +271,17 @@ function VehicleCard({
   selected,
   priceDisplay,
   currencyCode,
+  isEstimate,
   onSelect,
 }: {
   vehicle: TaxiOption
   selected: boolean
   priceDisplay: string
   currencyCode: string
+  isEstimate: boolean
   onSelect: () => void
 }) {
-  const currencySymbol = currencyCode === 'GBP' ? '£' : currencyCode === 'USD' ? '$' : currencyCode
+  const currencySymbol = currencyCode === 'GBP' ? '£' : currencyCode === 'USD' ? '$' : currencyCode === 'AED' ? 'AED ' : currencyCode
 
   return (
     <div
@@ -266,13 +383,14 @@ function VehicleCard({
               {priceDisplay !== '—' ? (
                 <>
                   <div className="font-head text-[22px] font-bold leading-none" style={{ color: '#2E4052' }}>
+                    {isEstimate && <span className="text-[13px] font-semibold mr-0.5">From</span>}
                     {currencySymbol}{priceDisplay}
                   </div>
                   <div
                     className="text-[9px] font-semibold uppercase tracking-wide mt-1 font-body whitespace-nowrap"
                     style={{ color: 'rgba(46,64,82,0.4)' }}
                   >
-                    est. total
+                    {isEstimate ? 'starting price' : 'est. total'}
                   </div>
                 </>
               ) : (
@@ -344,7 +462,7 @@ export default function VehicleSelect() {
   const { products, loading, error } = useAppSelector(s => s.shopify)
 
   const searchDetails = buildSearchDetails(rawState)
-  const { distance: distanceMiles, passengers: requiredPassengers } = searchDetails
+  const { distance: distanceKm, passengers: requiredPassengers } = searchDetails
 
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [showSummary, setShowSummary] = useState(false)
@@ -353,18 +471,44 @@ export default function VehicleSelect() {
     dispatch(fetchTaxiProducts())
   }, [dispatch])
 
-  const available = products.filter(p => p.passengers >= requiredPassengers)
+  const SERVICE_TYPE_LABEL: Record<string, string> = {
+    transfer: 'Private Transfer',
+    'city-to-city': 'City to City',
+    airport: 'Airport Rides',
+    'city-tour': 'City Tour',
+    hourly: 'Hourly Hire',
+    'desert-safari': 'Desert Safari',
+  }
+  const serviceLabel = rawState.service ? SERVICE_TYPE_LABEL[rawState.service as string] : undefined
 
-  const getVariantForProduct = (product: TaxiOption) => {
-    if (!distanceMiles || product.variants.length === 0) return null
-    const id = getVariantIdForDistance(product.variants, distanceMiles)
-    return product.variants.find(v => v.id === id) ?? null
+  const available = products.filter(p => {
+    if (p.passengers < requiredPassengers) return false
+    if (serviceLabel && p.serviceType && p.serviceType !== serviceLabel) return false
+    return true
+  })
+
+  // Returns the best-matching variant + whether the price is an exact match or a fallback estimate
+  const getVariantForProduct = (product: TaxiOption): { variant: TaxiVariant | null; isEstimate: boolean } => {
+    if (product.variants.length === 0) return { variant: null, isEstimate: false }
+
+    const bandVariants = product.variants.filter(v => /^\d+-\d+\s*(km|miles?)$/i.test(v.title))
+    const pool = bandVariants.length > 0 ? bandVariants : product.variants
+
+    // No distance calculated yet → show the cheapest band as a "from" price
+    if (!distanceKm) {
+      const sorted = [...pool].sort((a, b) => parseFloat(a.price.amount) - parseFloat(b.price.amount))
+      return { variant: sorted[0] ?? null, isEstimate: true }
+    }
+
+    const id = getVariantIdForDistance(product.variants, distanceKm)
+    const variant = product.variants.find(v => v.id === id) ?? null
+    return { variant, isEstimate: false }
   }
 
   const handleSelect = (product: TaxiOption) => {
     setSelectedId(product.id)
 
-    const variant = getVariantForProduct(product)
+    const { variant } = getVariantForProduct(product)
     const selectedVariantId = variant?.id ?? product.shopifyId
     const variantPrice = variant ? parseFloat(variant.price.amount) : 0
     const quantity = searchDetails.tripType === 'return' ? 2 : 1
@@ -393,7 +537,7 @@ export default function VehicleSelect() {
             tagColor: '#FFC857',
           },
           price: totalPrice.toFixed(2),
-          distance: distanceMiles,
+          distance: distanceKm,
           duration: searchDetails.duration,
           taxiOption: product,
           selectedVariantId,
@@ -559,7 +703,7 @@ export default function VehicleSelect() {
             {!loading && !error && (
               <div className="flex flex-col gap-3">
                 {available.map(product => {
-                  const variant = getVariantForProduct(product)
+                  const { variant, isEstimate } = getVariantForProduct(product)
                   const priceDisplay = variant
                     ? parseFloat(variant.price.amount).toFixed(2)
                     : '—'
@@ -572,6 +716,7 @@ export default function VehicleSelect() {
                       selected={selectedId === product.id}
                       priceDisplay={priceDisplay}
                       currencyCode={currencyCode}
+                      isEstimate={isEstimate}
                       onSelect={() => handleSelect(product)}
                     />
                   )

@@ -97,13 +97,14 @@ export function getMetafieldValue(
   }
 }
 
-const BAND_REGEX = /^\d+-\d+\s*miles?$/i
+// Matches both "0-10 km" and "0-10 miles" variant titles
+const BAND_REGEX = /^\d+-\d+\s*(km|miles?)$/i
 
 export function parseVariants(edges: any[]): TaxiVariant[] {
   return edges.map((edge: any) => {
     const node = edge.node
     const title: string = node.title ?? ''
-    const match = title.match(/^(\d+)-(\d+)\s*miles?$/i)
+    const match = title.match(/^(\d+)-(\d+)\s*(km|miles?)$/i)
     return {
       id: node.id as string,
       title,
@@ -167,35 +168,35 @@ function transformProduct(node: any): TaxiOption {
 // ─── Variant Matching ─────────────────────────────────────────────────────────
 
 /**
- * Returns the Shopify variant GID that covers distanceMiles.
- * Only considers variants matching /^\d+-\d+\s*miles?$/i.
- * Exact match first; falls back to nearest band (below → first, above → last, mid → closest midpoint).
+ * Returns the Shopify variant GID that covers distanceKm.
+ * Matches variant titles in either "0-10 km" or "0-10 miles" format.
+ * Exact match first; falls back to nearest band.
  */
 export function getVariantIdForDistance(
   variants: TaxiVariant[],
-  distanceMiles: number,
+  distanceKm: number,
 ): string | null {
   const valid = variants.filter(v => BAND_REGEX.test(v.title))
   if (valid.length === 0) return null
 
   // Exact match
   const exact = valid.find(
-    v => distanceMiles >= v.kmRangeMin && distanceMiles <= v.kmRangeMax,
+    v => distanceKm >= v.kmRangeMin && distanceKm <= v.kmRangeMax,
   )
   if (exact) return exact.id
 
   // Sort ascending by range start for fallback
   const sorted = [...valid].sort((a, b) => a.kmRangeMin - b.kmRangeMin)
 
-  if (distanceMiles < sorted[0].kmRangeMin) return sorted[0].id
-  if (distanceMiles > sorted[sorted.length - 1].kmRangeMax) return sorted[sorted.length - 1].id
+  if (distanceKm < sorted[0].kmRangeMin) return sorted[0].id
+  if (distanceKm > sorted[sorted.length - 1].kmRangeMax) return sorted[sorted.length - 1].id
 
   // Closest midpoint
   let nearest = sorted[0]
   let minDiff = Infinity
   for (const v of sorted) {
     const mid = (v.kmRangeMin + v.kmRangeMax) / 2
-    const diff = Math.abs(distanceMiles - mid)
+    const diff = Math.abs(distanceKm - mid)
     if (diff < minDiff) {
       minDiff = diff
       nearest = v
