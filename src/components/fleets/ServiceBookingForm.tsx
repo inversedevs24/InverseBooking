@@ -293,8 +293,6 @@ export default function ServiceBookingForm() {
                 type: config.showHours ? 'hourly' : 'transfer',
                 distanceKm: distanceKm ?? undefined,
                 duration: durationText || undefined,
-                fromCoords: fromCoords ?? undefined,
-                toCoords: toCoords ?? undefined,
             },
         })
     }

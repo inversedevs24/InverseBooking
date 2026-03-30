@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, User, Mail, Phone, Users, Plane,
-  MessageSquare, Clock, Ruler, CheckCircle2,
+  Clock, Ruler, CheckCircle2,
   ShieldCheck, ArrowRight, Car, LogIn, UserPlus, X,
 } from 'lucide-react'
 import type { BookingState, PassengerForm, ValidationErrors } from '../../types'
@@ -393,19 +393,6 @@ export default function BookingDetails() {
                     </div>
                   </Field>
                 </div>
-
-                {/* Special requests */}
-                <Field label="Special Requests (optional)">
-                  <div className="relative">
-                    <MessageSquare size={13} className="absolute left-3.5 top-3 text-slate-300 pointer-events-none" />
-                    <textarea
-                      className={`${inputCls()} pl-10 resize-y min-h-[90px]`}
-                      placeholder="Child seat, meet & greet, specific route…"
-                      value={form.specialRequests}
-                      onChange={e => set('specialRequests', e.target.value)}
-                    />
-                  </div>
-                </Field>
 
                 {/* CTA */}
                 <button
