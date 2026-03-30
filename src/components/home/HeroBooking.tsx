@@ -1,9 +1,11 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import DateTimePicker from '../ui/DateTimePicker'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
+import { fetchTaxiProducts, fetchHomepageImages } from '../../store/slices/shopifySlice'
+
+const FALLBACK_IMAGE = '/images/hero.png'
 
 const GRAIN_SVG = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
@@ -14,11 +16,26 @@ function toLocalISO(date: Date) {
 
 export default function HeroBooking() {
   const dispatch = useAppDispatch()
-  const { products, initialized } = useAppSelector(s => s.shopify)
+  const { products, initialized, heroImages, heroImagesInitialized } = useAppSelector(s => s.shopify)
 
   useEffect(() => {
     dispatch(fetchTaxiProducts())
+    dispatch(fetchHomepageImages())
   }, [dispatch])
+
+  // ─── Slideshow ───────────────────────────────────────────────────────────────
+  // Use fallback until Shopify responds; only switch to fetched images once confirmed
+  const images = heroImagesInitialized && heroImages.length > 0 ? heroImages : [FALLBACK_IMAGE]
+  const [activeIdx, setActiveIdx] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (images.length <= 1) return
+    timerRef.current = setInterval(() => {
+      setActiveIdx(i => (i + 1) % images.length)
+    }, 2000)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [images.length])
 
   // Derive which tabs to show from Shopify service types
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
@@ -47,12 +64,18 @@ export default function HeroBooking() {
 
   return (
     <div className="relative flex items-center">
-      {/* Background */}
+      {/* Background slideshow */}
       <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center filter brightness-[0.82] saturate-[0.9] animate-hero-zoom origin-center"
-          style={{ backgroundImage: "url('https://images.pexels.com/photos/1037995/pexels-photo-1037995.jpeg')" }}
-        />
+        {images.map((src, i) => (
+          <div
+            key={src}
+            className="absolute inset-0 bg-cover bg-center filter brightness-[0.82] saturate-[0.9] transition-opacity duration-1000"
+            style={{
+              backgroundImage: `url('${src}')`,
+              opacity: i === activeIdx ? 1 : 0,
+            }}
+          />
+        ))}
         <div
           className="absolute inset-0"
           style={{ background: 'linear-gradient(110deg, rgba(189,217,191,0.82) 0%, rgba(189,217,191,0.65) 35%, rgba(189,217,191,0.2) 65%, rgba(189,217,191,0.05) 100%)' }}
@@ -63,24 +86,11 @@ export default function HeroBooking() {
       {/* Main content */}
       <div className="relative w-full max-w-container mx-auto px-6 md:px-10 pt-8 pb-20 md:py-16 max-sm:pb-32">
 
-        {/* Heading — mobile only (shown above form on small screens) */}
-        <div className="md:hidden text-center mb-5">
-          <h1 className="font-head text-[2.4rem] text-primary font-extrabold leading-[1.1] mb-3">
-            Luxury Rides at Affordable Rates
-          </h1>
-          <p className="font-head text-[1.1rem] font-semibold text-primary/70 leading-snug mb-1">
-            Book Your Ride in 30 Seconds
-          </p>
-          <p className="font-body text-[0.9rem] font-medium text-muted tracking-wide uppercase">
-            Safe, Reliable &amp; Luxury
-          </p>
-        </div>
-
-        {/* Two-column row: form left, hero text right */}
-        <div className="flex items-center gap-8 lg:gap-16">
+        {/* Form only */}
+        <div className="flex items-stretch gap-8 lg:gap-16">
 
           {/* Left: form fields */}
-          <div className="max-w-[420px] w-full flex-shrink-0 flex flex-col">
+          <div className="max-w-[420px] w-full flex-shrink-0 flex flex-col relative">
 
             {/* Tabs */}
             <div className="flex gap-2 mb-2">
@@ -201,32 +211,7 @@ export default function HeroBooking() {
                 ))}
               </div>
             </div>
-          </div>
 
-          {/* Right: hero heading — desktop only */}
-          <div className="hidden md:flex flex-1 flex-col justify-center">
-            <p className="font-body text-[0.85rem] font-bold text-primary/60 tracking-[2px] uppercase mb-4">
-              Safe, Reliable &amp; Luxury
-            </p>
-            <h1 className="font-head text-[3rem] lg:text-[3.8rem] text-primary font-extrabold leading-[1.08] mb-5">
-              Luxury Rides<br />at Affordable<br />Rates
-            </h1>
-            <p className="font-head text-[1.15rem] lg:text-[1.3rem] font-semibold text-primary/70 leading-snug mb-8">
-              Book Your Ride in 30 Seconds
-            </p>
-            {/* Stats row */}
-            <div className="flex items-center gap-6">
-              {[
-                { num: '4.9★', lbl: 'Rating' },
-                { num: '12k+', lbl: 'Rides' },
-                { num: '24/7', lbl: 'Support' },
-              ].map((s, i) => (
-                <div key={i} className="flex flex-col">
-                  <span className="font-head text-[1.6rem] font-bold text-primary leading-none">{s.num}</span>
-                  <span className="text-[11px] text-muted uppercase tracking-[0.8px] mt-1">{s.lbl}</span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
