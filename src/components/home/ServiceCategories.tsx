@@ -25,6 +25,14 @@ export default function ServiceCategories() {
   // Derive active service types from Shopify product metafields
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
 
+  // Build serviceType → bannerImage map from product metafields
+  const productBannerMap: Record<string, string> = {}
+  products.forEach(p => {
+    if (p.serviceType && p.bannerImage && !productBannerMap[p.serviceType]) {
+      productBannerMap[p.serviceType] = p.bannerImage
+    }
+  })
+
   // Once initialized, show only services present in the catalog; before that show all
   const visibleServices = initialized && activeTypes.size > 0
     ? SERVICES.filter(s => activeTypes.has(s.label))
@@ -41,7 +49,7 @@ export default function ServiceCategories() {
           >
             <div className="relative w-full h-28 overflow-hidden">
               <img
-                src={s.image}
+                src={productBannerMap[s.label] || s.image}
                 alt={s.label}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]"
               />

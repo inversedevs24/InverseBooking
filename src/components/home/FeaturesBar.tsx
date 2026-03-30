@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Car, Building2, PlaneLanding, MapPinned, Clock3, Sunset } from 'lucide-react'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
 const SERVICES = [
   {
@@ -42,6 +45,18 @@ const SERVICES = [
 
 export default function FeaturesBar() {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { products } = useAppSelector(s => s.shopify)
+
+  useEffect(() => { dispatch(fetchTaxiProducts()) }, [dispatch])
+
+  // Build serviceType → serviceDescription map from product metafields
+  const descMap: Record<string, string> = {}
+  products.forEach(p => {
+    if (p.serviceType && p.serviceDescription && !descMap[p.serviceType]) {
+      descMap[p.serviceType] = p.serviceDescription
+    }
+  })
 
   return (
     <section className="py-10 md:py-[20px]">
@@ -55,7 +70,9 @@ export default function FeaturesBar() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {SERVICES.map(({ Icon, label, sub, to }) => (
+          {SERVICES.map(({ Icon, label, sub, to }) => {
+            const description = descMap[label] || sub
+            return (
             <div
               key={label}
               onClick={() => navigate(to)}
@@ -73,10 +90,11 @@ export default function FeaturesBar() {
               </div>
               <div className="min-w-0">
                 <h4 className="text-[15px] font-bold font-head text-primary leading-tight">{label}</h4>
-                <p className="text-[13px] text-muted font-body mt-1 leading-snug">{sub}</p>
+                <p className="text-[13px] text-muted font-body mt-1 leading-snug">{description}</p>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
 
       </div>

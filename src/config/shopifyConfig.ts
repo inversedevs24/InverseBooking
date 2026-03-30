@@ -8,6 +8,7 @@ export const SHOPIFY_GRAPHQL_URL = `https://${SHOPIFY_CONFIG.storeDomain}/api/20
 export const METAFIELD_NAMESPACES = {
   TAXI_DETAILS: 'taxi_details',
   FEATURES: 'features',
+  CUSTOM: 'custom',
 } as const
 
 export const METAFIELD_KEYS = {
@@ -22,4 +23,6 @@ export const METAFIELD_KEYS = {
   POPULAR: 'popular',
   FEATURES_LIST: 'features_list',
   SERVICE_TYPE: 'service_type',
+  BANNER_IMAGE: 'banner_image',
+  SERVICE_DESCRIPTION: 'service_description',
 } as const
