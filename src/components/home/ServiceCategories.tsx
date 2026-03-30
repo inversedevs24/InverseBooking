@@ -39,14 +39,14 @@ export default function ServiceCategories() {
             onClick={() => navigate(SERVICE_ROUTES[s.label] ?? '/book')}
             className="flex flex-col rounded-card bg-white border border-border cursor-pointer transition-all hover:-translate-y-[3px] hover:shadow-card hover:border-secondary overflow-hidden group"
           >
-            <div className="relative w-full h-20 overflow-hidden">
+            <div className="relative w-full h-28 overflow-hidden">
               <img
                 src={s.image}
                 alt={s.label}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]"
               />
             </div>
-            <div className="p-2 text-center">
+            <div className="p-3 text-center">
               <span className="text-label font-semibold text-primary">{s.label}</span>
             </div>
           </div>

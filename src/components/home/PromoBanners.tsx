@@ -3,7 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
+import { fetchTaxiProducts, fetchServiceImages } from '../../store/slices/shopifySlice'
+
+// Maps banner eyebrow label → metafield key in the "services" collection
+const SERVICE_KEY_MAP: Record<string, string> = {
+  'Hourly Chauffeur': 'hourly_chauffeur',
+  'Private Transfer': 'private_transfer',
+  'Desert Safari':    'desert_safari',
+  'City to City':     'city_to_city',
+  'City Tour':        'city_tour',
+  'Hourly Hire':      'hourly_hire',
+}
 
 interface Banner {
   id: number
@@ -135,21 +145,24 @@ const BANNERS: Banner[] = [
 export default function PromoBanners() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { products, initialized } = useAppSelector(s => s.shopify)
-
-  console.log("products",products);
-  
+  const { products, initialized, serviceImages, serviceImagesInitialized } = useAppSelector(s => s.shopify)
 
   useEffect(() => {
     dispatch(fetchTaxiProducts())
+    dispatch(fetchServiceImages())
   }, [dispatch])
 
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
 
   // Once loaded, show only banners whose service type exists in Shopify; before that show all
-  const visibleBanners = initialized && activeTypes.size > 0
+  const visibleBanners = (initialized && activeTypes.size > 0
     ? BANNERS.filter(b => activeTypes.has(b.eyebrow))
     : BANNERS
+  ).map(b => {
+    const key = SERVICE_KEY_MAP[b.eyebrow]
+    const shopifyImage = serviceImagesInitialized && key ? serviceImages[key] : undefined
+    return shopifyImage ? { ...b, image: shopifyImage } : b
+  })
 
   return (
     <div className="py-10 md:py-[60px]">
@@ -191,7 +204,7 @@ export default function PromoBanners() {
           slidesPerView={1}
           spaceBetween={16}
           breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 16 } }}
-          autoplay={{ delay: 3800, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          autoplay={{ delay: 1200, disableOnInteraction: false, pauseOnMouseEnter: true }}
           pagination={{ clickable: true }}
           loop
           className="promo-swiper !pb-8"

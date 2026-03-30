@@ -107,17 +107,17 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
 
         {/* Specs row — clean icon + label, no pill backgrounds */}
         <div className="flex items-center gap-4 pb-3 border-b" style={{ borderColor: 'rgba(46,64,82,0.08)' }}>
-          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
-            <Users size={13} style={{ color: '#BDD9BF' }} />
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#0F172A' }}>
+            <Users size={13} style={{ color: '#2E4052' }} />
             {fleet.passengers} Passengers
           </span>
-          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#2E4052' }}>
-            <Luggage size={13} style={{ color: '#BDD9BF' }} />
+          <span className="flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: '#0F172A' }}>
+            <Luggage size={13} style={{ color: '#2E4052' }} />
             {fleet.luggage} Bags
           </span>
           {fleet.rating > 0 && (
-            <span className="flex items-center gap-1 ml-auto text-[11px] font-semibold" style={{ color: '#2E4052' }}>
-              <Star size={11} fill="#2E4052" stroke="none" />
+            <span className="flex items-center gap-1 ml-auto text-[11px] font-semibold" style={{ color: '#0F172A' }}>
+              <Star size={11} fill="#0F172A" stroke="none" />
               {fleet.rating.toFixed(1)}
             </span>
           )}
@@ -127,8 +127,8 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
         {fleet.features.length > 0 && (
           <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 py-3">
             {fleet.features.slice(0, 4).map(f => (
-              <span key={f} className="flex items-center gap-1.5 text-[11px] font-medium font-body truncate" style={{ color: 'rgba(46,64,82,0.7)' }}>
-                <Check size={10} strokeWidth={2.5} style={{ color: '#BDD9BF', flexShrink: 0 }} />
+              <span key={f} className="flex items-center gap-1.5 text-[11px] font-medium font-body truncate" style={{ color: '#2E4052' }}>
+                <Check size={10} strokeWidth={2.5} style={{ color: '#2E4052', flexShrink: 0 }} />
                 {f}
               </span>
             ))}

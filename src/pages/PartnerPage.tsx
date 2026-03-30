@@ -58,13 +58,13 @@ function DarkInfoRow({
         className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
         style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
       >
-        <Icon size={14} className="text-white/70" />
+        <Icon size={14} className="text-white" />
       </div>
       <div className="min-w-0">
-        <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <div className="text-[10px] font-bold uppercase tracking-widest mb-1 text-white">
           {label}
         </div>
-        <div className="text-[13px] text-white/80 font-body leading-relaxed">{children}</div>
+        <div className="text-[13px] text-white font-body leading-relaxed">{children}</div>
       </div>
     </div>
   )
@@ -74,7 +74,7 @@ function DarkInfoRow({
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl px-4 pt-3 pb-4 shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
-      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{label}</div>
+      <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-2">{label}</div>
       {children}
     </div>
   )
@@ -102,7 +102,7 @@ export default function PartnerPage() {
           {/* Page heading */}
           <div className="text-center mb-10">
             <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Join Our Network</p>
-            <h1 className="font-head text-heading text-primary leading-none mb-3">Become a Partner</h1>
+            <h1 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.4rem, 5.5vw, 2rem)' }}>Become a Partner</h1>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               Drive your success with us. Join the InverseRide partner network and grow your business.
             </p>
@@ -113,7 +113,7 @@ export default function PartnerPage() {
 
             {/* DARK LEFT */}
             <div
-              className="relative px-7 py-8 flex flex-col"
+              className="relative px-7 py-8 flex flex-col overflow-hidden"
               style={{ background: 'linear-gradient(160deg, #1E3248 0%, #2E4052 55%, #232F3D 100%)' }}
             >
               {/* Decorative blobs */}
@@ -123,8 +123,7 @@ export default function PartnerPage() {
                 style={{ backgroundColor: '#FFC857' }} />
 
               <div className="relative">
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1"
-                  style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-1 text-white">
                   Partner Information
                 </p>
                 <h2 className="font-head text-[22px] font-bold text-white leading-tight mb-6">
@@ -148,9 +147,9 @@ export default function PartnerPage() {
                   style={{ backgroundColor: 'rgba(255,200,87,0.12)', border: '1px solid rgba(255,200,87,0.2)' }}
                 >
                   <CheckCircle2 size={14} style={{ color: '#FFC857' }} className="flex-shrink-0 mt-0.5" />
-                  <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                  <p className="text-[12px] leading-relaxed text-white">
                     Applications are reviewed within{' '}
-                    <span className="text-white font-semibold">3–5 business days</span>.
+                    <span className="font-semibold">3–5 business days</span>.
                   </p>
                 </div>
               </div>
@@ -177,13 +176,13 @@ export default function PartnerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <FormField label="Full Name">
                     <div className="flex items-center gap-2">
-                      <User size={13} className="text-slate-300 flex-shrink-0" />
+                      <User size={13} className="text-[#aaa] flex-shrink-0" />
                       <input className={inputCls} placeholder="John Doe" />
                     </div>
                   </FormField>
                   <FormField label="Phone Number">
                     <div className="flex items-center gap-2">
-                      <Phone size={13} className="text-slate-300 flex-shrink-0" />
+                      <Phone size={13} className="text-[#aaa] flex-shrink-0" />
                       <span className="text-[14px] text-slate-300 font-body flex-shrink-0">+971</span>
                       <input className={inputCls} placeholder="050 123 4567" />
                     </div>
@@ -194,13 +193,13 @@ export default function PartnerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <FormField label="Email Address">
                     <div className="flex items-center gap-2">
-                      <Mail size={13} className="text-slate-300 flex-shrink-0" />
+                      <Mail size={13} className="text-[#aaa] flex-shrink-0" />
                       <input className={inputCls} type="email" placeholder="john@email.com" />
                     </div>
                   </FormField>
                   <FormField label="City">
                     <div className="flex items-center gap-2">
-                      <MapPin size={13} className="text-slate-300 flex-shrink-0" />
+                      <MapPin size={13} className="text-[#aaa] flex-shrink-0" />
                       <input className={inputCls} placeholder="Dubai, Abu Dhabi…" />
                     </div>
                   </FormField>
@@ -212,7 +211,7 @@ export default function PartnerPage() {
                     {PARTNER_TYPES.map(t => (
                       <label
                         key={t}
-                        className="flex items-center gap-2 text-[13px] text-slate-600 cursor-pointer hover:text-primary transition-colors"
+                        className="flex items-center gap-2 text-[13px] text-primary cursor-pointer hover:opacity-70 transition-opacity"
                       >
                         <input
                           type="radio" name="partnerType" value={t}
@@ -262,7 +261,7 @@ export default function PartnerPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[60px] items-center">
             <div>
               <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Why Join Us</p>
-              <h2 className="font-head text-heading text-primary leading-none mb-3">
+              <h2 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>
                 Why Partner with InverseRide?
               </h2>
               <p className="text-muted text-[14px] font-body leading-relaxed mb-6">
@@ -299,7 +298,7 @@ export default function PartnerPage() {
         <div className="max-w-container mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Open to All</p>
-            <h2 className="font-head text-heading text-primary leading-none mb-3">Who Can Join?</h2>
+            <h2 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>Who Can Join?</h2>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
               We welcome all professional and reliable transport partners.
             </p>
@@ -337,7 +336,7 @@ export default function PartnerPage() {
             </div>
             <div>
               <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">What We Need</p>
-              <h2 className="font-head text-heading text-primary leading-none mb-3">Partner Requirements</h2>
+              <h2 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>Partner Requirements</h2>
               <p className="text-muted text-[14px] font-body leading-relaxed mb-5">
                 To ensure quality service for every passenger, we require:
               </p>
@@ -358,7 +357,7 @@ export default function PartnerPage() {
           {/* Benefits */}
           <div className="text-center mb-8">
             <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">What You Get</p>
-            <h2 className="font-head text-heading text-primary leading-none mb-2">Partner Benefits</h2>
+            <h2 className="font-head font-bold text-primary leading-tight mb-2" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>Partner Benefits</h2>
             <p className="text-muted text-[14px] italic font-semibold">Earn More. Work Smart.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
@@ -382,7 +381,7 @@ export default function PartnerPage() {
           <p className="text-[11px] font-bold text-primary uppercase tracking-widest text-center mb-2">
             Got Questions?
           </p>
-          <h2 className="font-head text-heading text-primary text-center leading-none mb-10">
+          <h2 className="font-head font-bold text-primary text-center leading-tight mb-10" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>
             Frequently Asked Questions
           </h2>
           <FAQ items={PARTNER_FAQS} />

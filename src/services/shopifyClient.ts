@@ -215,6 +215,134 @@ export function parsePrice(price: TaxiVariant['price'] | number | string): strin
   return parseFloat(String(price)).toFixed(2)
 }
 
+// ─── Homepage Slides Metafield Query ──────────────────────────────────────────
+
+// Collection handles for metafield-driven image slides
+const HOMEPAGE_COLLECTION_HANDLE = 'homepage'
+const CHAUFFEUR_COLLECTION_HANDLE = 'hourly-chauffeur'
+
+const GET_HOMEPAGE_SLIDES_QUERY = `
+  query GetHomepageSlides($handle: String!) {
+    collection(handle: $handle) {
+      metafield(namespace: "custom", key: "homepage_slides") {
+        references(first: 10) {
+          nodes {
+            ... on MediaImage {
+              image {
+                url
+                altText
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+export async function fetchHomepageImages(): Promise<string[]> {
+  const response = await fetch(SHOPIFY_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontAccessToken,
+    },
+    body: JSON.stringify({
+      query: GET_HOMEPAGE_SLIDES_QUERY,
+      variables: { handle: HOMEPAGE_COLLECTION_HANDLE },
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Shopify API error: ${response.status}`)
+  }
+
+  const json = await response.json()
+
+  if (json.errors?.length) {
+    throw new Error(json.errors[0].message)
+  }
+
+  const nodes = json.data?.collection?.metafield?.references?.nodes ?? []
+
+  return nodes
+    .map((node: any) => node?.image?.url)
+    .filter(Boolean)
+}
+
+// ─── Service Images Query ──────────────────────────────────────────────────────
+
+const GET_SERVICE_IMAGES_QUERY = `
+  query GetServiceImages {
+    collection(handle: "services") {
+      hourly_chauffeur: metafield(namespace: "custom", key: "hourly_chauffeur") {
+        reference { ... on MediaImage { image { url } } }
+      }
+      private_transfer: metafield(namespace: "custom", key: "private_transfer") {
+        reference { ... on MediaImage { image { url } } }
+      }
+      desert_safari: metafield(namespace: "custom", key: "desert_safari") {
+        reference { ... on MediaImage { image { url } } }
+      }
+      city_to_city: metafield(namespace: "custom", key: "city_to_city") {
+        reference { ... on MediaImage { image { url } } }
+      }
+      city_tour: metafield(namespace: "custom", key: "city_tour") {
+        reference { ... on MediaImage { image { url } } }
+      }
+      hourly_hire: metafield(namespace: "custom", key: "hourly_hire") {
+        reference { ... on MediaImage { image { url } } }
+      }
+    }
+  }
+`
+
+export async function fetchServiceImages(): Promise<Record<string, string>> {
+  const response = await fetch(SHOPIFY_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontAccessToken,
+    },
+    body: JSON.stringify({ query: GET_SERVICE_IMAGES_QUERY }),
+  })
+
+  if (!response.ok) throw new Error(`Shopify API error: ${response.status}`)
+
+  const json = await response.json()
+  if (json.errors?.length) throw new Error(json.errors[0].message)
+
+  const col = json.data?.collection ?? {}
+  const result: Record<string, string> = {}
+  for (const key of ['hourly_chauffeur', 'private_transfer', 'desert_safari', 'city_to_city', 'city_tour', 'hourly_hire']) {
+    const url = col[key]?.reference?.image?.url
+    if (url) result[key] = url
+  }
+  return result
+}
+
+export async function fetchChauffeurImages(): Promise<string[]> {
+  const response = await fetch(SHOPIFY_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontAccessToken,
+    },
+    body: JSON.stringify({
+      query: GET_HOMEPAGE_SLIDES_QUERY,
+      variables: { handle: CHAUFFEUR_COLLECTION_HANDLE },
+    }),
+  })
+
+  if (!response.ok) throw new Error(`Shopify API error: ${response.status}`)
+
+  const json = await response.json()
+  if (json.errors?.length) throw new Error(json.errors[0].message)
+
+  const nodes = json.data?.collection?.metafield?.references?.nodes ?? []
+  return nodes.map((node: any) => node?.image?.url).filter(Boolean)
+}
+
 // ─── Fetch ────────────────────────────────────────────────────────────────────
 
 export async function fetchTaxiProducts(): Promise<TaxiOption[]> {

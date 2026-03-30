@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Car, UserCheck, Compass, Landmark, CalendarDays, Wifi } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Mastercard, Visa, Paypal, Generic } from 'react-payment-logos/dist/flat'
-import CashLogo from '../components/ui/CashLogo'
 
 type OfferItem = { Icon: LucideIcon; title: string; desc: string }
 type WhyCard = { Icon: LucideIcon; title: string; desc: string }
@@ -31,7 +29,7 @@ export default function AboutPage() {
         <div className="max-w-container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[60px] items-center">
             <div>
-              <h1 className="font-head text-heading leading-none mb-4 ">Welcome to InverseRide</h1>
+              <h1 className="font-head font-bold leading-tight mb-4" style={{ fontSize: 'clamp(1.4rem, 5.5vw, 2rem)' }}>Welcome to InverseRide</h1>
               <p className="text-muted text-span mb-[0px] leading-[1.7]">Your trusted platform for smooth and reliable travel experiences in the UAE. <br></br>We specialize in providing premium ride services, including city, airport, and intercity transfers, along with hourly chauffeur services. <br></br>In the UAE, we also offer exclusive Desert Safari and City Tour experiences. <br></br>Whether you're a resident or a visitor, InverseRide is here to make every ride easy, comfortable, and stress-free.</p>
               <div className="mt-5 flex items-center gap-3">
                 <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">
@@ -39,11 +37,18 @@ export default function AboutPage() {
                 </span>
                 <div className="w-px h-5 bg-border flex-shrink-0" />
                 <div className="flex items-center gap-3 flex-wrap">
-                  <Visa style={{ height: 28, width: 'auto' }} />
-                  <Mastercard style={{ height: 28, width: 'auto' }} />
-                  <Paypal style={{ height: 28, width: 'auto' }} />
-                  <Generic style={{ height: 28, width: 'auto' }} />
-                  <CashLogo style={{ height: 28, width: 'auto' }} />
+                  {[
+                    { src: '/payments/visa-svgrepo-com.svg', alt: 'Visa' },
+                    { src: '/payments/mastercard-svgrepo-com.svg', alt: 'Mastercard' },
+                    { src: '/payments/amex-svgrepo-com.svg', alt: 'American Express' },
+                    { src: '/payments/paypal-3-svgrepo-com.svg', alt: 'PayPal' },
+                    { src: '/payments/apple-pay-svgrepo-com.svg', alt: 'Apple Pay' },
+                    { src: '/payments/google-pay-svgrepo-com.svg', alt: 'Google Pay' },
+                    { src: '/payments/stripe-svgrepo-com.svg', alt: 'Stripe' },
+                    { src: '/payments/cash-svgrepo-com.svg', alt: 'Cash' },
+                  ].map(({ src, alt }) => (
+                    <img key={alt} src={src} alt={alt} className="h-7 w-auto rounded object-contain" />
+                  ))}
                 </div>
               </div>
             </div>
@@ -59,7 +64,7 @@ export default function AboutPage() {
       {/* What We Offer */}
       <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>
         <div className="max-w-container mx-auto px-6">
-          <h2 className="font-head text-heading text-primary text-center mb-10 leading-none">What We Offer</h2>
+          <h2 className="font-head font-bold text-primary text-center mb-10 leading-tight" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>What We Offer</h2>
           <div className="flex flex-col gap-6 max-w-[700px] mx-auto">
             {OFFERS.map((item, i) => (
               <div key={i} className="flex gap-5 items-start">
@@ -82,7 +87,7 @@ export default function AboutPage() {
       {/* Why Choose Us */}
       <section className="py-10 md:py-[60px]">
         <div className="max-w-container mx-auto px-6">
-          <h2 className="font-head text-heading text-primary text-center mb-10 leading-none">Why Choose Us?</h2>
+          <h2 className="font-head font-bold text-primary text-center mb-10 leading-tight" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>Why Choose Us?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {WHY_CARDS.map((c, i) => (
               <div key={i} className="text-center py-7 px-5">

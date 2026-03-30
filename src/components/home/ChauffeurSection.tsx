@@ -1,5 +1,10 @@
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Award, Clock, MapPin, Zap } from 'lucide-react'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchChauffeurImages } from '../../store/slices/shopifySlice'
+
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80'
 
 const FEATURES = [
   { icon: <Award size={18} />, text: 'Luxury & Comfort Fleet' },
@@ -10,19 +15,40 @@ const FEATURES = [
 
 export default function ChauffeurSection() {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { chauffeurImages, chauffeurImagesInitialized } = useAppSelector(s => s.shopify)
+
+  useEffect(() => { dispatch(fetchChauffeurImages()) }, [dispatch])
+
+  // Use fallback until Shopify responds; only switch to fetched images once confirmed
+  const images = chauffeurImagesInitialized && chauffeurImages.length > 0 ? chauffeurImages : [FALLBACK_IMAGE]
+  const [activeIdx, setActiveIdx] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (images.length <= 1) return
+    timerRef.current = setInterval(() => {
+      setActiveIdx(i => (i + 1) % images.length)
+    }, 2000)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [images.length])
 
   return (
     <section className="py-10 md:py-[60px]">
       <div className="max-w-container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
 
-          {/* Left — single image */}
-          <div className="rounded-2xl overflow-hidden min-h-[300px] md:h-[460px]">
-            <img
-              src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80"
-              alt="Professional chauffeur"
-              className="w-full h-full object-cover"
-            />
+          {/* Left — slideshow */}
+          <div className="relative rounded-2xl overflow-hidden min-h-[300px] md:h-[460px]">
+            {images.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt="Professional chauffeur"
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                style={{ opacity: i === activeIdx ? 1 : 0 }}
+              />
+            ))}
           </div>
 
           {/* Right — text content */}
