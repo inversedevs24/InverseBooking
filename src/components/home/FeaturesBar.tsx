@@ -1,62 +1,43 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Car, Building2, PlaneLanding, MapPinned, Clock3, Sunset } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
+import { TaxiOption } from '../../types'
 
-const SERVICES = [
-  {
-    Icon: Car,
-    label: 'Private Transfer',
-    sub: 'Door-to-door rides with a professional chauffeur at a fixed, transparent price.',
-    to: '/book?service=transfer',
-  },
-  {
-    Icon: Building2,
-    label: 'City to City',
-    sub: 'Comfortable intercity journeys between Dubai, Abu Dhabi, Sharjah and beyond.',
-    to: '/book?service=city-to-city',
-  },
-  {
-    Icon: PlaneLanding,
-    label: 'Airport Rides',
-    sub: 'Meet & greet, real-time flight tracking, and free waiting time — stress-free every time.',
-    to: '/book?service=airport',
-  },
-  {
-    Icon: MapPinned,
-    label: 'City Tour',
-    sub: 'Explore iconic landmarks at your own pace with a knowledgeable private chauffeur.',
-    to: '/book?service=city-tour',
-  },
-  {
-    Icon: Clock3,
-    label: 'Hourly Hire',
-    sub: 'Book a chauffeur by the hour — perfect for business meetings, events or errands.',
-    to: '/book?service=hourly',
-  },
-  {
-    Icon: Sunset,
-    label: 'Desert Safari',
-    sub: 'Luxury transfers to the dunes and back — sunrise or sunset, in total comfort.',
-    to: '/book?service=desert-safari',
-  },
-]
+function deriveServiceCards(products: TaxiOption[]) {
+  const seen = new Map<string, { serviceType: string; description: string; bannerUrl: string }>()
+
+  for (const product of products) {
+    if (!product.serviceType || seen.has(product.serviceType)) continue
+    seen.set(product.serviceType, {
+      serviceType: product.serviceType,
+      description: product.serviceDescription,
+      bannerUrl: product.bannerImage,
+    })
+  }
+
+  return Array.from(seen.values())
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-[0_2px_12px_rgba(15,23,42,0.07)] flex items-start gap-4 border border-transparent animate-pulse">
+      <div className="w-12 h-12 rounded-xl flex-shrink-0 bg-gray-200" />
+      <div className="flex-1 space-y-2 pt-1">
+        <div className="h-4 w-2/5 rounded bg-gray-200" />
+        <div className="h-3 w-full rounded bg-gray-100" />
+        <div className="h-3 w-4/5 rounded bg-gray-100" />
+      </div>
+    </div>
+  )
+}
 
 export default function FeaturesBar() {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { products } = useAppSelector(s => s.shopify)
+  const { products, loading } = useAppSelector(s => s.shopify)
 
   useEffect(() => { dispatch(fetchTaxiProducts()) }, [dispatch])
 
-  // Build serviceType → serviceDescription map from product metafields
-  const descMap: Record<string, string> = {}
-  products.forEach(p => {
-    if (p.serviceType && p.serviceDescription && !descMap[p.serviceType]) {
-      descMap[p.serviceType] = p.serviceDescription
-    }
-  })
+  const services = deriveServiceCards(products)
 
   return (
     <section className="py-10 md:py-[20px]">
@@ -70,31 +51,33 @@ export default function FeaturesBar() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {SERVICES.map(({ Icon, label, sub, to }) => {
-            const description = descMap[label] || sub
-            return (
-            <div
-              key={label}
-              onClick={() => navigate(to)}
-              className="group bg-white rounded-2xl p-5 shadow-[0_2px_12px_rgba(15,23,42,0.07)] flex items-start gap-4 cursor-pointer transition-all hover:-translate-y-[3px] hover:shadow-[0_6px_20px_rgba(15,23,42,0.11)] hover:border-secondary border border-transparent"
-            >
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+            : services.map(({ serviceType, description, bannerUrl }) => (
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary"
-                style={{ backgroundColor: '#BDD9BF' }}
+                key={serviceType}
+                className="bg-white rounded-2xl p-5 shadow-[0_2px_12px_rgba(15,23,42,0.07)] flex items-start gap-4 border border-transparent"
               >
-                <Icon
-                  size={20}
-                  className="transition-colors group-hover:text-white"
-                  style={{ color: '#2E4052' }}
-                />
+                {/* {bannerUrl && (
+                  <img
+                    src={bannerUrl}
+                    alt={serviceType}
+                    className="w-12 h-12 rounded-xl flex-shrink-0 object-cover"
+                  />
+                )} */}
+                <div className="min-w-0">
+                  <h4 className="text-[15px] font-bold font-head text-primary leading-tight">
+                    {serviceType}
+                  </h4>
+                  {description && (
+                    <p className="text-[13px] text-muted font-body mt-1 leading-snug">
+                      {description}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="min-w-0">
-                <h4 className="text-[15px] font-bold font-head text-primary leading-tight">{label}</h4>
-                <p className="text-[13px] text-muted font-body mt-1 leading-snug">{description}</p>
-              </div>
-            </div>
-            )
-          })}
+            ))
+          }
         </div>
 
       </div>

@@ -102,6 +102,29 @@ export function cartItemToLineInput(cartItem: CartItem): ShopifyLineInput {
     attributes.push({ key: 'Return Time', value: search.returnTime })
   }
 
+  if (search.fromCoords) {
+    attributes.push({ key: 'From Lat', value: String(search.fromCoords.lat) })
+    attributes.push({ key: 'From Lng', value: String(search.fromCoords.lng) })
+    attributes.push({
+      key: 'From Map',
+      value: `https://www.google.com/maps?q=${search.fromCoords.lat},${search.fromCoords.lng}`,
+    })
+  }
+  if (search.toCoords) {
+    attributes.push({ key: 'To Lat', value: String(search.toCoords.lat) })
+    attributes.push({ key: 'To Lng', value: String(search.toCoords.lng) })
+    attributes.push({
+      key: 'To Map',
+      value: `https://www.google.com/maps?q=${search.toCoords.lat},${search.toCoords.lng}`,
+    })
+  }
+  if (search.fromCoords && search.toCoords) {
+    attributes.push({
+      key: 'Route Map',
+      value: `https://www.google.com/maps/dir/?api=1&origin=${search.fromCoords.lat},${search.fromCoords.lng}&destination=${search.toCoords.lat},${search.toCoords.lng}`,
+    })
+  }
+
   const isAirport =
     isAirportLocation(search.from) || isAirportLocation(search.to)
   if (isAirport && search.flightNumber) {
@@ -151,6 +174,13 @@ export async function createCart(cartItem: CartItem, email?: string): Promise<st
   }
 
   const input: Record<string, unknown> = { lines }
+
+  const { fromCoords, toCoords, from, to } = cartItem.search
+  if (fromCoords && toCoords) {
+    const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${fromCoords.lat},${fromCoords.lng}&destination=${toCoords.lat},${toCoords.lng}`
+    input.note = `Route Map (${from} → ${to}): ${routeUrl}`
+  }
+
   if (email) {
     input.buyerIdentity = { email }
   }

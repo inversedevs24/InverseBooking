@@ -50,6 +50,18 @@ function fmtPrice(amount: string, currencyCode: string): string {
     return `${symbols[currencyCode] ?? currencyCode + ' '}${n.toFixed(2)}`
 }
 
+function parseMetafieldString(raw: string | null | undefined): string | undefined {
+    if (!raw) return undefined
+    const trimmed = raw.trim()
+    if (trimmed.startsWith('[')) {
+        try {
+            const arr = JSON.parse(trimmed)
+            return Array.isArray(arr) && arr[0] ? String(arr[0]).trim() : undefined
+        } catch { /* fall through */ }
+    }
+    return trimmed || undefined
+}
+
 function mapOrderToBooking(order: ShopifyOrder): Booking | null {
     const lines = order.lineItems.edges.map(e => e.node)
     const mainLine = lines.find(li =>
@@ -100,6 +112,9 @@ function mapOrderToBooking(order: ShopifyOrder): Booking | null {
                 ? [{ time: bookedOn, label: 'Booking cancelled', done: true }]
                 : [{ time: bookedOn, label: 'Booking confirmed', done: true }]
 
+    const driverName = parseMetafieldString(order.driver?.value)
+    const driverPhone = parseMetafieldString(order.driverPhone?.value)
+
     return {
         id: order.id,
         reference: `INV-${order.orderNumber}`,
@@ -116,6 +131,9 @@ function mapOrderToBooking(order: ShopifyOrder): Booking | null {
         status,
         price: fmtPrice(order.totalPrice.amount, order.totalPrice.currencyCode),
         breakdown,
+        driver: driverName,
+        driverPhone,
+        driverAvatar: driverName ? driverName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : undefined,
         notes: attrs['Flight Number'] ? `Flight ${attrs['Flight Number']}` : undefined,
         timeline,
         bookedOn,
@@ -692,6 +710,7 @@ export default function UserDashboard() {
             {selected && (
                 <BookingDetailsPanel booking={selected} onClose={() => setSelected(null)} />
             )}
+
         </div>
     )
 }

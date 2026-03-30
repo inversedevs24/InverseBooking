@@ -21,6 +21,7 @@ import UserDashboard from './components/user/UserDashboard'
 import ServiceBookingForm from './components/fleets/ServiceBookingForm'
 import AdminDashboard from './components/admin/Admindashboard'
 import { WhatsAppButton } from './components/ui/WhatsAppButton'
+import DriverNotification from './components/ui/DriverNotification'
 
 
 const AUTH_ROUTES = ['/signin', '/signup']
@@ -59,6 +60,7 @@ export default function App() {
       </main>
       {!isAuth && <WhatsAppButton />}
       {!isAuth && <Footer />}
+      <DriverNotification />
     </>
   )
 }

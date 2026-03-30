@@ -162,6 +162,8 @@ export interface ShopifyOrder {
   lineItems: {
     edges: { node: ShopifyOrderLineItem }[]
   }
+  driver: { value: string } | null
+  driverPhone: { value: string } | null
 }
 
 const GET_CUSTOMER_ORDERS = `
@@ -201,6 +203,12 @@ const GET_CUSTOMER_ORDERS = `
                   }
                 }
               }
+            }
+            driver: metafield(namespace: "order", key: "driver") {
+              value
+            }
+            driverPhone: metafield(namespace: "order", key: "driver_phone") {
+              value
             }
           }
         }
