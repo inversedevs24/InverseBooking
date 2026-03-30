@@ -92,6 +92,8 @@ export interface TaxiOption {
   eta: string                 // alias for estimatedArrival
   popular: boolean
   serviceType: string         // metafield service_type (e.g. "Airport Rides")
+  bannerImage: string         // metafield banner_image (file) — CDN URL
+  serviceDescription: string  // metafield service_description — short description
   variants: TaxiVariant[]     // full array of distance-band variants
 }
 

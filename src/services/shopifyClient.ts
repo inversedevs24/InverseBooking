@@ -41,12 +41,21 @@ const GET_PRODUCTS_QUERY = `
             { namespace: "taxi_details", key: "estimated_arrival" },
             { namespace: "taxi_details", key: "popular" },
             { namespace: "features", key: "features_list" },
-            { namespace: "taxi_details", key: "service_type" }
+            { namespace: "taxi_details", key: "service_type" },
+            { namespace: "custom", key: "banner_image" },
+            { namespace: "custom", key: "service_description" }
           ]) {
             namespace
             key
             value
             type
+            reference {
+              ... on MediaImage {
+                image {
+                  url
+                }
+              }
+            }
           }
         }
       }
@@ -61,6 +70,7 @@ interface RawMetafield {
   key: string
   value: string
   type: string
+  reference?: { image?: { url: string } }
 }
 
 export function getMetafieldValue(
@@ -141,6 +151,11 @@ function transformProduct(node: any): TaxiOption {
     '',
   ) as string
 
+  const bannerImageField = metafields.find(
+    m => m.namespace === METAFIELD_NAMESPACES.CUSTOM && m.key === METAFIELD_KEYS.BANNER_IMAGE
+  )
+  const bannerImage = bannerImageField?.reference?.image?.url ?? ''
+
   return {
     id: numericId,
     shopifyId: firstVariantId,
@@ -161,6 +176,8 @@ function transformProduct(node: any): TaxiOption {
     eta: estimatedArrival,
     popular: getMeta(METAFIELD_NAMESPACES.TAXI_DETAILS, METAFIELD_KEYS.POPULAR, false) as boolean,
     serviceType: getMeta(METAFIELD_NAMESPACES.TAXI_DETAILS, METAFIELD_KEYS.SERVICE_TYPE, '') as string,
+    bannerImage,
+    serviceDescription: getMeta(METAFIELD_NAMESPACES.CUSTOM, METAFIELD_KEYS.SERVICE_DESCRIPTION, '') as string,
     variants,
   }
 }

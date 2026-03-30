@@ -154,14 +154,25 @@ export default function PromoBanners() {
 
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
 
+  // Build serviceType → bannerImage map from product metafields
+  const productBannerMap: Record<string, string> = {}
+  products.forEach(p => {
+    if (p.serviceType && p.bannerImage && !productBannerMap[p.serviceType]) {
+      productBannerMap[p.serviceType] = p.bannerImage
+    }
+  })
+
   // Once loaded, show only banners whose service type exists in Shopify; before that show all
   const visibleBanners = (initialized && activeTypes.size > 0
     ? BANNERS.filter(b => activeTypes.has(b.eyebrow))
     : BANNERS
   ).map(b => {
+    // Priority: product bannerImage → services collection image → static fallback
+    const productImage = initialized && productBannerMap[b.eyebrow]
     const key = SERVICE_KEY_MAP[b.eyebrow]
-    const shopifyImage = serviceImagesInitialized && key ? serviceImages[key] : undefined
-    return shopifyImage ? { ...b, image: shopifyImage } : b
+    const collectionImage = serviceImagesInitialized && key ? serviceImages[key] : undefined
+    const image = productImage || collectionImage || b.image
+    return { ...b, image }
   })
 
   return (
