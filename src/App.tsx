@@ -20,7 +20,6 @@ import BookingDetails from './components/fleets/BookingDetails'
 import Checkout from './components/fleets/Checkout'
 import UserDashboard from './components/user/UserDashboard'
 import ServiceBookingForm from './components/fleets/ServiceBookingForm'
-import AdminDashboard from './components/admin/Admindashboard'
 import { WhatsAppButton } from './components/ui/WhatsAppButton'
 import DriverNotification from './components/ui/DriverNotification'
 
@@ -57,7 +56,6 @@ export default function App() {
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/account" element={authLoading ? null : isLoggedIn ? <UserDashboard /> : <Navigate to="/signin" replace />} />
-          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
       {!isAuth && <WhatsAppButton />}
