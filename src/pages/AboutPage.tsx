@@ -47,7 +47,7 @@ export default function AboutPage() {
                     { src: '/payments/stripe-svgrepo-com.svg', alt: 'Stripe' },
                     { src: '/payments/cash-svgrepo-com.svg', alt: 'Cash' },
                   ].map(({ src, alt }) => (
-                    <img key={alt} src={src} alt={alt} className="h-7 w-auto rounded object-contain" />
+                    <img key={alt} src={src} alt={alt} className="h-9 w-auto rounded object-contain" />
                   ))}
                 </div>
               </div>

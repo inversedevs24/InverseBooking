@@ -158,10 +158,10 @@ export default function Footer() {
           </p>
 
           {/* Payment methods */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
             <span className="text-[11px] text-white/30 uppercase tracking-widest whitespace-nowrap flex-shrink-0">We Accept</span>
             <div className="w-px h-5 bg-white/10 flex-shrink-0" />
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-nowrap items-center gap-2">
               {[
                 { src: '/payments/visa-svgrepo-com.svg', alt: 'Visa' },
                 { src: '/payments/mastercard-svgrepo-com.svg', alt: 'Mastercard' },
@@ -176,7 +176,7 @@ export default function Footer() {
                   key={alt}
                   src={src}
                   alt={alt}
-                  className="h-7 w-auto rounded object-contain"
+                  className="h-6 w-auto rounded object-contain flex-shrink-0"
                 />
               ))}
             </div>
