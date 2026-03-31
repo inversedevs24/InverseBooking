@@ -142,7 +142,7 @@ function RouteInfoCard({ distanceKm, durationText, loading, error }: {
             <div className="flex divide-x divide-white/10">
                 <div className="flex-1 flex flex-col items-center py-3 px-2 gap-0.5">
                     <Ruler size={13} style={{ color: '#BDD9BF' }} />
-                    <span className="text-[15px] font-bold text-white font-head leading-tight">{distanceKm.toFixed(1)} mi</span>
+                    <span className="text-[15px] font-bold text-white font-head leading-tight">{distanceKm.toFixed(1)} km</span>
                     <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.45)' }}>Distance</span>
                 </div>
                 <div className="flex-1 flex flex-col items-center py-3 px-2 gap-0.5">
@@ -241,13 +241,13 @@ export default function ServiceBookingForm() {
         if (!maps?.DistanceMatrixService) return
         setRouteLoading(true); setRouteError('')
         new maps.DistanceMatrixService().getDistanceMatrix(
-            { origins: [fromCoords], destinations: [toCoords], travelMode: maps.TravelMode.DRIVING, unitSystem: maps.UnitSystem.IMPERIAL },
+            { origins: [fromCoords], destinations: [toCoords], travelMode: maps.TravelMode.DRIVING },
             (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
                 setRouteLoading(false)
                 if (status !== 'OK' || !response) { setRouteError('Could not calculate route between these locations.'); return }
                 const el = response.rows[0]?.elements[0]
                 if (!el || el.status !== 'OK') { setRouteError('No driving route found between these locations.'); return }
-                setDistanceKm(el.distance.value / 1609.34)
+                setDistanceKm(el.distance.value / 1000)
                 setDurationText(el.duration.text)
             }
         )
@@ -303,6 +303,8 @@ export default function ServiceBookingForm() {
                 type: 'transfer',
                 distanceKm: distanceKm ?? undefined,
                 duration: durationText || undefined,
+                fromCoords: fromCoords ?? undefined,
+                toCoords: toCoords ?? undefined,
             },
         })
     }

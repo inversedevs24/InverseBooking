@@ -76,20 +76,20 @@ export default function HeroBooking() {
   // ─── Derive available tabs from Shopify ─────────────────────────────────────
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
   const showTransfer = !initialized || activeTypes.size === 0 || activeTypes.has('Private Transfer')
-  const showAirport  = !initialized || activeTypes.size === 0 || activeTypes.has('Airport Rides')
+  const showAirport = !initialized || activeTypes.size === 0 || activeTypes.has('Airport Rides')
 
   // ─── Form state ─────────────────────────────────────────────────────────────
   const [tab, setTab] = useState<Tab>('transfer')
   const cfg = TAB_CONFIG[tab]
 
-  const [from, setFrom]             = useState('')
-  const [to, setTo]                 = useState('')
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
   const [fromCoords, setFromCoords] = useState<{ lat: number; lng: number } | null>(null)
-  const [toCoords, setToCoords]     = useState<{ lat: number; lng: number } | null>(null)
+  const [toCoords, setToCoords] = useState<{ lat: number; lng: number } | null>(null)
 
   const minNow = useMemo(() => toLocalISO(new Date()), [])
-  const [datetime, setDatetime]             = useState(minNow)
-  const [showReturn, setShowReturn]         = useState(false)
+  const [datetime, setDatetime] = useState(minNow)
+  const [showReturn, setShowReturn] = useState(false)
   const [returnDatetime, setReturnDatetime] = useState('')
   const navigate = useNavigate()
 
@@ -98,7 +98,7 @@ export default function HeroBooking() {
   }>({})
 
   // ─── Route calculation (distance + ETA) ────────────────────────────────────
-  const [distanceKm, setDistanceKm]   = useState<number | null>(null)
+  const [distanceKm, setDistanceKm] = useState<number | null>(null)
   const [durationText, setDurationText] = useState('')
   const [routeLoading, setRouteLoading] = useState(false)
 

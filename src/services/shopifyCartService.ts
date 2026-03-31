@@ -89,7 +89,7 @@ export function cartItemToLineInput(cartItem: CartItem): ShopifyLineInput {
     { key: 'Trip Type', value: isReturn ? 'Return' : 'One-Way' },
     { key: 'From', value: search.from },
     { key: 'To', value: search.to },
-    { key: 'Distance', value: `${search.distance.toFixed(1)} miles` },
+    { key: 'Distance', value: `${search.distance.toFixed(1)} km` },
     { key: 'Duration', value: search.duration },
     { key: 'Pickup Date', value: search.date },
     { key: 'Pickup Time', value: search.time },

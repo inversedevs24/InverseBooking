@@ -62,7 +62,7 @@ const INITIAL_ORDERS: Order[] = [
         vehicle: 'Executive Saloon', passengers: 2, luggage: 2,
         status: 'in-progress', price: 'AED 285',
         driver: 'Robert Wilson', driverId: 'd1', driverPhone: '+971 50 900 1234',
-        bookedOn: '15 Mar 2025', distance: '14.8 mi', duration: '~35 min',
+        bookedOn: '15 Mar 2025', distance: '14.8 km', duration: '~35 min',
         notes: 'Flight EK0471 — monitor for delays.',
     },
     {
@@ -73,7 +73,7 @@ const INITIAL_ORDERS: Order[] = [
         vehicle: 'MPV (7 Seater)', passengers: 5, luggage: 6,
         status: 'confirmed', price: 'AED 520',
         driver: 'Sarah Mitchell', driverId: 'd2', driverPhone: '+971 50 900 4567',
-        bookedOn: '10 Mar 2025', distance: '78.4 mi', duration: '~100 min',
+        bookedOn: '10 Mar 2025', distance: '78.4 km', duration: '~100 min',
     },
     {
         id: '3', reference: 'INV-2024-0074',
@@ -83,7 +83,7 @@ const INITIAL_ORDERS: Order[] = [
         vehicle: 'Executive Saloon', passengers: 1, luggage: 1,
         status: 'completed', price: 'AED 195',
         driver: 'David Khan', driverId: 'd3', driverPhone: '+971 50 900 7890',
-        bookedOn: '28 Feb 2025', distance: '22.6 mi', duration: '~40 min',
+        bookedOn: '28 Feb 2025', distance: '22.6 km', duration: '~40 min',
     },
     {
         id: '4', reference: 'INV-2024-0068',
@@ -93,7 +93,7 @@ const INITIAL_ORDERS: Order[] = [
         vehicle: 'Luxury SUV', passengers: 3, luggage: 3,
         status: 'completed', price: 'AED 240',
         driver: 'Lisa Thomas', driverId: 'd4', driverPhone: '+971 50 900 3210',
-        bookedOn: '12 Feb 2025', distance: '18.2 mi', duration: '~45 min',
+        bookedOn: '12 Feb 2025', distance: '18.2 km', duration: '~45 min',
     },
     {
         id: '5', reference: 'INV-2024-0055',
@@ -102,7 +102,7 @@ const INITIAL_ORDERS: Order[] = [
         from: 'Business Bay', to: 'Dubai Hills Mall',
         vehicle: 'Executive Saloon', passengers: 2, luggage: 1,
         status: 'cancelled', price: 'AED 120',
-        bookedOn: '30 Jan 2025', distance: '9.4 mi', duration: '~25 min',
+        bookedOn: '30 Jan 2025', distance: '9.4 km', duration: '~25 min',
     },
     {
         id: '6', reference: 'INV-2024-0101',
@@ -111,7 +111,7 @@ const INITIAL_ORDERS: Order[] = [
         from: 'Jumeirah Beach Residence', to: 'DIFC',
         vehicle: 'Business Class', passengers: 1, luggage: 1,
         status: 'pending', price: 'AED 175',
-        bookedOn: '20 Mar 2025', distance: '12.3 mi', duration: '~30 min',
+        bookedOn: '20 Mar 2025', distance: '12.3 km', duration: '~30 min',
     },
     {
         id: '7', reference: 'INV-2024-0102',
@@ -120,7 +120,7 @@ const INITIAL_ORDERS: Order[] = [
         from: 'Deira City Centre', to: 'Dubai Intl Airport, T2',
         vehicle: 'Economy Sedan', passengers: 2, luggage: 2,
         status: 'pending', price: 'AED 95',
-        bookedOn: '21 Mar 2025', distance: '6.1 mi', duration: '~20 min',
+        bookedOn: '21 Mar 2025', distance: '6.1 km', duration: '~20 min',
     },
 ]
 

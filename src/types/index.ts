@@ -103,7 +103,7 @@ export interface SearchDetails {
   to: string
   fromCoords?: { lat: number; lng: number }
   toCoords?: { lat: number; lng: number }
-  distance: number            // MILES (Google Maps metres ÷ 1609.34)
+  distance: number            // km (Google Maps metres ÷ 1000)
   duration: string
   date: string
   time: string

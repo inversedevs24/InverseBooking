@@ -85,7 +85,7 @@ export const BOOKINGS: Booking[] = [
         ],
         bookedOn: '15 Mar 2025',
         paymentMethod: 'Visa •••• 4242',
-        distance: '16.2 mi',
+        distance: '16.2 km',
         duration: '~45 min',
     },
     {
@@ -118,7 +118,7 @@ export const BOOKINGS: Booking[] = [
         ],
         bookedOn: '10 Mar 2025',
         paymentMethod: 'Mastercard •••• 8810',
-        distance: '29.4 mi',
+        distance: '29.4 km',
         duration: '~55 min',
     },
     {
@@ -153,7 +153,7 @@ export const BOOKINGS: Booking[] = [
         ],
         bookedOn: '28 Feb 2025',
         paymentMethod: 'Visa •••• 4242',
-        distance: '37.1 mi',
+        distance: '37.1 km',
         duration: '~80 min',
     },
     {
@@ -187,7 +187,7 @@ export const BOOKINGS: Booking[] = [
         ],
         bookedOn: '12 Feb 2025',
         paymentMethod: 'Amex •••• 1005',
-        distance: '9.8 mi',
+        distance: '9.8 km',
         duration: '~35 min',
     },
     {
@@ -215,7 +215,7 @@ export const BOOKINGS: Booking[] = [
         ],
         bookedOn: '30 Jan 2025',
         paymentMethod: 'Visa •••• 4242',
-        distance: '8.4 mi',
+        distance: '8.4 km',
         duration: '~20 min',
     },
 ]

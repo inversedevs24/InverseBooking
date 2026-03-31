@@ -19,6 +19,7 @@ export function PlacesInput({ placeholder, className, mapsReady, onPlaceChange }
 
   // Always keep a current ref to the callback so the listener never calls a stale closure
   const callbackRef = useRef(onPlaceChange)
+  
   useEffect(() => { callbackRef.current = onPlaceChange }, [onPlaceChange])
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export function PlacesInput({ placeholder, className, mapsReady, onPlaceChange }
     const ac = new maps.places.Autocomplete(inputRef.current, {
       types: ['geocode', 'establishment'],
       componentRestrictions: { country: 'ae' },
+      fields: ['formatted_address', 'geometry', 'name'],
     }) as google.maps.places.Autocomplete
 
     acRef.current = ac
