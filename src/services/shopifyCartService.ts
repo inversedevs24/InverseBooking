@@ -4,46 +4,27 @@ import type { CartItem } from '../types'
 // ─── Airport Detection ────────────────────────────────────────────────────────
 
 const AIRPORT_POSTCODES = [
-  // London
-  'TW6',  // Heathrow
-  'RH6',  // Gatwick
-  'CM24', // Stansted
-  'LU2',  // Luton
-  'SS11', // Southend
-  // Regional
-  'M90',  // Manchester
-  'BS48', // Bristol
-  'LS19', // Leeds Bradford
-  'BH23', // Bournemouth
-  'EH12', // Edinburgh
-  'G77',  // Glasgow
-  'BT3',  // Belfast City
-  'BT29', // Belfast International
-  'CF62', // Cardiff
-  'AB21', // Aberdeen
-  'EX5',  // Exeter
-  'NE13', // Newcastle
-  'BHX',
+  'DXB',  // Dubai International
+  'DWC',  // Al Maktoum International
+  'AUH',  // Abu Dhabi International
+  'SHJ',  // Sharjah International
+  'RKT',  // Ras Al Khaimah International
+  'FJR',  // Fujairah International
 ]
 
 const AIRPORT_KEYWORDS = [
   'airport',
   'terminal',
-  'heathrow',
-  'gatwick',
-  'stansted',
-  'luton',
-  'manchester',
-  'bristol',
-  'edinburgh',
-  'glasgow',
-  'belfast',
-  'cardiff',
-  'newcastle',
-  'birmingham',
-  'leeds bradford',
-  'east midlands',
-  'southend',
+  'dubai international',
+  'al maktoum',
+  'abu dhabi airport',
+  'sharjah airport',
+  'ras al khaimah airport',
+  'fujairah airport',
+  'dxb',
+  'auh',
+  'shj',
+  'dwc',
 ]
 
 export function isAirportLocation(location: string): boolean {

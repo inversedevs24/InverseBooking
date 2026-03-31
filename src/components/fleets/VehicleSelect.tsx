@@ -15,7 +15,7 @@ import type { TaxiOption, TaxiVariant, SearchDetails } from '../../types'
 
 function formatDate(date?: string) {
   if (!date) return '—'
-  return new Date(date).toLocaleDateString('en-GB', {
+  return new Date(date).toLocaleDateString('en-AE', {
     day: '2-digit', month: 'short', year: 'numeric',
   })
 }
@@ -276,7 +276,7 @@ function VehicleCard({
   isEstimate: boolean
   onSelect: () => void
 }) {
-  const sym = currencyCode === 'GBP' ? '£' : currencyCode === 'USD' ? '$' : currencyCode === 'AED' ? 'AED ' : currencyCode
+  const sym = currencyCode === 'USD' ? '$' : currencyCode === 'AED' ? 'AED ' : currencyCode
 
   return (
     <div
@@ -568,7 +568,7 @@ export default function VehicleSelect() {
 
   // Currency symbol helper for sticky bar
   const getCurrencySymbol = (code: string) =>
-    code === 'GBP' ? '£' : code === 'USD' ? '$' : code === 'AED' ? 'AED ' : code
+    code === 'USD' ? '$' : code === 'AED' ? 'AED ' : code
 
   return (
     <div className="min-h-dvh font-body" style={{ backgroundColor: '#F0F5F0' }}>
@@ -734,7 +734,7 @@ export default function VehicleSelect() {
                 {available.map(product => {
                   const { variant, isEstimate } = getVariantForProduct(product)
                   const priceDisplay = variant ? parseFloat(variant.price.amount).toFixed(2) : '—'
-                  const currencyCode = variant?.price.currencyCode ?? 'GBP'
+                  const currencyCode = variant?.price.currencyCode ?? 'AED'
 
                   return (
                     <VehicleCard

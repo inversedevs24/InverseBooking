@@ -120,7 +120,7 @@ export function parseVariants(edges: any[]): TaxiVariant[] {
       title,
       price: {
         amount: node.price?.amount ?? '0',
-        currencyCode: node.price?.currencyCode ?? 'GBP',
+        currencyCode: node.price?.currencyCode ?? 'AED',
       },
       kmRangeMin: match ? parseInt(match[1], 10) : 0,
       kmRangeMax: match ? parseInt(match[2], 10) : 0,

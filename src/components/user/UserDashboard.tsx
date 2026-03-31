@@ -46,7 +46,7 @@ const STATUS_CONFIG: Record<BookingStatus, { label: string; color: string; bg: s
 
 function fmtPrice(amount: string, currencyCode: string): string {
     const n = parseFloat(amount)
-    const symbols: Record<string, string> = { GBP: '£', USD: '$', EUR: '€', AED: 'AED ' }
+    const symbols: Record<string, string> = { USD: '$', EUR: '€', AED: 'AED ' }
     return `${symbols[currencyCode] ?? currencyCode + ' '}${n.toFixed(2)}`
 }
 
@@ -87,7 +87,7 @@ function mapOrderToBooking(order: ShopifyOrder): Booking | null {
     }
 
     const processedDate = new Date(order.processedAt)
-    const bookedOn = processedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    const bookedOn = processedDate.toLocaleDateString('en-AE', { day: 'numeric', month: 'short', year: 'numeric' })
 
     const breakdown = lines.map(li => ({
         label: li.customAttributes.find(a => a.key === 'Type')?.value === 'Airport Parking Fee'
@@ -520,7 +520,7 @@ export default function UserDashboard() {
         .reduce((sum, b) => sum + parseFloat(b.price.replace(/[^0-9.]/g, '')), 0)
     const totalSpentDisplay = orders[0]
         ? `${orders[0].price.replace(/[\d.,]+$/, '')}${totalSpentPence.toFixed(2)}`
-        : '£0.00'
+        : 'AED 0.00'
 
     const tabs: { key: FilterTab; label: string }[] = [
         { key: 'all', label: 'All' },

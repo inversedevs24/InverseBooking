@@ -90,8 +90,8 @@ function InfoChip({ icon: Icon, label, value }: { icon: typeof User; label: stri
 
 //  Derive currency symbol from a variant price currencyCode
 function currencySymbol(code?: string): string {
-  const map: Record<string, string> = { GBP: '£', USD: '$', EUR: '€', AED: 'AED ' }
-  return map[code ?? ''] ?? (code ? code + ' ' : '£')
+  const map: Record<string, string> = { USD: '$', EUR: '€', AED: 'AED ' }
+  return map[code ?? ''] ?? (code ? code + ' ' : 'AED ')
 }
 
 //  Main
@@ -108,7 +108,7 @@ export default function Checkout() {
 
   const [showSummary, setShowSummary] = useState(false)
 
-  // Derive currency from the taxiOption variant price, fall back to GBP
+  // Derive currency from the taxiOption variant price, fall back to AED
   const taxiOption = (booking as any).taxiOption as TaxiOption | undefined
   const variantCurrency = taxiOption?.variants?.[0]?.price?.currencyCode
   const sym = currencySymbol(variantCurrency)
@@ -119,7 +119,7 @@ export default function Checkout() {
 
   const formatDatetime = (dt?: string) => {
     if (!dt) return '—'
-    return new Date(dt).toLocaleString('en-GB', {
+    return new Date(dt).toLocaleString('en-AE', {
       day: '2-digit', month: 'short', year: 'numeric',
       hour: '2-digit', minute: '2-digit',
     })

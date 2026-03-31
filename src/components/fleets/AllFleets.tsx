@@ -146,7 +146,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
                 From
               </div>
               <div className="font-head text-[20px] font-bold leading-tight" style={{ color: '#2E4052' }}>
-                £{fleet.baseFare.toFixed(0)}
+                AED {fleet.baseFare.toFixed(0)}
               </div>
             </div>
           ) : (

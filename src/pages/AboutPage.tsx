@@ -74,7 +74,7 @@ export default function AboutPage() {
                 <div>
                   <h4 className="font-bold text-span mb-1">{item.title}</h4>
                   <span className="inline-block bg-accent/20 text-primary text-[11px] font-semibold px-[10px] py-[2px] rounded-[10px] mb-2">
-                    ● Available in UAE &amp; UK
+                    ● Available across the UAE
                   </span>
                   <p className="text-muted text-label">{item.desc}</p>
                 </div>

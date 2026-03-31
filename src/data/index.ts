@@ -78,7 +78,7 @@ export const PARTNER_FAQS: FAQ[] = [
   { q: `Who can become a partner with ${brandName}?`,
     a: 'We welcome partnerships with licensed chauffeur services, limousine companies, and professional drivers who are committed to delivering high-quality transportation services.' },
   { q: `What are the benefits of partnering with ${brandName}?`,
-    a: 'Partners receive steady ride bookings, on-time payments, fair commissions, flexible working hours, dedicated support, and access to premium clients in UAE & UK.' },
+    a: 'Partners receive steady ride bookings, on-time payments, fair commissions, flexible working hours, dedicated support, and access to premium clients across the UAE.' },
   { q: 'How do I apply to become a partner?',
     a: 'Simply fill out the partner registration form above with your contact details, partner type, and we will review your application and get in touch.' },
   { q: 'Is there a registration or setup fee?',

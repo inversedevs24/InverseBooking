@@ -41,7 +41,7 @@ const WHY_PARTNER_LIST = [
   'Fair & transparent commission',
   'Flexible working hours — work when you want',
   'Dedicated partner support team',
-  'Opportunity to serve premium clients in UAE & UK',
+  'Opportunity to serve premium clients across the UAE',
 ]
 
 //  Reusable dark info row (same as ContactPage) 
@@ -135,7 +135,7 @@ export default function PartnerPage() {
                   Steady bookings with high earning potential every day.
                 </DarkInfoRow>
                 <DarkInfoRow icon={MapPin} label="Coverage">
-                  Serve premium clients across UAE & UK markets.
+                  Serve premium clients across the UAE.
                 </DarkInfoRow>
                 <DarkInfoRow icon={UserCheck} label="Support">
                   Dedicated partner support team available 24/7.
