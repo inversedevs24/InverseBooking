@@ -38,7 +38,7 @@ export default function App() {
     <>
       {/* {!isAuth && <div className="hidden md:block"><TopBar /></div>} */}
       {!isAuth && <Navbar />}
-      <main>
+      <main className="pt-16">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/book" element={<ServiceBookingForm />} />

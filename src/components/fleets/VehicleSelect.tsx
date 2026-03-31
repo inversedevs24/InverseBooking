@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, Users, Luggage, MapPin, CalendarDays,
-  Clock, Ruler, CheckCircle2, ArrowRight, Zap, Loader2, AlertCircle, Star, Car,
+  Clock, Ruler, CheckCircle2, ArrowRight, Zap, Loader2,
+  AlertCircle, Star, Car, ChevronDown, ChevronUp,
 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
@@ -108,7 +109,6 @@ function RouteMapPreview({
             renderer.setDirections(result)
             const leg = result.routes[0].legs[0]
 
-            // Pickup marker — light green fill
             new maps.Marker({
               position: leg.start_location,
               map,
@@ -122,7 +122,6 @@ function RouteMapPreview({
               },
             })
 
-            // Drop-off marker — dark fill
             new maps.Marker({
               position: leg.end_location,
               map,
@@ -138,120 +137,93 @@ function RouteMapPreview({
           }
         )
       })
-      .catch(() => {/* silently skip map if Maps fails */})
+      .catch(() => { /* silently skip */ })
   }, [])
 
-  return (
-    <div
-      ref={divRef}
-      style={{ height: 170, borderRadius: 20, overflow: 'hidden' }}
-    />
-  )
+  return <div ref={divRef} style={{ height: 160, borderRadius: 16, overflow: 'hidden' }} />
 }
 
-// ─── Trip Summary Sidebar ─────────────────────────────────────────────────────
+// ─── Trip Summary ─────────────────────────────────────────────────────────────
 
 function TripSummary({ search }: { search: SearchDetails }) {
   const hasRoute = !!(search.fromCoords && search.toCoords)
 
   return (
     <div className="flex flex-col gap-3">
-
-      {/* Route map */}
       {hasRoute && (
-        <RouteMapPreview
-          fromCoords={search.fromCoords!}
-          toCoords={search.toCoords!}
-        />
+        <RouteMapPreview fromCoords={search.fromCoords!} toCoords={search.toCoords!} />
       )}
 
       {/* Route card */}
-      <div className="rounded-[20px] overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(46,64,82,0.12)' }}>
-        {/* Gradient header */}
+      <div
+        className="rounded-[20px] overflow-hidden"
+        style={{ boxShadow: '0 4px 24px rgba(46,64,82,0.12)' }}
+      >
         <div
-          className="px-5 py-5"
+          className="px-5 pt-5 pb-4"
           style={{ background: 'linear-gradient(135deg, #2E4052 0%, #3A5268 60%, #4A6278 100%)' }}
         >
-          <div
-            className="text-[9px] font-extrabold uppercase tracking-widest mb-4 font-body"
-            style={{ color: '#BDD9BF' }}
-          >
+          <p className="text-[9px] font-extrabold uppercase tracking-widest mb-4 font-body" style={{ color: '#BDD9BF' }}>
             Trip Summary
-          </div>
+          </p>
 
-          {/* Route line */}
           <div className="flex gap-3">
             <div className="flex flex-col items-center flex-shrink-0 mt-1">
               <div className="w-2.5 h-2.5 rounded-full bg-white" />
-              <div className="w-px flex-1 my-1.5" style={{ minHeight: 28, backgroundColor: 'rgba(255,255,255,0.25)' }} />
-              <div className="w-2.5 h-2.5 rounded-full border-2" style={{ borderColor: 'rgba(255,255,255,0.6)' }} />
+              <div className="w-px flex-1 my-1.5" style={{ minHeight: 28, backgroundColor: 'rgba(255,255,255,0.2)' }} />
+              <div className="w-2.5 h-2.5 rounded-full border-2" style={{ borderColor: 'rgba(255,255,255,0.5)' }} />
             </div>
             <div className="flex flex-col gap-3 flex-1 min-w-0">
               <div>
-                <div
-                  className="text-[9px] font-bold uppercase tracking-widest mb-0.5 font-body"
-                  style={{ color: '#BDD9BF' }}
-                >
+                <p className="text-[9px] font-bold uppercase tracking-widest mb-0.5 font-body" style={{ color: '#BDD9BF' }}>
                   Pickup
-                </div>
-                <div className="text-[13px] font-bold text-white leading-tight">{search.from || '—'}</div>
+                </p>
+                <p className="text-[13px] font-bold text-white leading-tight font-head">{search.from || '—'}</p>
               </div>
               <div>
-                <div
-                  className="text-[9px] font-bold uppercase tracking-widest mb-0.5 font-body"
-                  style={{ color: '#BDD9BF' }}
-                >
+                <p className="text-[9px] font-bold uppercase tracking-widest mb-0.5 font-body" style={{ color: '#BDD9BF' }}>
                   Drop-off
-                </div>
-                <div className="text-[13px] font-bold text-white leading-tight">{search.to || '—'}</div>
+                </p>
+                <p className="text-[13px] font-bold text-white leading-tight font-head">{search.to || '—'}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats grid */}
+        {/* Stats */}
         <div className="grid grid-cols-3 divide-x bg-white" style={{ borderColor: '#F0F5F0' }}>
           {[
             { Icon: CalendarDays, val: formatDate(search.date), sub: 'Date' },
             { Icon: Ruler, val: search.distance ? `${search.distance.toFixed(1)} km` : '—', sub: 'Distance' },
             { Icon: Clock, val: search.duration || '—', sub: 'Est. time' },
           ].map(({ Icon, val, sub }, i) => (
-            <div key={i} className="px-3 py-3.5 text-center" style={{ borderColor: '#F0F5F0' }}>
-              <Icon size={13} className="mx-auto mb-1" style={{ color: '#BDD9BF' }} />
-              <div className="text-[12px] font-bold font-head leading-tight" style={{ color: '#2E4052' }}>{val}</div>
-              <div className="text-[9px] font-semibold uppercase tracking-wide mt-0.5" style={{ color: 'rgba(46,64,82,0.4)' }}>
+            <div key={i} className="px-3 py-3 text-center" style={{ borderColor: '#F0F5F0' }}>
+              <Icon size={12} className="mx-auto mb-1" style={{ color: '#BDD9BF' }} />
+              <p className="text-[11px] font-bold font-head leading-tight" style={{ color: '#2E4052' }}>{val}</p>
+              <p className="text-[9px] font-semibold uppercase tracking-wide mt-0.5" style={{ color: 'rgba(46,64,82,0.4)' }}>
                 {sub}
-              </div>
+              </p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Return trip card */}
+      {/* Return trip */}
       {search.tripType === 'return' && (
-        <div
-          className="bg-white rounded-2xl px-4 py-3.5"
-          style={{ boxShadow: '0 2px 12px rgba(46,64,82,0.07)' }}
-        >
-          <div
-            className="text-[9px] font-bold uppercase tracking-widest mb-1.5 font-body"
-            style={{ color: 'rgba(46,64,82,0.4)' }}
-          >
+        <div className="bg-white rounded-2xl px-4 py-3" style={{ boxShadow: '0 2px 12px rgba(46,64,82,0.07)' }}>
+          <p className="text-[9px] font-bold uppercase tracking-widest mb-1 font-body" style={{ color: 'rgba(46,64,82,0.4)' }}>
             Return Trip
-          </div>
-          <div className="text-[13px] font-semibold font-head" style={{ color: '#2E4052' }}>
+          </p>
+          <p className="text-[13px] font-semibold font-head" style={{ color: '#2E4052' }}>
             {search.returnDate ? formatDate(search.returnDate) : '—'}
             {search.returnTime ? ` at ${search.returnTime}` : ''}
-          </div>
+          </p>
         </div>
       )}
 
       {/* Info note */}
-      <div
-        className="rounded-2xl px-4 py-3.5 flex items-start gap-2.5"
-        style={{ backgroundColor: '#BDD9BF' }}
-      >
-        <Zap size={13} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
+      <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ backgroundColor: '#BDD9BF' }}>
+        <Zap size={12} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
         <p className="text-[11px] leading-relaxed font-body" style={{ color: '#2E4052' }}>
           {search.distance
             ? `Prices based on a ${search.distance.toFixed(1)} km journey.`
@@ -259,7 +231,30 @@ function TripSummary({ search }: { search: SearchDetails }) {
           {' '}Free cancellation up to 1 hour before pickup.
         </p>
       </div>
+    </div>
+  )
+}
 
+// ─── Skeleton Card ────────────────────────────────────────────────────────────
+
+function VehicleCardSkeleton() {
+  return (
+    <div className="bg-white rounded-[24px] overflow-hidden animate-pulse" style={{ boxShadow: '0 4px 24px rgba(46,64,82,0.08)' }}>
+      <div className="aspect-[16/7] bg-slate-100" />
+      <div className="p-5 space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-2 flex-1">
+            <div className="h-5 bg-slate-100 rounded-lg w-36" />
+            <div className="h-3 bg-slate-100 rounded-lg w-24" />
+          </div>
+          <div className="h-7 bg-slate-100 rounded-xl w-28 flex-shrink-0" />
+        </div>
+        <div className="flex gap-2">
+          <div className="h-7 bg-slate-100 rounded-full w-16" />
+          <div className="h-7 bg-slate-100 rounded-full w-16" />
+          <div className="h-7 bg-slate-100 rounded-full w-20" />
+        </div>
+      </div>
     </div>
   )
 }
@@ -281,171 +276,191 @@ function VehicleCard({
   isEstimate: boolean
   onSelect: () => void
 }) {
-  const currencySymbol = currencyCode === 'GBP' ? '£' : currencyCode === 'USD' ? '$' : currencyCode === 'AED' ? 'AED ' : currencyCode
+  const sym = currencyCode === 'GBP' ? '£' : currencyCode === 'USD' ? '$' : currencyCode === 'AED' ? 'AED ' : currencyCode
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onSelect}
-      className="group relative bg-white rounded-[20px] overflow-hidden cursor-pointer"
+      onKeyDown={e => e.key === 'Enter' && onSelect()}
+      className="group relative bg-white overflow-hidden cursor-pointer flex flex-col md:flex-row"
       style={{
+        borderRadius: 24,
         boxShadow: selected
-          ? '0 0 0 2.5px #2E4052, 0 12px 36px rgba(46,64,82,0.20)'
-          : '0 2px 16px rgba(46,64,82,0.08)',
-        transition: 'box-shadow 0.2s ease, transform 0.2s ease',
-        transform: selected ? 'translateY(-2px)' : undefined,
+          ? '0 0 0 2.5px #FFC857, 0 16px 48px rgba(46,64,82,0.16)'
+          : '0 4px 24px rgba(46,64,82,0.08)',
+        transform: selected ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'box-shadow 0.25s ease, transform 0.25s ease',
+        touchAction: 'manipulation',
       }}
       onMouseEnter={e => {
         if (!selected) {
-          e.currentTarget.style.boxShadow = '0 8px 28px rgba(46,64,82,0.14)'
-          e.currentTarget.style.transform = 'translateY(-1px)'
+          e.currentTarget.style.boxShadow = '0 12px 36px rgba(46,64,82,0.14)'
+          e.currentTarget.style.transform = 'translateY(-2px)'
         }
       }}
       onMouseLeave={e => {
         if (!selected) {
-          e.currentTarget.style.boxShadow = '0 2px 16px rgba(46,64,82,0.08)'
+          e.currentTarget.style.boxShadow = '0 4px 24px rgba(46,64,82,0.08)'
           e.currentTarget.style.transform = 'translateY(0)'
         }
       }}
     >
-      {/* Selected top stripe in gold */}
+      {/* Gold top accent stripe when selected */}
       {selected && (
         <div
-          className="absolute top-0 left-0 right-0 z-10"
-          style={{ height: 3, backgroundColor: '#FFC857' }}
+          className="absolute top-0 inset-x-0 z-10 pointer-events-none"
+          style={{ height: 3, backgroundColor: '#FFC857', borderRadius: '24px 24px 0 0' }}
         />
       )}
 
-      <div className="flex items-stretch">
-
-        {/* ── Image column ── */}
-        <div
-          className="flex-shrink-0 relative overflow-hidden w-[100px] sm:w-[140px]"
-          style={{ minHeight: 120, backgroundColor: '#EAF0EA' }}
-        >
-          {vehicle.image ? (
-            <img
-              src={vehicle.image}
-              alt={vehicle.name}
-              loading="lazy"
-              className="w-full h-full object-contain transition-transform duration-350 group-hover:scale-[1.06]"
-              style={{ minHeight: 120, padding: '6px' }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center" style={{ minHeight: 120 }}>
-              <Car size={32} style={{ color: '#BDD9BF' }} />
-            </div>
-          )}
-
-          {/* Popular badge */}
-          {vehicle.popular && (
-            <div
-              className="absolute top-2 left-2 text-[8px] font-extrabold uppercase tracking-wide px-2 py-[3px] rounded-full"
-              style={{ backgroundColor: '#FFC857', color: '#2E4052' }}
-            >
-              Popular
-            </div>
-          )}
-
-          {/* Subtle right-edge vignette */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: 'linear-gradient(to right, transparent 55%, rgba(46,64,82,0.06) 100%)' }}
+      {/* ── Image column ── */}
+      <div
+        className="relative aspect-[16/7] md:aspect-auto md:w-[210px] flex-shrink-0 overflow-hidden"
+        style={{ backgroundColor: '#EAF0EA', minHeight: 120 }}
+      >
+        {vehicle.image ? (
+          <img
+            src={vehicle.image}
+            alt={vehicle.name}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.05]"
+            style={{ padding: 10 }}
           />
-        </div>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Car size={48} style={{ color: '#BDD9BF' }} />
+          </div>
+        )}
 
-        {/* ── Info column ── */}
-        <div className="flex-1 px-4 py-4 min-w-0 flex flex-col justify-between">
+        {/* Popular badge */}
+        {vehicle.popular && (
+          <div
+            className="absolute top-3 left-3 text-[9px] font-extrabold uppercase tracking-wide px-2.5 py-1 rounded-full"
+            style={{ backgroundColor: '#FFC857', color: '#2E4052', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+          >
+            Popular
+          </div>
+        )}
 
-          {/* Top: name + price */}
-          <div className="flex items-start justify-between gap-3 mb-2">
-            <div className="min-w-0 flex-1">
-              <div className="text-[14px] font-bold font-head leading-tight line-clamp-2" style={{ color: '#2E4052' }}>
-                {vehicle.name}
-              </div>
-              {vehicle.vehicleType && (
-                <div className="text-[11px] mt-0.5 font-body truncate" style={{ color: 'rgba(46,64,82,0.5)' }}>
-                  {vehicle.vehicleType}
-                </div>
+        {/* Rating badge */}
+        {vehicle.rating > 0 && (
+          <div
+            className="absolute top-3 right-3 flex items-center gap-1 rounded-full px-2 py-1"
+            style={{ backgroundColor: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(4px)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+          >
+            <Star size={10} fill="#FFC857" stroke="none" />
+            <span className="text-[10px] font-bold font-body" style={{ color: '#2E4052' }}>
+              {vehicle.rating.toFixed(1)}
+              {vehicle.reviews > 0 && (
+                <span className="font-normal" style={{ color: 'rgba(46,64,82,0.55)' }}> ({vehicle.reviews})</span>
               )}
-              {vehicle.rating > 0 && (
-                <div className="flex items-center gap-1 mt-1.5">
-                  <Star size={10} fill="#2E4052" stroke="none" />
-                  <span className="text-[10px] font-semibold font-body" style={{ color: 'rgba(46,64,82,0.6)' }}>
-                    {vehicle.rating.toFixed(1)}
-                    {vehicle.reviews > 0 && ` (${vehicle.reviews})`}
-                  </span>
-                </div>
-              )}
-            </div>
+            </span>
+          </div>
+        )}
 
-            {/* Price block */}
-            <div className="flex-shrink-0 text-right">
-              {priceDisplay !== '—' ? (
-                <>
-                  <div className="font-head text-[17px] sm:text-[22px] font-bold leading-none" style={{ color: '#2E4052' }}>
-                    {isEstimate && <span className="text-[11px] sm:text-[13px] font-semibold mr-0.5">From</span>}
-                    {currencySymbol}{priceDisplay}
-                  </div>
-                  <div
-                    className="text-[9px] font-semibold uppercase tracking-wide mt-1 font-body whitespace-nowrap"
-                    style={{ color: 'rgba(46,64,82,0.4)' }}
-                  >
-                    {isEstimate ? 'starting price' : 'est. total'}
-                  </div>
-                </>
-              ) : (
-                <div className="text-[12px] font-semibold font-body" style={{ color: 'rgba(46,64,82,0.45)' }}>
-                  Contact us
-                </div>
-              )}
-            </div>
+        {/* Selected check overlay */}
+        {selected && (
+          <div
+            className="absolute bottom-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: '#2E4052', boxShadow: '0 2px 10px rgba(46,64,82,0.4)' }}
+          >
+            <CheckCircle2 size={16} className="text-white" />
+          </div>
+        )}
+
+        {/* Subtle right-edge fade for desktop */}
+        <div
+          className="absolute inset-0 pointer-events-none hidden md:block"
+          style={{ background: 'linear-gradient(to right, transparent 70%, rgba(255,255,255,0.15) 100%)' }}
+        />
+      </div>
+
+      {/* ── Info column ── */}
+      <div className="flex-1 min-w-0 px-5 py-4 flex flex-col justify-between gap-3">
+
+        {/* Name + Price */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h3
+              className="font-head font-bold text-[15px] sm:text-[16px] leading-snug line-clamp-2"
+              style={{ color: '#2E4052' }}
+            >
+              {vehicle.name}
+            </h3>
+            {vehicle.vehicleType && (
+              <p className="text-[12px] mt-0.5 font-body truncate" style={{ color: '#6B7A8A' }}>
+                {vehicle.vehicleType}
+              </p>
+            )}
           </div>
 
-          {/* Chips */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span
-              className="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full"
-              style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-            >
-              <Users size={9} /> {vehicle.passengers} pax
-            </span>
-            <span
-              className="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full"
-              style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
-            >
-              <Luggage size={9} /> {vehicle.luggage} bags
-            </span>
-            {vehicle.features.slice(0, 2).map(f => (
-              <span
-                key={f}
-                className="text-[9px] font-semibold px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
-              >
-                {f}
+          {/* Price */}
+          <div className="flex-shrink-0 text-right">
+            {priceDisplay !== '—' ? (
+              <>
+                <p
+                  className="font-head font-bold leading-none"
+                  style={{ color: '#2E4052', fontSize: 'clamp(1.1rem, 2.5vw, 1.3rem)' }}
+                >
+                  {isEstimate && (
+                    <span className="text-[11px] font-semibold mr-0.5" style={{ color: '#6B7A8A' }}>From </span>
+                  )}
+                  {sym}{priceDisplay}
+                </p>
+                <p className="text-[9px] font-semibold uppercase tracking-wide mt-1 font-body" style={{ color: '#6B7A8A' }}>
+                  {isEstimate ? 'starting price' : 'est. total'}
+                </p>
+              </>
+            ) : (
+              <span className="text-[12px] font-semibold font-body" style={{ color: '#6B7A8A' }}>
+                Contact us
               </span>
-            ))}
+            )}
           </div>
         </div>
 
-        {/* ── Select indicator ── */}
-        <div className="flex items-center px-4 flex-shrink-0">
-          {selected ? (
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: '#2E4052', boxShadow: '0 2px 8px rgba(46,64,82,0.3)' }}
+        {/* Feature chips */}
+        <div className="flex flex-wrap gap-1.5">
+          <span
+            className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
+            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
+          >
+            <Users size={9} /> {vehicle.passengers} pax
+          </span>
+          <span
+            className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
+            style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
+          >
+            <Luggage size={9} /> {vehicle.luggage} bags
+          </span>
+          {vehicle.features.slice(0, 3).map(f => (
+            <span
+              key={f}
+              className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
+              style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
             >
-              <CheckCircle2 size={16} className="text-white" />
-            </div>
-          ) : (
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 group-hover:scale-110"
-              style={{ backgroundColor: '#F0F5F0' }}
-            >
-              <ArrowRight size={14} style={{ color: '#2E4052' }} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-            </div>
-          )}
+              {f}
+            </span>
+          ))}
         </div>
+      </div>
 
+      {/* ── Desktop arrow indicator ── */}
+      <div className="hidden md:flex items-center px-4 flex-shrink-0">
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
+          style={{
+            backgroundColor: selected ? '#2E4052' : '#F0F5F0',
+            transform: selected ? 'scale(1.1)' : 'scale(1)',
+          }}
+        >
+          {selected
+            ? <CheckCircle2 size={17} className="text-white" />
+            : <ArrowRight size={15} style={{ color: '#2E4052' }} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+          }
+        </div>
       </div>
     </div>
   )
@@ -465,7 +480,7 @@ export default function VehicleSelect() {
   const { distance: distanceKm, passengers: requiredPassengers } = searchDetails
 
   const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [showSummary, setShowSummary] = useState(true)
+  const [summaryOpen, setSummaryOpen] = useState(true)
 
   useEffect(() => {
     dispatch(fetchTaxiProducts())
@@ -487,14 +502,12 @@ export default function VehicleSelect() {
     return true
   })
 
-  // Returns the best-matching variant + whether the price is an exact match or a fallback estimate
   const getVariantForProduct = (product: TaxiOption): { variant: TaxiVariant | null; isEstimate: boolean } => {
     if (product.variants.length === 0) return { variant: null, isEstimate: false }
 
     const bandVariants = product.variants.filter(v => /^\d+-\d+\s*(km|miles?)$/i.test(v.title))
     const pool = bandVariants.length > 0 ? bandVariants : product.variants
 
-    // No distance calculated yet → show the cheapest band as a "from" price
     if (!distanceKm) {
       const sorted = [...pool].sort((a, b) => parseFloat(a.price.amount) - parseFloat(b.price.amount))
       return { variant: sorted[0] ?? null, isEstimate: true }
@@ -504,6 +517,9 @@ export default function VehicleSelect() {
     const variant = product.variants.find(v => v.id === id) ?? null
     return { variant, isEstimate: false }
   }
+
+  const selectedProduct = selectedId ? available.find(p => p.id === selectedId) ?? null : null
+  const selectedVariantData = selectedProduct ? getVariantForProduct(selectedProduct) : null
 
   const handleSelect = (product: TaxiOption) => {
     setSelectedId(product.id)
@@ -547,32 +563,45 @@ export default function VehicleSelect() {
           searchDetails,
         },
       })
-    }, 250)
+    }, 260)
   }
 
-  return (
-    <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
+  // Currency symbol helper for sticky bar
+  const getCurrencySymbol = (code: string) =>
+    code === 'GBP' ? '£' : code === 'USD' ? '$' : code === 'AED' ? 'AED ' : code
 
-      {/* ── Top bar ── */}
+  return (
+    <div className="min-h-dvh font-body" style={{ backgroundColor: '#F0F5F0' }}>
+
+      {/* ── Sticky frosted header ── */}
       <div
-        className="bg-white border-b sticky top-0 z-20"
-        style={{ borderColor: 'rgba(46,64,82,0.08)', boxShadow: '0 1px 12px rgba(46,64,82,0.07)' }}
+        className="sticky top-0 z-20 border-b"
+        style={{
+          backgroundColor: 'rgba(255,255,255,0.88)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderColor: 'rgba(46,64,82,0.07)',
+          boxShadow: '0 1px 16px rgba(46,64,82,0.06)',
+        }}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
+          {/* Back */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-[12px] font-semibold transition-colors px-2.5 py-1.5 rounded-xl cursor-pointer border-none"
+            className="flex items-center gap-1 text-[12px] font-semibold rounded-xl px-2.5 py-1.5 transition-all duration-150 cursor-pointer border-none flex-shrink-0"
             style={{ color: 'rgba(46,64,82,0.55)', backgroundColor: 'transparent' }}
             onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#F0F5F0'; e.currentTarget.style.color = '#2E4052' }}
             onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'rgba(46,64,82,0.55)' }}
+            aria-label="Go back"
           >
             <ChevronLeft size={16} />
-            <span className="hidden xs:inline">Back</span>
+            <span className="hidden sm:inline">Back</span>
           </button>
 
-          <div className="w-px h-5" style={{ backgroundColor: 'rgba(46,64,82,0.12)' }} />
+          <div className="w-px h-5 flex-shrink-0" style={{ backgroundColor: 'rgba(46,64,82,0.1)' }} />
 
-          <div className="min-w-0 flex-1">
+          {/* Title */}
+          <div className="flex-1 min-w-0">
             <h1 className="font-head font-bold text-[15px] sm:text-[16px] truncate" style={{ color: '#2E4052' }}>
               Choose Your Vehicle
             </h1>
@@ -583,95 +612,97 @@ export default function VehicleSelect() {
             )}
           </div>
 
+          {/* Available count pill — desktop */}
           {!loading && !error && available.length > 0 && (
             <span
-              className="text-[11px] font-bold px-3 py-1 rounded-full hidden sm:block flex-shrink-0 font-body"
+              className="hidden sm:block text-[11px] font-bold px-3 py-1 rounded-full flex-shrink-0 font-body"
               style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
             >
               {available.length} available
             </span>
           )}
 
+          {/* Trip summary toggle — mobile */}
           <button
-            className="lg:hidden flex items-center gap-1.5 text-[12px] font-bold rounded-xl px-3 py-1.5 flex-shrink-0 whitespace-nowrap cursor-pointer border-none transition-all duration-200"
-            style={showSummary
-              ? { backgroundColor: '#2E4052', color: 'white' }
+            onClick={() => setSummaryOpen(v => !v)}
+            className="lg:hidden flex items-center gap-1.5 text-[12px] font-bold rounded-xl px-3 py-1.5 flex-shrink-0 cursor-pointer border-none transition-all duration-200"
+            style={summaryOpen
+              ? { backgroundColor: '#2E4052', color: '#fff' }
               : { backgroundColor: '#BDD9BF', color: '#2E4052' }
             }
-            onClick={() => setShowSummary(v => !v)}
+            aria-expanded={summaryOpen}
+            aria-label="Toggle trip summary"
           >
             <MapPin size={13} />
-            <span className="hidden sm:inline">{showSummary ? 'Hide' : 'Trip'} Summary</span>
+            <span className="hidden xs:inline">Trip</span>
+            {summaryOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile trip summary */}
-      {showSummary && (
-        <div className="lg:hidden px-4 pt-4 pb-2">
+      {/* ── Mobile collapsible trip summary ── */}
+      <div
+        className="lg:hidden overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: summaryOpen ? 600 : 0, opacity: summaryOpen ? 1 : 0 }}
+      >
+        <div className="px-4 pt-4 pb-2">
           <TripSummary search={searchDetails} />
         </div>
-      )}
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex gap-6 items-start">
+      {/* ── Main content ── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
+        <div className="flex gap-7 items-start">
 
           {/* ── Vehicle list ── */}
           <div className="flex-1 min-w-0">
 
-            {/* List header */}
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest font-body" style={{ color: 'rgba(46,64,82,0.45)' }}>
-                  Available Vehicles
-                </p>
-                {!loading && !error && available.length > 0 && (
-                  <p className="text-[13px] font-semibold font-head mt-0.5" style={{ color: '#2E4052' }}>
+            {/* Section header */}
+            {!loading && !error && available.length > 0 && (
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest font-body" style={{ color: 'rgba(46,64,82,0.4)' }}>
+                    Available Vehicles
+                  </p>
+                  <p className="text-[14px] font-semibold font-head mt-0.5" style={{ color: '#2E4052' }}>
                     Select a vehicle to continue
                   </p>
-                )}
-              </div>
-              {!loading && !error && available.length > 0 && (
+                </div>
                 <span
-                  className="text-[11px] font-bold px-2.5 py-1 rounded-full sm:hidden font-body"
+                  className="sm:hidden text-[11px] font-bold px-2.5 py-1 rounded-full font-body"
                   style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                 >
                   {available.length}
                 </span>
-              )}
-            </div>
-
-            {/* Loading */}
-            {loading && (
-              <div className="flex flex-col items-center justify-center py-24 gap-3">
-                <Loader2 size={28} className="animate-spin" style={{ color: '#2E4052' }} />
-                <p className="text-[13px] font-body" style={{ color: 'rgba(46,64,82,0.5)' }}>
-                  Loading available vehicles…
-                </p>
               </div>
             )}
 
-            {/* Error */}
+            {/* ── Loading skeletons ── */}
+            {loading && (
+              <div className="flex flex-col gap-4">
+                <div className="h-4 w-40 bg-white rounded-lg animate-pulse mb-1" style={{ opacity: 0.7 }} />
+                {[1, 2, 3].map(i => <VehicleCardSkeleton key={i} />)}
+              </div>
+            )}
+
+            {/* ── Error state ── */}
             {!loading && error && (
               <div
-                className="bg-white rounded-[20px] px-6 py-10 flex flex-col items-center gap-4 text-center"
-                style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.08)' }}
+                className="bg-white rounded-[24px] px-6 py-12 flex flex-col items-center gap-4 text-center"
+                style={{ boxShadow: '0 4px 24px rgba(46,64,82,0.08)' }}
               >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: '#FEE2E2' }}
-                >
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#FEE2E2' }}>
                   <AlertCircle size={22} className="text-red-400" />
                 </div>
                 <div>
                   <p className="text-[15px] font-bold font-head" style={{ color: '#2E4052' }}>
                     Could not load vehicles
                   </p>
-                  <p className="text-[12px] mt-1 font-body" style={{ color: 'rgba(46,64,82,0.5)' }}>{error}</p>
+                  <p className="text-[12px] mt-1 font-body" style={{ color: '#6B7A8A' }}>{error}</p>
                 </div>
                 <button
                   onClick={() => dispatch(fetchTaxiProducts())}
-                  className="text-[13px] font-bold px-6 py-2.5 rounded-xl text-white cursor-pointer border-none"
+                  className="text-[13px] font-bold px-6 py-2.5 rounded-xl text-white cursor-pointer border-none transition-opacity hover:opacity-80"
                   style={{ backgroundColor: '#2E4052' }}
                 >
                   Try Again
@@ -679,35 +710,30 @@ export default function VehicleSelect() {
               </div>
             )}
 
-            {/* Empty state */}
+            {/* ── Empty state ── */}
             {!loading && !error && available.length === 0 && products.length > 0 && (
               <div
-                className="bg-white rounded-[20px] px-6 py-12 text-center"
-                style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.08)' }}
+                className="bg-white rounded-[24px] px-6 py-14 text-center"
+                style={{ boxShadow: '0 4px 24px rgba(46,64,82,0.08)' }}
               >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                  style={{ backgroundColor: '#F0F5F0' }}
-                >
-                  <Car size={24} style={{ color: '#BDD9BF' }} />
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#F0F5F0' }}>
+                  <Car size={26} style={{ color: '#BDD9BF' }} />
                 </div>
                 <p className="text-[15px] font-bold font-head" style={{ color: '#2E4052' }}>
                   No vehicles for {requiredPassengers} passengers
                 </p>
-                <p className="text-[12px] mt-1 font-body" style={{ color: 'rgba(46,64,82,0.5)' }}>
+                <p className="text-[12px] mt-1 font-body" style={{ color: '#6B7A8A' }}>
                   Try reducing the passenger count.
                 </p>
               </div>
             )}
 
-            {/* Vehicle cards */}
+            {/* ── Vehicle cards ── */}
             {!loading && !error && (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4">
                 {available.map(product => {
                   const { variant, isEstimate } = getVariantForProduct(product)
-                  const priceDisplay = variant
-                    ? parseFloat(variant.price.amount).toFixed(2)
-                    : '—'
+                  const priceDisplay = variant ? parseFloat(variant.price.amount).toFixed(2) : '—'
                   const currencyCode = variant?.price.currencyCode ?? 'GBP'
 
                   return (
@@ -733,6 +759,59 @@ export default function VehicleSelect() {
 
         </div>
       </div>
+
+      {/* ── Sticky bottom selected bar (mobile / tablet) ── */}
+      <div
+        className="lg:hidden fixed bottom-0 inset-x-0 z-30 transition-all duration-300 ease-in-out"
+        style={{
+          transform: selectedProduct ? 'translateY(0)' : 'translateY(100%)',
+          opacity: selectedProduct ? 1 : 0,
+          pointerEvents: selectedProduct ? 'auto' : 'none',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        }}
+      >
+        <div
+          className="mx-4 mb-4 rounded-[20px] px-4 py-3 flex items-center gap-3"
+          style={{
+            backgroundColor: '#2E4052',
+            boxShadow: '0 -4px 32px rgba(46,64,82,0.25)',
+          }}
+        >
+          {/* Vehicle thumb */}
+          {selectedProduct?.image && (
+            <div className="w-12 h-10 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: '#EAF0EA' }}>
+              <img
+                src={selectedProduct.image}
+                alt={selectedProduct.name}
+                className="w-full h-full object-contain"
+                style={{ padding: 2 }}
+              />
+            </div>
+          )}
+
+          {/* Name + price */}
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-bold text-white font-head truncate leading-tight">
+              {selectedProduct?.name}
+            </p>
+            {selectedVariantData?.variant && (
+              <p className="text-[11px] font-semibold font-body" style={{ color: '#BDD9BF' }}>
+                {getCurrencySymbol(selectedVariantData.variant.price.currencyCode)}
+                {parseFloat(selectedVariantData.variant.price.amount).toFixed(2)}
+                <span className="opacity-60"> est. total</span>
+              </p>
+            )}
+          </div>
+
+          {/* Loading spinner while navigating */}
+          <div className="flex items-center gap-1.5 flex-shrink-0 text-[12px] font-bold rounded-xl px-4 py-2"
+            style={{ backgroundColor: '#FFC857', color: '#2E4052' }}>
+            <Loader2 size={13} className="animate-spin" />
+            <span>Loading…</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   )
 }

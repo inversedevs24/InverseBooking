@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandEmail, brandPhone } from '../../env'
 import { SERVICES } from '../../data'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -30,6 +33,16 @@ const LEGAL_LINKS = [
 ]
 
 export default function Footer() {
+  const dispatch = useAppDispatch()
+  const { products, initialized } = useAppSelector(s => s.shopify)
+
+  useEffect(() => { dispatch(fetchTaxiProducts()) }, [dispatch])
+
+  const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
+  const visibleServices = initialized && activeTypes.size > 0
+    ? SERVICES.filter(s => activeTypes.has(s.label))
+    : SERVICES
+
   return (
     <footer style={{ backgroundColor: '#010407' }} className="pt-14 pb-6">
       <div className="max-w-container mx-auto px-6">
@@ -105,7 +118,7 @@ export default function Footer() {
               Our Services
             </h4>
             <div className="flex flex-col gap-2.5">
-              {SERVICES.map(s => (
+              {visibleServices.map(s => (
                 <Link
                   key={s.label}
                   to={SERVICE_ROUTE_MAP[s.label] ?? '/book'}

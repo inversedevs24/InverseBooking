@@ -5,7 +5,7 @@ import {
     CalendarDays, CheckCircle2, XCircle, Loader2,
     Phone, Mail, Star, CreditCard, ArrowRight, Search, Bell, Settings, TrendingUp, Luggage,
     MapPin, Navigation, Ruler, Timer, AlertCircle,
-    Download, RotateCcw, MessageCircle, ChevronLeft, RefreshCw,
+    Download, RotateCcw, MessageCircle, ChevronLeft, RefreshCw, Hash,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { getCustomerOrders, ShopifyOrder } from '../../services/shopifyAuthService'
@@ -224,71 +224,23 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                 >
                     <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full opacity-10 bg-white pointer-events-none" />
 
-                    {/* Top row: Back link (desktop) + reference + Close button (always visible) */}
-                    <div className="relative flex items-center justify-between mb-4">
-                        <button onClick={onClose}
-                            className="hidden sm:flex items-center gap-1 text-[12px] font-semibold hover:opacity-70 transition-opacity"
-                            style={{ color: '#BDD9BF' }}>
-                            <ChevronLeft size={14} /> Back
-                        </button>
-                        {/* On mobile the reference is left-aligned since Back is hidden */}
-                        <span className="text-[10px] font-mono font-bold sm:mx-auto" style={{ color: '#BDD9BF' }}>{booking.reference}</span>
-                        {/* Close × — always rendered, critical for mobile */}
+                    {/* Top row: tabs + close button */}
+                    <div className="relative flex items-end justify-between -mb-px">
+                        <div className="flex gap-0">
+                            {tabs.map(t => (
+                                <button key={t.key} onClick={() => setTab(t.key)}
+                                    className={`px-5 py-2.5 text-[12px] font-bold transition-all rounded-t-xl ${tab === t.key ? 'bg-white text-slate-800' : 'text-white/60 hover:text-white/90'
+                                        }`}>
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
                         <button
                             onClick={onClose}
-                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/20 hover:bg-white/30 transition-colors flex-shrink-0"
+                            className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/20 hover:bg-white/30 transition-colors flex-shrink-0 mb-2.5"
                         >
                             <X size={17} className="text-white" />
                         </button>
-                    </div>
-
-                    {/* Status + route */}
-                    <div className="relative mb-4">
-                        <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold mb-3 bg-white/90"
-                            style={{ color: s.color }}>
-                            <s.Icon size={11} className={booking.status === 'in-progress' ? 'animate-spin' : ''} />
-                            {s.label}
-                        </div>
-
-                        <div className="flex gap-3 items-start">
-                            <div className="flex flex-col items-center mt-1 flex-shrink-0">
-                                <div className="w-2.5 h-2.5 rounded-full bg-white" />
-                                <div className="w-px h-6 my-1 bg-white/30" />
-                                <div className="w-2.5 h-2.5 rounded-full border-2 border-white/60" />
-                            </div>
-                            <div className="flex flex-col gap-3 flex-1 min-w-0">
-                                <div>
-                                    <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Pickup</div>
-                                    <div className="text-[14px] font-bold text-white font-head leading-tight">{booking.from}</div>
-                                    <div className="text-[11px] mt-0.5" style={{ color: '#BDD9BF' }}>{booking.date} · {booking.time}</div>
-                                </div>
-                                <div>
-                                    <div className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#BDD9BF' }}>Drop-off</div>
-                                    <div className="text-[14px] font-bold text-white font-head leading-tight">{booking.to}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stat pills */}
-                    <div className="relative flex gap-2 pb-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-                        {[{ Icon: Ruler, v: booking.distance }, { Icon: Timer, v: booking.duration }, { Icon: Car, v: booking.vehicle }].map((item, i) => (
-                            <div key={i} className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 flex-shrink-0">
-                                <item.Icon size={11} className="text-white/70" />
-                                <span className="text-[11px] font-semibold text-white whitespace-nowrap">{item.v}</span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Tab bar */}
-                    <div className="relative flex gap-0 -mb-px">
-                        {tabs.map(t => (
-                            <button key={t.key} onClick={() => setTab(t.key)}
-                                className={`px-5 py-2.5 text-[12px] font-bold transition-all rounded-t-xl ${tab === t.key ? 'bg-white text-slate-800' : 'text-white/60 hover:text-white/90'
-                                    }`}>
-                                {t.label}
-                            </button>
-                        ))}
                     </div>
                 </div>
 
@@ -299,13 +251,24 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                         {/* OVERVIEW */}
                         {tab === 'overview' && (
                             <>
+                                <Section title="Booking">
+                                    <InfoRow icon={Hash} label="Order ID" value={booking.reference} />
+                                    <div className="flex items-start justify-between py-2 border-b border-slate-50 last:border-0 gap-3">
+                                        <div className="flex items-center gap-2 text-slate-400 flex-shrink-0">
+                                            <s.Icon size={12} />
+                                            <span className="text-[12px] font-body text-slate-500">Status</span>
+                                        </div>
+                                        <span className="text-[12px] font-bold font-head" style={{ color: s.color }}>{s.label}</span>
+                                    </div>
+                                </Section>
+
                                 <Section title="Journey Details">
-                                    <InfoRow icon={MapPin} label="Pickup address" value={booking.fromFull} />
-                                    <InfoRow icon={Navigation} label="Drop-off address" value={booking.toFull} />
-                                    <InfoRow icon={CalendarDays} label="Date" value={booking.date} />
-                                    <InfoRow icon={Clock} label="Pickup time" value={booking.time} />
-                                    <InfoRow icon={Ruler} label="Distance" value={booking.distance} />
-                                    <InfoRow icon={Timer} label="Est. duration" value={booking.duration} />
+                                    <InfoRow icon={MapPin} label="Pickup" value={booking.fromFull} />
+                                    <InfoRow icon={Navigation} label="Drop-off" value={booking.toFull} />
+                                    {booking.date ? <InfoRow icon={CalendarDays} label="Date" value={booking.date} /> : null}
+                                    {booking.time ? <InfoRow icon={Clock} label="Time" value={booking.time} /> : null}
+                                    {booking.distance ? <InfoRow icon={Ruler} label="Distance" value={booking.distance} /> : null}
+                                    {booking.duration ? <InfoRow icon={Timer} label="Est. duration" value={booking.duration} /> : null}
                                 </Section>
 
                                 <Section title="Vehicle">
@@ -460,65 +423,47 @@ function BookingCard({ booking, onDetails }: { booking: Booking; onDetails: () =
     const s = STATUS_CONFIG[booking.status]
     return (
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden hover:shadow-[0_4px_20px_rgba(15,23,42,0.12)] transition-shadow duration-200">
-            {/* Top bar */}
+            {/* Top bar: reference + status */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">{booking.reference}</span>
                 <div className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold"
                     style={{ color: s.color, backgroundColor: s.bg }}>
                     <s.Icon size={11} className={booking.status === 'in-progress' ? 'animate-spin' : ''} />
-                    <span className="hidden xs:inline">{s.label}</span>
+                    <span>{s.label}</span>
                 </div>
             </div>
 
-            {/* Route */}
             <div className="px-4 py-4">
-                <div className="flex gap-3">
+                {/* Route */}
+                <div className="flex gap-3 mb-3">
                     <div className="flex flex-col items-center pt-1 flex-shrink-0">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#2E4052' }} />
                         <div className="w-px flex-1 my-1" style={{ backgroundColor: '#BDD9BF' }} />
                         <div className="w-2 h-2 rounded-full bg-slate-300" />
                     </div>
-                    <div className="flex flex-col gap-3 flex-1 min-w-0">
-                        <div>
-                            <div className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Pickup</div>
-                            <div className="text-[13px] font-semibold text-slate-700 font-head leading-tight line-clamp-1">{booking.from}</div>
-                        </div>
-                        <div>
-                            <div className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Drop-off</div>
-                            <div className="text-[13px] font-semibold text-slate-700 font-head leading-tight line-clamp-1">{booking.to}</div>
-                        </div>
+                    <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+                        <div className="text-[13px] font-semibold text-slate-700 font-head leading-tight line-clamp-1">{booking.from}</div>
+                        <div className="text-[13px] font-semibold text-slate-700 font-head leading-tight line-clamp-1">{booking.to}</div>
                     </div>
                 </div>
 
-                {/* Meta */}
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-500">
-                    <span className="flex items-center gap-1"><CalendarDays size={11} />{booking.date}</span>
-                    <span className="flex items-center gap-1"><Clock size={11} />{booking.time}</span>
-                    <span className="flex items-center gap-1 hidden sm:flex"><Car size={11} />{booking.vehicle}</span>
-                    <span className="flex items-center gap-1"><User size={11} />{booking.passengers} pax</span>
-                    <span className="flex items-center gap-1"><Luggage size={11} />{booking.luggage} bags</span>
+                {/* Date · time */}
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mb-3">
+                    <CalendarDays size={11} />
+                    <span>{booking.date}</span>
+                    {booking.time && <><span>·</span><Clock size={11} /><span>{booking.time}</span></>}
                 </div>
 
-                {/* Footer */}
-                <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-[17px] font-bold text-slate-800 font-head">{booking.price}</span>
-                        {booking.driver && (
-                            <span className="text-[11px] text-slate-400 hidden sm:block truncate">
-                                · <span className="text-slate-600 font-semibold">{booking.driver}</span>
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                        {booking.rating && <StarRatingSm rating={booking.rating} />}
-                        <button
-                            onClick={onDetails}
-                            className="flex items-center gap-1 text-[12px] font-bold transition-opacity hover:opacity-70 rounded-lg px-2.5 py-1.5"
-                            style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
-                        >
-                            Details <ChevronRight size={12} />
-                        </button>
-                    </div>
+                {/* Footer: price + details */}
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <span className="text-[17px] font-bold text-slate-800 font-head">{booking.price}</span>
+                    <button
+                        onClick={onDetails}
+                        className="flex items-center gap-1 text-[12px] font-bold transition-opacity hover:opacity-70 rounded-lg px-2.5 py-1.5"
+                        style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+                    >
+                        Details <ChevronRight size={12} />
+                    </button>
                 </div>
             </div>
         </div>
@@ -595,7 +540,7 @@ export default function UserDashboard() {
     return (
         <div className="min-h-screen" style={{ backgroundColor: '#F0F5F0' }}>
 
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-[72px] pb-8 space-y-5 sm:space-y-7">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-8 space-y-5 sm:space-y-7">
 
                 {/*  Profile hero  */}
                 <div

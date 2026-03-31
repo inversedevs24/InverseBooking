@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
-  ChevronLeft, User, Mail, Phone, Users, Plane,
+  ChevronLeft, ChevronDown, ChevronUp, User, Mail, Phone, Users, Plane,
   Clock, Ruler, CheckCircle2,
   ShieldCheck, ArrowRight, Car, LogIn, UserPlus, X,
   MapPin, Calendar, MessageCircle,
@@ -537,9 +537,11 @@ export default function BookingDetails() {
               : { backgroundColor: '#BDD9BF', color: '#2E4052' }
             }
             onClick={() => setShowSummary(v => !v)}
+            aria-expanded={showSummary}
           >
             <Car size={13} />
-            <span className="hidden sm:inline">{showSummary ? 'Hide' : 'Your'} Booking</span>
+            <span className="hidden sm:inline">Your Vehicle</span>
+            {showSummary ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
         </div>
       </div>

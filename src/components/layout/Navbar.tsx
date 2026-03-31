@@ -119,7 +119,7 @@ export default function Navbar() {
   )
 
   return (
-    <nav className="bg-white border-b border-border sticky top-0 z-[100] shadow-[0_2px_12px_rgba(0,0,0,0.06)] relative">
+    <nav className="bg-white border-b border-border fixed top-0 left-0 right-0 z-[100] shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
       <div className="max-w-container mx-auto px-4 sm:px-6 relative flex items-center justify-between h-16">
 
         <Logo />
