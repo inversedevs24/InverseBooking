@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import HomePage from './pages/HomePage'
@@ -28,6 +29,7 @@ const AUTH_ROUTES = ['/signin', '/signup']
 
 export default function App() {
   const { pathname } = useLocation()
+  const { isLoggedIn, loading: authLoading } = useAuth()
   const isAuth = AUTH_ROUTES.includes(pathname)
 
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
@@ -54,7 +56,7 @@ export default function App() {
           <Route path="/vehicles" element={<VehicleSelect />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/account" element={<UserDashboard />} />
+          <Route path="/account" element={authLoading ? null : isLoggedIn ? <UserDashboard /> : <Navigate to="/signin" replace />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>

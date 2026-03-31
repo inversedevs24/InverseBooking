@@ -129,8 +129,6 @@ export function parseVariants(edges: any[]): TaxiVariant[] {
 }
 
 function transformProduct(node: any): TaxiOption {
-  console.log("node", node);
-
   const metafields: RawMetafield[] = (node.metafields ?? []).filter(Boolean)
   const getMeta = (ns: string, key: string, def: unknown) =>
     getMetafieldValue(metafields, ns, key, def)
@@ -371,26 +369,17 @@ export async function fetchTaxiProducts(): Promise<TaxiOption[]> {
     },
     body: JSON.stringify({ query: GET_PRODUCTS_QUERY }),
   })
-  console.log("response", response);
-
   if (!response.ok) {
     throw new Error(`Shopify API error: ${response.status} ${response.statusText}`)
   }
 
   const json = await response.json()
-  console.log("json", json);
-
-
   if (json.errors?.length) {
     throw new Error(json.errors[0].message)
   }
 
   const edges: any[] = json.data?.products?.edges ?? []
-  console.log("edges", edges);
-
   const nodes = edges.map((edge: any) => edge.node)
-  console.log('productTypes:', nodes.map((n: any) => n.productType))
   const filtered = nodes.filter((node: any) => node.productType !== 'Parking Fee')
-  console.log('after filter:', filtered.length)
   return filtered.map(transformProduct)
 }

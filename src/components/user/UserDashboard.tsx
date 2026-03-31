@@ -5,7 +5,7 @@ import {
     CalendarDays, CheckCircle2, XCircle, Loader2,
     Phone, Mail, Star, CreditCard, ArrowRight, Search, Bell, Settings, TrendingUp, Luggage,
     MapPin, Navigation, Ruler, Timer, AlertCircle,
-    Download, RotateCcw, MessageCircle, ChevronLeft,
+    Download, RotateCcw, MessageCircle, ChevronLeft, RefreshCw,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { getCustomerOrders, ShopifyOrder } from '../../services/shopifyAuthService'
@@ -137,7 +137,9 @@ function mapOrderToBooking(order: ShopifyOrder): Booking | null {
         notes: attrs['Flight Number'] ? `Flight ${attrs['Flight Number']}` : undefined,
         timeline,
         bookedOn,
-        paymentMethod: 'Paid online',
+        paymentMethod: order?.paymentGatewayNames?.length > 0
+            ? order?.paymentGatewayNames?.join(', ')
+            : 'Paid online',
         distance: attrs['Distance'] ?? '',
         duration: attrs['Duration'] ?? '',
     }
@@ -185,8 +187,18 @@ function InfoRow({ icon: Icon, label, value }: { icon: typeof Car; label: string
 }
 
 function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: () => void }) {
+    const navigate = useNavigate()
     const [tab, setTab] = useState<'overview' | 'payment'>('overview')
     const s = STATUS_CONFIG[booking.status]
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden'
+        document.documentElement.style.overflow = 'hidden'
+        return () => {
+            document.body.style.overflow = ''
+            document.documentElement.style.overflow = ''
+        }
+    }, [])
 
     const tabs = [
         { key: 'overview' as const, label: 'Overview' },
@@ -195,15 +207,15 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
 
     return (
         <>
-            {/* Backdrop — sits below navbar */}
+            {/* Backdrop — full screen, above navbar */}
             <div
-                className="fixed top-14 bottom-0 left-0 right-0 bg-black/40 backdrop-blur-[2px] z-30"
+                className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[110]"
                 onClick={onClose}
             />
 
-            {/* Panel — starts below navbar (top-14 = 56px) on all sizes, right drawer on sm+ */}
+            {/* Panel — full screen on mobile, right drawer on sm+ */}
             <div
-                className="fixed top-14 bottom-0 left-0 right-0 sm:left-auto sm:right-0 sm:w-[420px] md:w-[460px] z-40 flex flex-col shadow-2xl"
+                className="fixed inset-0 sm:inset-auto sm:top-0 sm:bottom-0 sm:right-0 sm:w-[420px] md:w-[460px] z-[120] flex flex-col shadow-2xl"
             >
                 {/* Header */}
                 <div
@@ -311,7 +323,7 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                                     </div>
                                 </Section>
 
-                                {booking.driver && (
+                                {booking.driver && booking.driverPhone && booking.status !== 'completed' && (
                                     <Section title="Your Driver">
                                         <div className="flex items-center gap-3">
                                             <div className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-[13px] font-head flex-shrink-0"
@@ -377,38 +389,36 @@ function BookingDetailsPanel({ booking, onClose }: { booking: Booking; onClose: 
                                     <InfoRow icon={CalendarDays} label="Booked on" value={booking.bookedOn} />
                                 </Section>
 
-                                {booking.status === 'completed' && (
-                                    <button className="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold hover:opacity-80 transition-opacity"
-                                        style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}>
-                                        <Download size={14} /> Download Receipt
-                                    </button>
-                                )}
                             </>
                         )}
 
-                        {/* Action buttons */}
-                        <div className="flex gap-2 pt-1">
-                            {(booking.status === 'confirmed' || booking.status === 'in-progress') && (
-                                <>
-                                    <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white hover:opacity-80 transition-opacity"
-                                        style={{ backgroundColor: '#2E4052' }}>
-                                        <MessageCircle size={13} /> Contact Support
-                                    </button>
-                                    {booking.status === 'confirmed' && (
-                                        <button className="flex items-center justify-center gap-1.5 rounded-xl py-3 px-4 text-[12px] font-bold border-2 text-red-600 border-red-200 bg-red-50 hover:bg-red-100 transition-colors">
-                                            <XCircle size={13} /> Cancel
-                                        </button>
-                                    )}
-                                </>
-                            )}
-                            {(booking.status === 'completed' || booking.status === 'cancelled') && (
-                                <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white hover:opacity-80 transition-opacity"
-                                    style={{ backgroundColor: '#2E4052' }}>
-                                    <RotateCcw size={13} /> {booking.status === 'cancelled' ? 'Rebook Journey' : 'Book Again'}
-                                </button>
-                            )}
-                        </div>
+                    </div>
+                </div>
 
+                {/* Sticky bottom action buttons */}
+                <div
+                    className="flex-shrink-0 px-4 py-3 bg-white border-t border-slate-100"
+                    style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }}
+                >
+                    <div className="flex gap-2">
+                        {(booking.status === 'confirmed' || booking.status === 'in-progress') && (
+                            <button
+                                className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white hover:opacity-80 transition-opacity"
+                                style={{ backgroundColor: '#2E4052' }}
+                                onClick={() => navigate('/contact')}
+                            >
+                                <MessageCircle size={13} /> Contact Support
+                            </button>
+                        )}
+                        {(booking.status === 'completed' || booking.status === 'cancelled') && (
+                            <button
+                                className="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-3 text-[12px] font-bold text-white hover:opacity-80 transition-opacity"
+                                style={{ backgroundColor: '#2E4052' }}
+                                onClick={() => navigate('/book')}
+                            >
+                                <RotateCcw size={13} /> {booking.status === 'cancelled' ? 'Rebook Journey' : 'Book Again'}
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -438,12 +448,13 @@ function StatCard({ icon: Icon, label, value, sub }: { icon: typeof User; label:
             </div>
             <div className="min-w-0">
                 <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold truncate">{label}</div>
-                <div className="text-[18px] font-bold text-slate-800 font-head leading-tight">{value}</div>
+                <div className="text-[14px] sm:text-[18px] font-bold text-slate-800 font-head leading-tight truncate">{value}</div>
                 {sub && <div className="text-[10px] text-slate-400">{sub}</div>}
             </div>
         </div>
     )
 }
+
 
 function BookingCard({ booking, onDetails }: { booking: Booking; onDetails: () => void }) {
     const s = STATUS_CONFIG[booking.status]
@@ -526,10 +537,9 @@ export default function UserDashboard() {
     const [orders, setOrders] = useState<Booking[]>([])
     const [ordersLoading, setOrdersLoading] = useState(false)
 
-    useEffect(() => {
-        if (!accessToken) return
+    const fetchOrders = (token: string) => {
         setOrdersLoading(true)
-        getCustomerOrders(accessToken)
+        getCustomerOrders(token)
             .then(raw => {
                 const mapped = raw.flatMap(o => {
                     const b = mapOrderToBooking(o)
@@ -539,6 +549,11 @@ export default function UserDashboard() {
             })
             .catch(console.error)
             .finally(() => setOrdersLoading(false))
+    }
+
+    useEffect(() => {
+        if (!accessToken) return
+        fetchOrders(accessToken)
     }, [accessToken])
 
     async function handleSignOut() {
@@ -580,31 +595,7 @@ export default function UserDashboard() {
     return (
         <div className="min-h-screen" style={{ backgroundColor: '#F0F5F0' }}>
 
-            {/*  Nav  */}
-            <header className="bg-white border-b border-slate-100 fixed top-0 left-0 right-0 z-20 shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Car size={20} style={{ color: '#2E4052' }} />
-                        <span className="font-head font-bold text-slate-800 text-[15px] sm:text-[16px]">Coach Hire Compare</span>
-                    </div>
-                    <div className="flex items-center gap-1 sm:gap-2">
-                        <button className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors">
-                            <Bell size={16} className="text-slate-500" />
-                        </button>
-                        <button className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors">
-                            <Settings size={16} className="text-slate-500" />
-                        </button>
-                        <button onClick={handleSignOut} className="hidden sm:flex items-center gap-1.5 text-[12px] text-slate-500 hover:text-red-500 transition-colors font-semibold ml-1">
-                            <LogOut size={13} /> Sign out
-                        </button>
-                        <button onClick={handleSignOut} className="sm:hidden w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100">
-                            <LogOut size={15} className="text-slate-500" />
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-[80px] pb-8 space-y-5 sm:space-y-7">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-[72px] pb-8 space-y-5 sm:space-y-7">
 
                 {/*  Profile hero  */}
                 <div
@@ -634,6 +625,7 @@ export default function UserDashboard() {
                         </div>
 
                         <button
+                            onClick={() => navigate('/book')}
                             className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 rounded-xl px-5 py-2.5 text-[13px] font-bold hover:opacity-90 transition-opacity shadow flex-shrink-0"
                             style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
                         >
@@ -656,6 +648,16 @@ export default function UserDashboard() {
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
                         <h2 className="font-head font-bold text-slate-800 text-[17px] sm:text-[18px] flex-1">My Bookings</h2>
                         <div className="flex gap-2">
+                            <button
+                                onClick={() => accessToken && fetchOrders(accessToken)}
+                                disabled={ordersLoading}
+                                className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-bold transition-opacity hover:opacity-70 disabled:opacity-50 flex-shrink-0"
+                                style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+                                title="Refresh bookings"
+                            >
+                                <RefreshCw size={13} className={ordersLoading ? 'animate-spin' : ''} />
+                                <span className="hidden sm:inline">Refresh</span>
+                            </button>
                             <div className="relative flex-1 sm:flex-initial">
                                 <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input

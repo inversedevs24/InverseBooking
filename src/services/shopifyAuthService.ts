@@ -159,6 +159,7 @@ export interface ShopifyOrder {
   financialStatus: string
   fulfillmentStatus: string
   totalPrice: { amount: string; currencyCode: string }
+  paymentGatewayNames: string[]
   lineItems: {
     edges: { node: ShopifyOrderLineItem }[]
   }

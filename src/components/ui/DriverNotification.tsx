@@ -41,7 +41,13 @@ export default function DriverNotification() {
                     const seenOrderKey = `order_${order.orderNumber}`
                     const ref = `INV-${order.orderNumber}`
 
-                    if (driverName && seen[seenOrderKey] !== driverName) {
+                    const isCompleted = order.fulfillmentStatus === 'FULFILLED'
+
+                    if (
+                        driverName &&
+                        !isCompleted &&
+                        seen[seenOrderKey] !== driverName
+                    ) {
                         seen[seenOrderKey] = driverName
                         localStorage.setItem(seenKey, JSON.stringify(seen))
                         setPopup({ bookingRef: ref, driverName, driverPhone })
@@ -76,16 +82,16 @@ export default function DriverNotification() {
                         Your driver for this ride is{' '}
                         <span className="font-semibold text-slate-700">{popup.driverName}</span>.
                     </p>
-                    {popup.driverPhone && (
-                        <a
-                            href={`tel:${popup.driverPhone}`}
-                            className="inline-flex items-center gap-1.5 mt-2 text-[13px] font-semibold"
-                            style={{ color: '#2E4052' }}
-                        >
-                            <Phone size={13} /> {popup.driverPhone}
-                        </a>
-                    )}
                 </div>
+                {popup.driverPhone && (
+                    <a
+                        href={`tel:${popup.driverPhone}`}
+                        className="w-full flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold transition-opacity hover:opacity-80"
+                        style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+                    >
+                        <Phone size={14} /> Call Driver
+                    </a>
+                )}
                 <button
                     onClick={() => setPopup(null)}
                     className="w-full rounded-xl py-3 text-[13px] font-bold text-white hover:opacity-80 transition-opacity"

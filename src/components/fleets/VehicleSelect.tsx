@@ -319,16 +319,16 @@ function VehicleCard({
 
         {/* ── Image column ── */}
         <div
-          className="flex-shrink-0 relative overflow-hidden"
-          style={{ width: 140, minHeight: 120, backgroundColor: '#EAF0EA' }}
+          className="flex-shrink-0 relative overflow-hidden w-[100px] sm:w-[140px]"
+          style={{ minHeight: 120, backgroundColor: '#EAF0EA' }}
         >
           {vehicle.image ? (
             <img
               src={vehicle.image}
               alt={vehicle.name}
               loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-350 group-hover:scale-[1.06]"
-              style={{ minHeight: 120 }}
+              className="w-full h-full object-contain transition-transform duration-350 group-hover:scale-[1.06]"
+              style={{ minHeight: 120, padding: '6px' }}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center" style={{ minHeight: 120 }}>
@@ -359,7 +359,7 @@ function VehicleCard({
           {/* Top: name + price */}
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="min-w-0 flex-1">
-              <div className="text-[14px] font-bold font-head leading-tight" style={{ color: '#2E4052' }}>
+              <div className="text-[14px] font-bold font-head leading-tight line-clamp-2" style={{ color: '#2E4052' }}>
                 {vehicle.name}
               </div>
               {vehicle.vehicleType && (
@@ -382,8 +382,8 @@ function VehicleCard({
             <div className="flex-shrink-0 text-right">
               {priceDisplay !== '—' ? (
                 <>
-                  <div className="font-head text-[22px] font-bold leading-none" style={{ color: '#2E4052' }}>
-                    {isEstimate && <span className="text-[13px] font-semibold mr-0.5">From</span>}
+                  <div className="font-head text-[17px] sm:text-[22px] font-bold leading-none" style={{ color: '#2E4052' }}>
+                    {isEstimate && <span className="text-[11px] sm:text-[13px] font-semibold mr-0.5">From</span>}
                     {currencySymbol}{priceDisplay}
                   </div>
                   <div
@@ -465,7 +465,7 @@ export default function VehicleSelect() {
   const { distance: distanceKm, passengers: requiredPassengers } = searchDetails
 
   const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [showSummary, setShowSummary] = useState(false)
+  const [showSummary, setShowSummary] = useState(true)
 
   useEffect(() => {
     dispatch(fetchTaxiProducts())
