@@ -522,6 +522,7 @@ export default function VehicleSelect() {
           datetime: rawState.datetime,
           returnDatetime: rawState.returnDatetime,
           type: searchDetails.tripType === 'return' ? 'return' : 'transfer',
+          serviceType: product.serviceType,
           vehicle: {
             id: product.id,
             name: product.name,

@@ -143,7 +143,8 @@ export interface BookingState {
   from?: string
   to?: string
   datetime?: string
-  type?: 'transfer' | 'hourly'
+  type?: 'transfer' | 'hourly' | 'return'
+  serviceType?: string          // Shopify metafield value e.g. "Hourly Hire", "Airport Rides"
   vehicle?: Vehicle
   price?: string | number
   distance?: number

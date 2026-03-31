@@ -1,7 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MapPin } from 'lucide-react'
+import { MapPin, Ruler, Clock, Loader2 } from 'lucide-react'
 import DateTimePicker from '../ui/DateTimePicker'
+import { PlacesInput } from '../ui/PlacesInput'
+import type { PlaceResult } from '../ui/PlacesInput'
+import { loadGoogleMaps } from '../../services/googleMapsLoader'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts, fetchHomepageImages } from '../../store/slices/shopifySlice'
 
@@ -14,6 +17,34 @@ function toLocalISO(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
+type Tab = 'transfer' | 'airport'
+
+const TAB_CONFIG: Record<Tab, {
+  label: string
+  service: string
+  fromLabel: string
+  fromPlaceholder: string
+  toLabel: string
+  toPlaceholder: string
+}> = {
+  transfer: {
+    label: 'Private Transfer',
+    service: 'transfer',
+    fromLabel: 'From',
+    fromPlaceholder: 'Enter pickup location',
+    toLabel: 'To',
+    toPlaceholder: 'Enter drop-off location',
+  },
+  airport: {
+    label: 'Airport Rides',
+    service: 'airport',
+    fromLabel: 'Airport / Terminal',
+    fromPlaceholder: 'e.g. Dubai International Airport',
+    toLabel: 'Drop-off Address',
+    toPlaceholder: 'Hotel / home / office address',
+  },
+}
+
 export default function HeroBooking() {
   const dispatch = useAppDispatch()
   const { products, initialized, heroImages, heroImagesInitialized } = useAppSelector(s => s.shopify)
@@ -23,8 +54,7 @@ export default function HeroBooking() {
     dispatch(fetchHomepageImages())
   }, [dispatch])
 
-  // ─── Slideshow ───────────────────────────────────────────────────────────────
-  // Use fallback until Shopify responds; only switch to fetched images once confirmed
+  // ─── Slideshow ─────────────────────────────────────────────────────────────
   const images = heroImagesInitialized && heroImages.length > 0 ? heroImages : [FALLBACK_IMAGE]
   const [activeIdx, setActiveIdx] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -37,30 +67,121 @@ export default function HeroBooking() {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [images.length])
 
-  // Derive which tabs to show from Shopify service types
+  // ─── Google Maps ────────────────────────────────────────────────────────────
+  const [mapsReady, setMapsReady] = useState(false)
+  useEffect(() => {
+    loadGoogleMaps().then(() => setMapsReady(true)).catch(e => console.warn('Maps load failed:', e))
+  }, [])
+
+  // ─── Derive available tabs from Shopify ─────────────────────────────────────
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
   const showTransfer = !initialized || activeTypes.size === 0 || activeTypes.has('Private Transfer')
-  const showHourly = !initialized || activeTypes.size === 0 || activeTypes.has('Hourly Hire')
+  const showAirport  = !initialized || activeTypes.size === 0 || activeTypes.has('Airport Rides')
 
-  const [tab, setTab] = useState<'transfer' | 'hourly'>('transfer')
-  const [from, setFrom] = useState('')
-  const [to, setTo] = useState('')
+  // ─── Form state ─────────────────────────────────────────────────────────────
+  const [tab, setTab] = useState<Tab>('transfer')
+  const cfg = TAB_CONFIG[tab]
+
+  const [from, setFrom]             = useState('')
+  const [to, setTo]                 = useState('')
+  const [fromCoords, setFromCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [toCoords, setToCoords]     = useState<{ lat: number; lng: number } | null>(null)
+
   const minNow = useMemo(() => toLocalISO(new Date()), [])
-  const [datetime, setDatetime] = useState(minNow)
-  const [showReturn, setShowReturn] = useState(false)
+  const [datetime, setDatetime]             = useState(minNow)
+  const [showReturn, setShowReturn]         = useState(false)
   const [returnDatetime, setReturnDatetime] = useState('')
   const navigate = useNavigate()
 
+  const [errors, setErrors] = useState<{
+    from?: string; to?: string; datetime?: string; returnDatetime?: string
+  }>({})
+
+  // ─── Route calculation (distance + ETA) ────────────────────────────────────
+  const [distanceKm, setDistanceKm]   = useState<number | null>(null)
+  const [durationText, setDurationText] = useState('')
+  const [routeLoading, setRouteLoading] = useState(false)
+
+  useEffect(() => {
+    if (!fromCoords || !toCoords) {
+      setDistanceKm(null); setDurationText(''); return
+    }
+    const maps = (window as any).google?.maps
+    if (!maps?.DistanceMatrixService) return
+
+    setRouteLoading(true)
+    new maps.DistanceMatrixService().getDistanceMatrix(
+      {
+        origins: [fromCoords],
+        destinations: [toCoords],
+        travelMode: maps.TravelMode.DRIVING,
+        unitSystem: maps.UnitSystem.METRIC,
+      },
+      (response: google.maps.DistanceMatrixResponse, status: google.maps.DistanceMatrixStatus) => {
+        setRouteLoading(false)
+        if (status !== 'OK' || !response) return
+        const el = response.rows[0]?.elements[0]
+        if (!el || el.status !== 'OK') return
+        setDistanceKm(el.distance.value / 1000)
+        setDurationText(el.duration.text)
+      }
+    )
+  }, [fromCoords, toCoords])
+
+  // ─── Tab switch ─────────────────────────────────────────────────────────────
+  function switchTab(next: Tab) {
+    setTab(next)
+    setFrom(''); setTo('')
+    setFromCoords(null); setToCoords(null)
+    setDistanceKm(null); setDurationText('')
+    setShowReturn(false); setReturnDatetime('')
+    setErrors({})
+  }
+
+  // ─── Field handlers ─────────────────────────────────────────────────────────
+  function handleFromChange(r: PlaceResult) {
+    setFrom(r.address); setFromCoords(r.coords ?? null)
+    setErrors(e => ({ ...e, from: '' }))
+    // Reset route when either location changes
+    if (!r.coords) { setDistanceKm(null); setDurationText('') }
+  }
+
+  function handleToChange(r: PlaceResult) {
+    setTo(r.address); setToCoords(r.coords ?? null)
+    setErrors(e => ({ ...e, to: '' }))
+    if (!r.coords) { setDistanceKm(null); setDurationText('') }
+  }
+
   function handlePickupChange(val: string) {
     setDatetime(val)
+    setErrors(e => ({ ...e, datetime: '' }))
     if (returnDatetime && returnDatetime <= val) setReturnDatetime('')
   }
 
   const handleCheckFare = () => {
+    const e: typeof errors = {}
+    if (!from.trim()) e.from = 'Please enter a pickup location'
+    if (!to.trim()) e.to = tab === 'airport' ? 'Please enter a drop-off address' : 'Please enter a drop-off location'
+    if (!datetime) e.datetime = 'Please select a date and time'
+    if (tab === 'transfer' && showReturn && !returnDatetime) e.returnDatetime = 'Please select a return date and time'
+    if (Object.keys(e).length) { setErrors(e); return }
+
     navigate('/vehicles', {
-      state: { from, to, datetime, returnDatetime: showReturn ? returnDatetime : undefined, type: tab },
+      state: {
+        from, to, datetime,
+        fromCoords: fromCoords ?? undefined,
+        toCoords: toCoords ?? undefined,
+        distanceKm: distanceKm ?? undefined,
+        duration: durationText || undefined,
+        returnDatetime: tab === 'transfer' && showReturn ? returnDatetime : undefined,
+        service: cfg.service,
+        type: 'transfer',
+      },
     })
   }
+
+  const inputCls = 'flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]'
+  const showRouteInfo = routeLoading || (distanceKm !== null && durationText !== '')
 
   return (
     <div className="relative flex items-center">
@@ -70,10 +191,7 @@ export default function HeroBooking() {
           <div
             key={src}
             className="absolute inset-0 bg-cover bg-center filter brightness-[0.82] saturate-[0.9] transition-opacity duration-1000"
-            style={{
-              backgroundImage: `url('${src}')`,
-              opacity: i === activeIdx ? 1 : 0,
-            }}
+            style={{ backgroundImage: `url('${src}')`, opacity: i === activeIdx ? 1 : 0 }}
           />
         ))}
         <div
@@ -85,11 +203,7 @@ export default function HeroBooking() {
 
       {/* Main content */}
       <div className="relative w-full max-w-container mx-auto px-6 md:px-10 pt-8 pb-20 md:py-16 max-sm:pb-32">
-
-        {/* Form only */}
         <div className="flex items-stretch gap-8 lg:gap-16">
-
-          {/* Left: form fields */}
           <div className="max-w-[420px] w-full flex-shrink-0 flex flex-col relative">
 
             {/* Tabs */}
@@ -99,78 +213,127 @@ export default function HeroBooking() {
                   type="button"
                   className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
                   style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
-                  onClick={() => setTab('transfer')}
+                  onClick={() => switchTab('transfer')}
                 >
                   Private Transfer
                 </button>
               )}
-              {showHourly && (
+              {showAirport && (
                 <button
                   type="button"
-                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'hourly' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
-                  style={tab === 'hourly' ? { background: '#2E4052' } : undefined}
-                  onClick={() => { setTab('hourly'); setShowReturn(false) }}
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'airport' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  style={tab === 'airport' ? { background: '#2E4052' } : undefined}
+                  onClick={() => switchTab('airport')}
                 >
-                  Hourly Hire
+                  Airport Rides
                 </button>
               )}
             </div>
 
             {/* From */}
-            <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">
-              <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">From</div>
-              <div className="flex items-center gap-2">
-                <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
-                <input
-                  className="flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]"
-                  placeholder="Enter a pickup location"
-                  value={from}
-                  onChange={e => setFrom(e.target.value)}
-                />
+            <div className="mb-2">
+              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.from ? 'ring-2 ring-red-400' : ''}`}>
+                <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">{cfg.fromLabel} *</div>
+                <div className="flex items-center gap-2">
+                  <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
+                  <PlacesInput
+                    key={`from-${tab}`}
+                    placeholder={cfg.fromPlaceholder}
+                    className={inputCls}
+                    mapsReady={mapsReady}
+                    onPlaceChange={handleFromChange}
+                  />
+                </div>
               </div>
+              {errors.from && <p className="text-[11px] text-red-400 font-medium mt-1 ml-1">{errors.from}</p>}
             </div>
 
             {/* To */}
-            {tab === 'transfer' && (
-              <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">
-                <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">To</div>
+            <div className="mb-2">
+              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.to ? 'ring-2 ring-red-400' : ''}`}>
+                <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">{cfg.toLabel} *</div>
                 <div className="flex items-center gap-2">
                   <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
-                  <input
-                    className="flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent placeholder:text-[#aaa]"
-                    placeholder="Enter a dropoff location"
-                    value={to}
-                    onChange={e => setTo(e.target.value)}
+                  <PlacesInput
+                    key={`to-${tab}`}
+                    placeholder={cfg.toPlaceholder}
+                    className={inputCls}
+                    mapsReady={mapsReady}
+                    onPlaceChange={handleToChange}
                   />
                 </div>
+              </div>
+              {errors.to && <p className="text-[11px] text-red-400 font-medium mt-1 ml-1">{errors.to}</p>}
+            </div>
+
+            {/* Route info — distance & ETA */}
+            {showRouteInfo && (
+              <div className="mb-2 rounded-2xl overflow-hidden" style={{ backgroundColor: 'rgba(46,64,82,0.88)', backdropFilter: 'blur(8px)' }}>
+                {routeLoading ? (
+                  <div className="flex items-center gap-2 px-4 py-3">
+                    <Loader2 size={13} className="text-white/60 animate-spin flex-shrink-0" />
+                    <span className="text-[13px] text-white/60">Calculating route…</span>
+                  </div>
+                ) : (
+                  <div className="flex divide-x divide-white/10">
+                    <div className="flex-1 flex items-center gap-2 px-4 py-3">
+                      <Ruler size={13} style={{ color: '#BDD9BF' }} className="flex-shrink-0" />
+                      <div>
+                        <div className="text-[15px] font-bold text-white font-head leading-none">
+                          {distanceKm!.toFixed(1)} km
+                        </div>
+                        <div className="text-[10px] font-semibold uppercase tracking-wide mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                          Distance
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 flex items-center gap-2 px-4 py-3">
+                      <Clock size={13} style={{ color: '#BDD9BF' }} className="flex-shrink-0" />
+                      <div>
+                        <div className="text-[15px] font-bold text-white font-head leading-none">
+                          {durationText}
+                        </div>
+                        <div className="text-[10px] font-semibold uppercase tracking-wide mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                          Est. drive time
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Pickup date & time */}
-            <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">
-              <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Pickup Date &amp; Time</div>
-              <DateTimePicker
-                value={datetime}
-                onChange={handlePickupChange}
-                min={minNow}
-                placeholder="Select pickup date & time"
-              />
+            <div className="mb-2">
+              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.datetime ? 'ring-2 ring-red-400' : ''}`}>
+                <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Pickup Date &amp; Time *</div>
+                <DateTimePicker
+                  value={datetime}
+                  onChange={handlePickupChange}
+                  min={minNow}
+                  placeholder="Select pickup date & time"
+                />
+              </div>
+              {errors.datetime && <p className="text-[11px] text-red-400 font-medium mt-1 ml-1">{errors.datetime}</p>}
             </div>
 
-            {/* Return date & time */}
+            {/* Return date & time — transfer only */}
             {tab === 'transfer' && showReturn && (
-              <div className="bg-white rounded-2xl px-4 pt-3 pb-4 mb-2">
-                <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Return Date &amp; Time</div>
-                <DateTimePicker
-                  value={returnDatetime}
-                  onChange={setReturnDatetime}
-                  min={datetime}
-                  placeholder="Select return date & time"
-                />
+              <div className="mb-2">
+                <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.returnDatetime ? 'ring-2 ring-red-400' : ''}`}>
+                  <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Return Date &amp; Time *</div>
+                  <DateTimePicker
+                    value={returnDatetime}
+                    onChange={val => { setReturnDatetime(val); setErrors(e => ({ ...e, returnDatetime: '' })) }}
+                    min={datetime}
+                    placeholder="Select return date & time"
+                  />
+                </div>
+                {errors.returnDatetime && <p className="text-[11px] text-red-400 font-medium mt-1 ml-1">{errors.returnDatetime}</p>}
               </div>
             )}
 
-            {/* Add / Remove Return */}
+            {/* Add / Remove Return — transfer only */}
             {tab === 'transfer' && (
               <div className="bg-white rounded-2xl px-4 py-4 mb-2 flex items-center justify-center">
                 <button

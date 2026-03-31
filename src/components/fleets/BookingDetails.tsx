@@ -4,9 +4,13 @@ import {
   ChevronLeft, User, Mail, Phone, Users, Plane,
   Clock, Ruler, CheckCircle2,
   ShieldCheck, ArrowRight, Car, LogIn, UserPlus, X,
+  MapPin, Calendar, MessageCircle,
 } from 'lucide-react'
 import type { BookingState, PassengerForm, ValidationErrors } from '../../types'
 import { useAuth } from '../../context/AuthContext'
+
+// Business WhatsApp number (no spaces or dashes)
+const WHATSAPP_NUMBER = '1234567890'
 
 //  Step indicator
 const STEPS = [
@@ -48,7 +52,7 @@ function StepBar({ current }: { current: number }) {
   )
 }
 
-//  Labelled input wrapper 
+//  Labelled input wrapper
 function Field({
   label, error, children,
 }: {
@@ -65,7 +69,7 @@ function Field({
   )
 }
 
-//  Input style factory 
+//  Input style factory
 const inputCls = (hasError?: string) =>
   `w-full bg-white border rounded-xl px-4 py-2.5 text-[13px] text-slate-700 font-body outline-none transition-all placeholder:text-slate-300 ${hasError
     ? 'border-red-400 focus:ring-2 focus:ring-red-100'
@@ -76,7 +80,7 @@ const iconInputWrapper = 'relative'
 const iconCls = 'absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none'
 const iconInputCls = (err?: string) => inputCls(err) + ' pl-10'
 
-//  Booking summary sidebar 
+//  Booking summary sidebar
 function BookingSummary({ booking }: { booking: BookingState }) {
   const v = booking.vehicle
   return (
@@ -155,6 +159,300 @@ function BookingSummary({ booking }: { booking: BookingState }) {
   )
 }
 
+// ─── Hourly Hire Form ─────────────────────────────────────────────────────────
+
+interface HourlyForm {
+  pickupLocation: string
+  date: string
+  passengers: string
+  totalHours: string
+  name: string
+  email: string
+  phone: string
+}
+
+type HourlyErrors = Partial<Record<keyof HourlyForm, string>>
+
+function validateHourly(form: HourlyForm): HourlyErrors {
+  const e: HourlyErrors = {}
+  if (!form.pickupLocation.trim()) e.pickupLocation = 'Pickup location is required'
+  if (!form.date) e.date = 'Date is required'
+  if (!form.name.trim()) e.name = 'Full name is required'
+  if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'Valid email required'
+  if (!form.phone.match(/^\+?[\d\s\-]{7,15}$/)) e.phone = 'Valid phone number required'
+  return e
+}
+
+function HourlyHireSection({ booking, customer }: { booking: BookingState; customer: { firstName?: string | null; lastName?: string | null; email?: string | null; phone?: string | null } | null }) {
+  const navigate = useNavigate()
+
+  const [form, setForm] = useState<HourlyForm>({
+    pickupLocation: booking.from || '',
+    date: booking.datetime ? booking.datetime.split('T')[0] : '',
+    passengers: '1',
+    totalHours: '3',
+    name: customer ? `${customer.firstName || ''} ${customer.lastName || ''}`.trim() : '',
+    email: customer?.email || '',
+    phone: customer?.phone || '',
+  })
+  const [errors, setErrors] = useState<HourlyErrors>({})
+  const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    if (customer) {
+      setForm(f => ({
+        ...f,
+        name: f.name || `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+        email: f.email || customer.email || '',
+        phone: f.phone || customer.phone || '',
+      }))
+    }
+  }, [customer])
+
+  const set = (key: keyof HourlyForm, val: string) => {
+    setForm(f => ({ ...f, [key]: val }))
+    setErrors(e => ({ ...e, [key]: '' }))
+  }
+
+  const handleSendWhatsApp = () => {
+    const e = validateHourly(form)
+    if (Object.keys(e).length) { setErrors(e); return }
+
+    const message = [
+      '🚗 *Hourly Hire Enquiry*',
+      '',
+      `📍 Pickup Location: ${form.pickupLocation}`,
+      `📅 Date: ${form.date}`,
+      `👥 Passengers: ${form.passengers}`,
+      `⏱ Duration: ${form.totalHours} hour${Number(form.totalHours) > 1 ? 's' : ''}`,
+      '',
+      `👤 Name: ${form.name}`,
+      `📧 Email: ${form.email}`,
+      `📞 Phone: ${form.phone}`,
+    ].join('\n')
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
+    window.open(url, '_blank')
+    setSubmitted(true)
+  }
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen font-body flex flex-col" style={{ backgroundColor: '#F0F5F0' }}>
+        {/* Top bar */}
+        <div className="bg-white border-b border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-2">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1 text-[12px] font-semibold text-slate-500 hover:text-slate-800 transition-colors px-3 py-1.5 rounded-xl hover:bg-slate-100"
+            >
+              <ChevronLeft size={15} />
+              Home
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center px-4 py-12">
+          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] max-w-md w-full px-8 py-10 text-center">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: '#BDD9BF' }}>
+              <CheckCircle2 size={32} style={{ color: '#2E4052' }} />
+            </div>
+            <h2 className="font-head font-bold text-slate-800 text-[22px] mb-2">Enquiry Sent!</h2>
+            <p className="text-[14px] text-slate-500 leading-relaxed mb-6">
+              Thank you, <strong>{form.name}</strong>. We have received your hourly hire enquiry and will contact you shortly to confirm your booking.
+            </p>
+            <div className="rounded-xl px-4 py-3 mb-6 text-left" style={{ backgroundColor: '#F0F5F0' }}>
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Enquiry Summary</div>
+              <div className="space-y-1.5 text-[12px] text-slate-600">
+                <div><span className="font-semibold">Pickup:</span> {form.pickupLocation}</div>
+                <div><span className="font-semibold">Date:</span> {form.date}</div>
+                <div><span className="font-semibold">Duration:</span> {form.totalHours} hour{Number(form.totalHours) > 1 ? 's' : ''}</div>
+                <div><span className="font-semibold">Passengers:</span> {form.passengers}</div>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/')}
+              className="w-full rounded-xl py-3 text-[13px] font-bold text-white"
+              style={{ backgroundColor: '#2E4052' }}
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
+      {/* Top bar */}
+      <div className="bg-white border-b border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 sm:gap-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 transition-colors px-2 sm:px-3 py-1.5 rounded-xl hover:bg-slate-100 flex-shrink-0"
+          >
+            <ChevronLeft size={15} />
+            <span className="hidden xs:inline">Back</span>
+          </button>
+          <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
+          <h1 className="font-head font-bold text-slate-800 text-[14px] sm:text-[16px] truncate min-w-0">
+            Hourly Hire Enquiry
+          </h1>
+        </div>
+      </div>
+
+      {/* Service badge */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-6">
+        <div className="rounded-2xl px-4 py-3 flex items-start gap-3" style={{ backgroundColor: '#BDD9BF' }}>
+          <Clock size={15} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[12px] font-bold" style={{ color: '#2E4052' }}>Hourly Hire — Quote Request</p>
+            <p className="text-[11px] leading-relaxed" style={{ color: '#2E4052' }}>
+              Fill in your details and we'll contact you on WhatsApp to confirm availability and pricing.
+              Minimum booking is 3 hours.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Form */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-5">
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
+          <div className="px-5 sm:px-6 py-4 border-b border-slate-100" style={{ backgroundColor: '#FAFAFA' }}>
+            <h2 className="font-head font-bold text-slate-800 text-[16px]">Booking Details</h2>
+            <p className="text-[12px] text-slate-400 mt-0.5">Tell us about your hire requirements</p>
+          </div>
+
+          <div className="px-5 sm:px-6 py-5 space-y-4">
+
+            {/* Pickup location */}
+            <Field label="Pickup Location" error={errors.pickupLocation}>
+              <div className={iconInputWrapper}>
+                <MapPin size={13} className={iconCls} />
+                <input
+                  className={iconInputCls(errors.pickupLocation)}
+                  placeholder="Enter pickup address"
+                  value={form.pickupLocation}
+                  onChange={e => set('pickupLocation', e.target.value)}
+                />
+              </div>
+            </Field>
+
+            {/* Date + passengers */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Date" error={errors.date}>
+                <div className={iconInputWrapper}>
+                  <Calendar size={13} className={iconCls} />
+                  <input
+                    type="date"
+                    className={iconInputCls(errors.date)}
+                    value={form.date}
+                    min={new Date().toISOString().split('T')[0]}
+                    onChange={e => set('date', e.target.value)}
+                  />
+                </div>
+              </Field>
+              <Field label="Number of Passengers">
+                <div className={iconInputWrapper}>
+                  <Users size={13} className={iconCls} />
+                  <select
+                    className={iconInputCls()}
+                    value={form.passengers}
+                    onChange={e => set('passengers', e.target.value)}
+                  >
+                    {Array.from({ length: 14 }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={n}>{n} passenger{n > 1 ? 's' : ''}</option>
+                    ))}
+                  </select>
+                </div>
+              </Field>
+            </div>
+
+            {/* Total hours */}
+            <Field label="Total Hours">
+              <div className={iconInputWrapper}>
+                <Clock size={13} className={iconCls} />
+                <select
+                  className={iconInputCls()}
+                  value={form.totalHours}
+                  onChange={e => set('totalHours', e.target.value)}
+                >
+                  {Array.from({ length: 12 }, (_, i) => i + 3).map(h => (
+                    <option key={h} value={h}>{h} hour{h > 1 ? 's' : ''}</option>
+                  ))}
+                </select>
+              </div>
+            </Field>
+
+            <div className="border-t border-slate-100 pt-4">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">Your Contact Details</p>
+
+              {/* Name */}
+              <div className="mb-4">
+                <Field label="Full Name" error={errors.name}>
+                  <div className={iconInputWrapper}>
+                    <User size={13} className={iconCls} />
+                    <input
+                      className={iconInputCls(errors.name)}
+                      placeholder="John Doe"
+                      value={form.name}
+                      onChange={e => set('name', e.target.value)}
+                    />
+                  </div>
+                </Field>
+              </div>
+
+              {/* Email + Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="Email Address" error={errors.email}>
+                  <div className={iconInputWrapper}>
+                    <Mail size={13} className={iconCls} />
+                    <input
+                      className={iconInputCls(errors.email)}
+                      placeholder="john@email.com"
+                      type="email"
+                      value={form.email}
+                      onChange={e => set('email', e.target.value)}
+                    />
+                  </div>
+                </Field>
+                <Field label="Phone Number" error={errors.phone}>
+                  <div className={iconInputWrapper}>
+                    <Phone size={13} className={iconCls} />
+                    <input
+                      className={iconInputCls(errors.phone)}
+                      placeholder="+971 50 000 0000"
+                      type="tel"
+                      value={form.phone}
+                      onChange={e => set('phone', e.target.value)}
+                    />
+                  </div>
+                </Field>
+              </div>
+            </div>
+
+            {/* Submit */}
+            <button
+              onClick={handleSendWhatsApp}
+              className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-white transition-all hover:opacity-90 active:scale-[0.99] shadow-[0_4px_16px_rgba(37,211,102,0.35)]"
+              style={{ backgroundColor: '#25D366' }}
+            >
+              <MessageCircle size={16} />
+              Send Enquiry via WhatsApp
+            </button>
+
+            <p className="text-center text-[11px] text-slate-400">
+              We'll reply on WhatsApp to confirm your booking details and pricing.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 //  Main
 export default function BookingDetails() {
   const navigate = useNavigate()
@@ -183,6 +481,12 @@ export default function BookingDetails() {
     }
   }, [customer])
 
+  // ── Hourly hire: delegate to its own section ──────────────────────────────
+  // Detect via Shopify serviceType metafield ("Hourly Hire") or legacy hero tab type
+  if (booking.serviceType === 'Hourly Hire' || booking.type === 'hourly') {
+    return <HourlyHireSection booking={booking} customer={customer} />
+  }
+
   const set = (key: keyof PassengerForm, val: string) => {
     setForm(f => ({ ...f, [key]: val }))
     setErrors(e => ({ ...e, [key]: '' }))
@@ -190,10 +494,10 @@ export default function BookingDetails() {
 
   const validate = (): ValidationErrors => {
     const e: ValidationErrors = {}
-    if (!form.firstName.trim()) e.firstName = 'Required'
-    if (!form.lastName.trim()) e.lastName = 'Required'
+    if (!form.firstName.trim()) e.firstName = 'First name is required'
+    if (!form.lastName.trim()) e.lastName = 'Last name is required'
     if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'Valid email required'
-    if (!form.phone.match(/^\+?[\d\s\-]{7,15}$/)) e.phone = 'Valid phone required'
+    if (!form.phone.match(/^\+?[\d\s\-]{7,15}$/)) e.phone = 'Valid phone number required'
     return e
   }
 

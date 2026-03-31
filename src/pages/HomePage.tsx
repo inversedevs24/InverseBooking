@@ -1,5 +1,5 @@
 import HeroBooking from '../components/home/HeroBooking'
-import FeaturesBar from '../components/home/FeaturesBar'
+// import FeaturesBar from '../components/home/FeaturesBar'
 import PromoBanners from '../components/home/PromoBanners'
 import ServiceCategories from '../components/home/ServiceCategories'
 import FleetSection from '../components/home/FleetSection'
@@ -16,7 +16,7 @@ export default function HomePage() {
       <HeroBooking />
       <PromoBanners />
       <ServiceCategories />
-      <FeaturesBar />
+      {/* <FeaturesBar /> */}
       <FleetSection />
       <ChauffeurSection />
       <WhyChooseUs />
