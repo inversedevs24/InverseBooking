@@ -13,6 +13,16 @@ export const FLEET: FleetItem[] = [
 
 export const FLEET_HOME = FLEET.slice(3, 7)
 
+// Maps Shopify serviceType label → booking route — shared across Footer, PromoBanners, ServiceCategories
+export const SERVICE_ROUTE_MAP: Record<string, string> = {
+  'Private Transfer': '/book?service=transfer',
+  'City to City':     '/book?service=city-to-city',
+  'Airport Rides':    '/book?service=airport',
+  'City Tour':        '/book?service=city-tour',
+  'Hourly Hire':      '/book?service=hourly',
+  'Desert Safari':    '/book?service=desert-safari',
+}
+
 export const SERVICES: Service[] = [
   { icon: '🚗',    label: 'Private Transfer', image: 'https://images.pexels.com/photos/36377058/pexels-photo-36377058.jpeg' },
   { icon: '🏙️',  label: 'City to City',      image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=200&q=80' },

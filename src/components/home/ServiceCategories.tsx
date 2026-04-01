@@ -2,16 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
-import { SERVICES } from '../../data'
-
-const SERVICE_ROUTES: Record<string, string> = {
-  'Private Transfer': '/book?service=transfer',
-  'City to City':     '/book?service=city-to-city',
-  'Airport Rides':    '/book?service=airport',
-  'City Tour':        '/book?service=city-tour',
-  'Hourly Hire':      '/book?service=hourly',
-  'Desert Safari':    '/book?service=desert-safari',
-}
+import { SERVICE_ROUTE_MAP } from '../../data'
 
 export default function ServiceCategories() {
   const navigate = useNavigate()
@@ -22,37 +13,39 @@ export default function ServiceCategories() {
     dispatch(fetchTaxiProducts())
   }, [dispatch])
 
-  // Derive active service types from Shopify product metafields
-  const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
+  // One card per unique serviceType — first product with a bannerImage wins
+  const seen = new Set<string>()
+  const services = products
+    .filter(p => {
+      if (!p.serviceType || seen.has(p.serviceType)) return false
+      seen.add(p.serviceType)
+      return true
+    })
+    .map(p => ({
+      label: p.serviceType,
+      image: p.bannerImage,
+      to: SERVICE_ROUTE_MAP[p.serviceType] ?? '/book',
+    }))
 
-  // Build serviceType → bannerImage map from product metafields
-  const productBannerMap: Record<string, string> = {}
-  products.forEach(p => {
-    if (p.serviceType && p.bannerImage && !productBannerMap[p.serviceType]) {
-      productBannerMap[p.serviceType] = p.bannerImage
-    }
-  })
-
-  // Once initialized, show only services present in the catalog; before that show all
-  const visibleServices = initialized && activeTypes.size > 0
-    ? SERVICES.filter(s => activeTypes.has(s.label))
-    : SERVICES
+  if (!initialized || services.length === 0) return null
 
   return (
     <div className="max-w-container mx-auto px-6">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-[14px] mb-12">
-        {visibleServices.map((s, i) => (
+        {services.map(s => (
           <div
-            key={i}
-            onClick={() => navigate(SERVICE_ROUTES[s.label] ?? '/book')}
+            key={s.label}
+            onClick={() => navigate(s.to)}
             className="flex flex-col rounded-card bg-white border border-border cursor-pointer transition-all hover:-translate-y-[3px] hover:shadow-card hover:border-secondary overflow-hidden group"
           >
             <div className="relative w-full h-28 overflow-hidden">
-              <img
-                src={productBannerMap[s.label] || s.image}
-                alt={s.label}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]"
-              />
+              {s.image && (
+                <img
+                  src={s.image}
+                  alt={s.label}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]"
+                />
+              )}
             </div>
             <div className="p-3 text-center">
               <span className="text-label font-semibold text-primary">{s.label}</span>

@@ -5,16 +5,8 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
+import { SERVICE_ROUTE_MAP } from '../../data'
 import type { TaxiOption } from '../../types'
-
-const SERVICE_ROUTE_MAP: Record<string, string> = {
-  'Private Transfer': '/book?service=transfer',
-  'City to City':     '/book?service=city-to-city',
-  'Airport Rides':    '/book?service=airport',
-  'City Tour':        '/book?service=city-tour',
-  'Hourly Hire':      '/book?service=hourly',
-  'Desert Safari':    '/book?service=desert-safari',
-}
 
 // ─── Internal Fleet Card ──────────────────────────────────────────────────────
 
@@ -135,7 +127,13 @@ export default function FleetSection() {
     dispatch(fetchTaxiProducts())
   }, [dispatch])
 
-  const display = products.slice(0, 8)
+  // One representative vehicle per service type
+  const seen = new Set<string>()
+  const display = products.filter(p => {
+    if (!p.serviceType || seen.has(p.serviceType)) return false
+    seen.add(p.serviceType)
+    return true
+  })
 
   return (
     <section className="py-10 md:py-[60px]" style={{ backgroundColor: '#F0F5F0' }}>

@@ -31,12 +31,12 @@ export default function AboutPage() {
             <div>
               <h1 className="font-head font-bold leading-tight mb-4" style={{ fontSize: 'clamp(1.4rem, 5.5vw, 2rem)' }}>Welcome to InverseRide</h1>
               <p className="text-muted text-span mb-[0px] leading-[1.7]">Your trusted platform for smooth and reliable travel experiences in the UAE. <br></br>We specialize in providing premium ride services, including city, airport, and intercity transfers, along with hourly chauffeur services. <br></br>In the UAE, we also offer exclusive Desert Safari and City Tour experiences. <br></br>Whether you're a resident or a visitor, InverseRide is here to make every ride easy, comfortable, and stress-free.</p>
-              <div className="mt-5 flex items-center gap-3">
-                <span className="text-[10px] font-bold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">
+              <div className="mt-5 flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
+                <span className="text-[12px] font-extrabold text-muted uppercase tracking-[1.4px] whitespace-nowrap flex-shrink-0">
                   We Accept
                 </span>
-                <div className="w-px h-5 bg-border flex-shrink-0" />
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="hidden md:block w-px h-5 bg-border flex-shrink-0" />
+                <div className="flex items-center gap-1.5 flex-nowrap">
                   {[
                     { src: '/payments/visa-svgrepo-com.svg', alt: 'Visa' },
                     { src: '/payments/mastercard-svgrepo-com.svg', alt: 'Mastercard' },
@@ -47,7 +47,7 @@ export default function AboutPage() {
                     { src: '/payments/stripe-svgrepo-com.svg', alt: 'Stripe' },
                     { src: '/payments/cash-svgrepo-com.svg', alt: 'Cash' },
                   ].map(({ src, alt }) => (
-                    <img key={alt} src={src} alt={alt} className="h-9 w-auto rounded object-contain" />
+                    <img key={alt} src={src} alt={alt} className="h-9 md:h-9 w-auto rounded object-contain flex-shrink-0" />
                   ))}
                 </div>
               </div>

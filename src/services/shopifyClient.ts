@@ -43,7 +43,9 @@ const GET_PRODUCTS_QUERY = `
             { namespace: "features", key: "features_list" },
             { namespace: "taxi_details", key: "service_type" },
             { namespace: "custom", key: "banner_image" },
-            { namespace: "custom", key: "service_description" }
+            { namespace: "custom", key: "service_description" },
+            { namespace: "custom", key: "banner_headline" },
+            { namespace: "custom", key: "banner_sub" }
           ]) {
             namespace
             key
@@ -176,6 +178,8 @@ function transformProduct(node: any): TaxiOption {
     serviceType: getMeta(METAFIELD_NAMESPACES.TAXI_DETAILS, METAFIELD_KEYS.SERVICE_TYPE, '') as string,
     bannerImage,
     serviceDescription: getMeta(METAFIELD_NAMESPACES.CUSTOM, METAFIELD_KEYS.SERVICE_DESCRIPTION, '') as string,
+    bannerHeadline: getMeta(METAFIELD_NAMESPACES.CUSTOM, METAFIELD_KEYS.BANNER_HEADLINE, '') as string,
+    bannerSub: getMeta(METAFIELD_NAMESPACES.CUSTOM, METAFIELD_KEYS.BANNER_SUB, '') as string,
     variants,
   }
 }

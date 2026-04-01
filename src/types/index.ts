@@ -94,6 +94,8 @@ export interface TaxiOption {
   serviceType: string         // metafield service_type (e.g. "Airport Rides")
   bannerImage: string         // metafield banner_image (file) — CDN URL
   serviceDescription: string  // metafield service_description — short description
+  bannerHeadline: string      // metafield banner_headline — multi-line text, \n = line break
+  bannerSub: string           // metafield banner_sub — subtitle/tagline
   variants: TaxiVariant[]     // full array of distance-band variants
 }
 

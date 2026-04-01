@@ -32,8 +32,6 @@ interface ServiceConfig {
     showPassengers: boolean
     fromPlaceholder: string
     toPlaceholder: string
-    image: string
-    description: string
 }
 
 const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
@@ -43,8 +41,6 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         showTo: true, showReturn: true, showHours: false, showPassengers: true,
         fromPlaceholder: 'Enter pickup location',
         toPlaceholder: 'Enter drop-off location',
-        image: 'https://images.pexels.com/photos/35641543/pexels-photo-35641543.jpeg',
-        description: 'Door-to-door private transfer at a fixed price.',
     },
     'city-to-city': {
         label: 'City to City',
@@ -52,8 +48,6 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         showTo: true, showReturn: true, showHours: false, showPassengers: true,
         fromPlaceholder: 'Departure city (e.g. Dubai)',
         toPlaceholder: 'Destination city (e.g. Abu Dhabi)',
-        image: 'https://images.pexels.com/photos/4491946/pexels-photo-4491946.jpeg',
-        description: 'Intercity transfers between major UAE cities.',
     },
     airport: {
         label: 'Airport Rides',
@@ -61,8 +55,6 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         showTo: true, showReturn: true, showHours: false, showPassengers: true,
         fromPlaceholder: 'Airport name or terminal',
         toPlaceholder: 'Hotel / home / office address',
-        image: 'https://images.pexels.com/photos/6604557/pexels-photo-6604557.jpeg',
-        description: 'Meet & greet, flight tracking, free waiting time.',
     },
     'city-tour': {
         label: 'City Tour',
@@ -70,8 +62,6 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         showTo: false, showReturn: false, showHours: true, showPassengers: true,
         fromPlaceholder: 'Your hotel / starting point',
         toPlaceholder: '',
-        image: 'https://images.pexels.com/photos/4348092/pexels-photo-4348092.jpeg',
-        description: 'Guided city tours with a professional chauffeur.',
     },
     hourly: {
         label: 'Hourly Hire',
@@ -79,8 +69,6 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         showTo: false, showReturn: false, showHours: true, showPassengers: true,
         fromPlaceholder: 'Your pickup location',
         toPlaceholder: '',
-        image: 'https://cdn.prod.website-files.com/656e39bd8b07a811ace24224/656e39bd8b07a811ace2462a_falt.webp',
-        description: 'Hire a chauffeur by the hour — minimum 3 hours.',
     },
     'desert-safari': {
         label: 'Desert Safari',
@@ -88,8 +76,6 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
         showTo: false, showReturn: true, showHours: false, showPassengers: true,
         fromPlaceholder: 'Hotel / pickup address',
         toPlaceholder: '',
-        image: 'https://images.pexels.com/photos/5604852/pexels-photo-5604852.jpeg',
-        description: 'Premium desert safari transfers from your hotel.',
     },
 }
 
@@ -182,6 +168,15 @@ export default function ServiceBookingForm() {
     const serviceKey = availableServiceKeys.includes(rawServiceKey) ? rawServiceKey : (availableServiceKeys[0] ?? DEFAULT_SERVICE)
     const config = SERVICE_CONFIG[serviceKey]
     const isHourly = serviceKey === 'hourly'
+
+    // ── Shopify-driven hero content ───────────────────────────────────────────
+    const serviceProduct = useMemo(
+        () => products.find(p => p.serviceType === config.shopifyLabel && p.bannerImage)
+           ?? products.find(p => p.serviceType === config.shopifyLabel),
+        [products, config.shopifyLabel],
+    )
+    const heroImage = serviceProduct?.bannerImage ?? ''
+    const heroDescription = serviceProduct?.serviceDescription ?? ''
 
     // ── Google Maps ───────────────────────────────────────────────────────────
     const [mapsReady, setMapsReady] = useState(false)
@@ -319,8 +314,8 @@ export default function ServiceBookingForm() {
         return (
             <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F0F5F0' }}>
                 {/* Banner */}
-                <div className="relative h-[200px] sm:h-[240px] overflow-hidden">
-                    <img src={config.image} alt={config.label} className="w-full h-full object-cover" />
+                <div className="relative h-[200px] sm:h-[240px] overflow-hidden bg-primary">
+                    {heroImage && <img src={heroImage} alt={config.label} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0" style={{ background: 'rgba(15,23,42,0.45)' }} />
                 </div>
 
@@ -359,11 +354,11 @@ export default function ServiceBookingForm() {
         <div className="min-h-screen" style={{ backgroundColor: '#F0F5F0' }}>
 
             {/* Hero banner */}
-            <div className="relative h-[200px] sm:h-[240px] overflow-hidden">
-                <img src={config.image} alt={config.label} className="w-full h-full object-cover" />
+            <div className="relative h-[200px] sm:h-[240px] overflow-hidden bg-primary">
+                {heroImage && <img src={heroImage} alt={config.label} className="w-full h-full object-cover" />}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                     <h1 className="font-head text-[24px] sm:text-[30px] font-bold text-white leading-none mb-1">{config.label}</h1>
-                    <p className="text-[13px] text-white/70 max-w-xs">{config.description}</p>
+                    {heroDescription && <p className="text-[13px] text-white/70 max-w-xs">{heroDescription}</p>}
                 </div>
             </div>
 

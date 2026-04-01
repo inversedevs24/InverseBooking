@@ -3,30 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { Users, Luggage, Loader2, AlertCircle, Star, Car, ArrowRight, Check } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
+import { SERVICE_ROUTE_MAP } from '../../data'
 import type { TaxiOption } from '../../types'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const SERVICE_ROUTE_MAP: Record<string, string> = {
-  'Private Transfer': '/book?service=transfer',
-  'City to City':     '/book?service=city-to-city',
-  'Airport Rides':    '/book?service=airport',
-  'City Tour':        '/book?service=city-tour',
-  'Hourly Hire':      '/book?service=hourly',
-  'Desert Safari':    '/book?service=desert-safari',
-}
-
 function getBookRoute(product: TaxiOption): string {
   return SERVICE_ROUTE_MAP[product.serviceType] ?? '/book?service=transfer'
-}
-
-function getCategory(name: string): string {
-  const lower = name.toLowerCase()
-  if (lower.includes('coach')) return 'Coach'
-  if (lower.includes('minibus') || lower.includes('mini bus')) return 'Minibus'
-  if (lower.includes('executive') || lower.includes('luxury')) return 'Executive'
-  if (lower.includes('suv') || lower.includes('4x4')) return 'SUV'
-  return 'Standard'
 }
 
 // ─── Fleet Card ───────────────────────────────────────────────────────────────
@@ -203,11 +186,11 @@ export default function AllFleets() {
     dispatch(fetchTaxiProducts())
   }, [dispatch])
 
-  const categories = ['All', ...Array.from(new Set(products.map(p => getCategory(p.name))))]
+  const serviceTypes = ['All', ...Array.from(new Set(products.map(p => p.serviceType).filter(Boolean)))]
 
   const filtered = activeFilter === 'All'
     ? products
-    : products.filter(p => getCategory(p.name) === activeFilter)
+    : products.filter(p => p.serviceType === activeFilter)
 
   return (
     <div className="min-h-screen font-body" style={{ backgroundColor: '#F0F5F0' }}>
@@ -263,7 +246,7 @@ export default function AllFleets() {
         {/* ── Filter tabs ── */}
         {!loading && !error && products.length > 0 && (
           <div className="flex justify-center gap-2 mb-8 flex-wrap">
-            {categories.map(cat => (
+            {serviceTypes.map(cat => (
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}

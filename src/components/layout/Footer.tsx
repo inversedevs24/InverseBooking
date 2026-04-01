@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Mail, Phone, Instagram, Twitter, Facebook } from 'lucide-react'
 import Logo from '../ui/Logo'
 import { brandEmail, brandPhone } from '../../env'
-import { SERVICES } from '../../data'
+import { SERVICE_ROUTE_MAP } from '../../data'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
@@ -14,15 +14,6 @@ const NAV_LINKS = [
   { to: '/partner', label: 'Become a Partner' },
 ]
 
-// Map service labels to their /book?service= keys
-const SERVICE_ROUTE_MAP: Record<string, string> = {
-  'Private Transfer': '/book?service=transfer',
-  'City to City': '/book?service=city-to-city',
-  'Airport Rides': '/book?service=airport',
-  'City Tour': '/book?service=city-tour',
-  'Hourly Hire': '/book?service=hourly',
-  'Desert Safari': '/book?service=desert-safari',
-}
 
 const LEGAL_LINKS = [
   { to: '/terms', label: 'Terms and Conditions' },
@@ -38,10 +29,14 @@ export default function Footer() {
 
   useEffect(() => { dispatch(fetchTaxiProducts()) }, [dispatch])
 
-  const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
-  const visibleServices = initialized && activeTypes.size > 0
-    ? SERVICES.filter(s => activeTypes.has(s.label))
-    : SERVICES
+  const seen = new Set<string>()
+  const serviceLinks = products
+    .filter(p => {
+      if (!p.serviceType || seen.has(p.serviceType)) return false
+      seen.add(p.serviceType)
+      return true
+    })
+    .map(p => ({ label: p.serviceType, to: SERVICE_ROUTE_MAP[p.serviceType] ?? '/book' }))
 
   return (
     <footer style={{ backgroundColor: '#010407' }} className="pt-14 pb-6">
@@ -51,11 +46,11 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
 
           {/* Brand col — full width on mobile */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center md:items-start">
             <Logo light />
 
             {/* Contact */}
-            <div className="mt-5 flex flex-col gap-2.5">
+            <div className="mt-5 flex flex-col gap-2.5 items-center md:items-start">
               <a
                 href={`mailto:${brandEmail}`}
                 className="flex items-center gap-2.5 no-underline group"
@@ -77,7 +72,7 @@ export default function Footer() {
             </div>
 
             {/* Social */}
-            <div className="flex gap-2 mt-5">
+            <div className="flex gap-2 mt-5 justify-center md:justify-start">
               {[
                 { Icon: Facebook, label: 'Facebook' },
                 { Icon: Instagram, label: 'Instagram' },
@@ -118,10 +113,10 @@ export default function Footer() {
               Our Services
             </h4>
             <div className="flex flex-col gap-2.5">
-              {visibleServices.map(s => (
+              {serviceLinks.map(s => (
                 <Link
                   key={s.label}
-                  to={SERVICE_ROUTE_MAP[s.label] ?? '/book'}
+                  to={s.to}
                   className="text-[13px] text-white/50 no-underline hover:text-white transition-colors"
                 >
                   {s.label}
@@ -153,7 +148,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-5 flex flex-col items-center gap-5">
 
           {/* Copyright */}
-          <p className="text-[12px] text-white/30 self-start sm:self-center">
+          <p className="text-[12px] text-white/30 text-center w-full">
             © {new Date().getFullYear()} InverseRide — All Rights Reserved
           </p>
 

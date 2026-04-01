@@ -25,4 +25,6 @@ export const METAFIELD_KEYS = {
   SERVICE_TYPE: 'service_type',
   BANNER_IMAGE: 'banner_image',
   SERVICE_DESCRIPTION: 'service_description',
+  BANNER_HEADLINE: 'banner_headline',
+  BANNER_SUB: 'banner_sub',
 } as const
