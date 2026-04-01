@@ -10,80 +10,13 @@ import { PlacesInput } from '../ui/PlacesInput'
 import type { PlaceResult } from '../ui/PlacesInput'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
-
-const WHATSAPP_NUMBER = '1234567890'
-
-// ─── Service definitions ──────────────────────────────────────────────────────
-
-type ServiceKey =
-    | 'transfer'
-    | 'city-to-city'
-    | 'airport'
-    | 'city-tour'
-    | 'hourly'
-    | 'desert-safari'
-
-interface ServiceConfig {
-    label: string
-    shopifyLabel: string
-    showTo: boolean
-    showReturn: boolean
-    showHours: boolean
-    showPassengers: boolean
-    fromPlaceholder: string
-    toPlaceholder: string
-}
-
-const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
-    transfer: {
-        label: 'Private Transfer',
-        shopifyLabel: 'Private Transfer',
-        showTo: true, showReturn: true, showHours: false, showPassengers: true,
-        fromPlaceholder: 'Enter pickup location',
-        toPlaceholder: 'Enter drop-off location',
-    },
-    'city-to-city': {
-        label: 'City to City',
-        shopifyLabel: 'City to City',
-        showTo: true, showReturn: true, showHours: false, showPassengers: true,
-        fromPlaceholder: 'Departure city (e.g. Dubai)',
-        toPlaceholder: 'Destination city (e.g. Abu Dhabi)',
-    },
-    airport: {
-        label: 'Airport Rides',
-        shopifyLabel: 'Airport Rides',
-        showTo: true, showReturn: true, showHours: false, showPassengers: true,
-        fromPlaceholder: 'Airport name or terminal',
-        toPlaceholder: 'Hotel / home / office address',
-    },
-    'city-tour': {
-        label: 'City Tour',
-        shopifyLabel: 'City Tour',
-        showTo: false, showReturn: false, showHours: true, showPassengers: true,
-        fromPlaceholder: 'Your hotel / starting point',
-        toPlaceholder: '',
-    },
-    hourly: {
-        label: 'Hourly Hire',
-        shopifyLabel: 'Hourly Hire',
-        showTo: false, showReturn: false, showHours: true, showPassengers: true,
-        fromPlaceholder: 'Your pickup location',
-        toPlaceholder: '',
-    },
-    'desert-safari': {
-        label: 'Desert Safari',
-        shopifyLabel: 'Desert Safari',
-        showTo: false, showReturn: true, showHours: false, showPassengers: true,
-        fromPlaceholder: 'Hotel / pickup address',
-        toPlaceholder: '',
-    },
-}
-
-const SHOPIFY_LABEL_TO_KEY: Record<string, ServiceKey> = Object.fromEntries(
-    (Object.entries(SERVICE_CONFIG) as [ServiceKey, ServiceConfig][]).map(([k, v]) => [v.shopifyLabel, k])
-) as Record<string, ServiceKey>
-
-const DEFAULT_SERVICE: ServiceKey = 'transfer'
+import {
+    SERVICE_CONFIG,
+    SHOPIFY_LABEL_TO_KEY,
+    DEFAULT_SERVICE,
+    WHATSAPP_NUMBER,
+} from '../../config/serviceConfig'
+import type { ServiceKey } from '../../config/serviceConfig'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -147,11 +80,12 @@ export default function ServiceBookingForm() {
     const navigate = useNavigate()
     const [params] = useSearchParams()
 
-    // ── Shopify ───────────────────────────────────────────────────────────────
+    // ── Shopify: only used to know which service types exist ──────────────────
     const dispatch = useAppDispatch()
     const { products, initialized } = useAppSelector(s => s.shopify)
     useEffect(() => { dispatch(fetchTaxiProducts()) }, [dispatch])
 
+    // Build available tabs from Shopify service_type metafields, ordered by SERVICE_CONFIG
     const availableServiceKeys = useMemo<ServiceKey[]>(() => {
         if (!initialized || products.length === 0) return Object.keys(SERVICE_CONFIG) as ServiceKey[]
         const seen = new Set<ServiceKey>()
@@ -167,9 +101,9 @@ export default function ServiceBookingForm() {
     const rawServiceKey = (params.get('service') ?? DEFAULT_SERVICE) as ServiceKey
     const serviceKey = availableServiceKeys.includes(rawServiceKey) ? rawServiceKey : (availableServiceKeys[0] ?? DEFAULT_SERVICE)
     const config = SERVICE_CONFIG[serviceKey]
-    const isHourly = serviceKey === 'hourly'
+    const isWhatsApp = config.whatsappFlow
 
-    // ── Shopify-driven hero content ───────────────────────────────────────────
+    // ── Shopify-driven hero image + description ───────────────────────────────
     const serviceProduct = useMemo(
         () => products.find(p => p.serviceType === config.shopifyLabel && p.bannerImage)
            ?? products.find(p => p.serviceType === config.shopifyLabel),
@@ -204,7 +138,7 @@ export default function ServiceBookingForm() {
     const [passengers, setPassengers] = useState(1)
     const [hours, setHours] = useState(3)
 
-    // ── Hourly contact fields ─────────────────────────────────────────────────
+    // ── Contact fields (WhatsApp flow only) ───────────────────────────────────
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
@@ -215,7 +149,7 @@ export default function ServiceBookingForm() {
         name?: string; email?: string; phone?: string
     }>({})
 
-    // ── Success (hourly only) ─────────────────────────────────────────────────
+    // ── Success screen (WhatsApp flow only) ───────────────────────────────────
     const [submitted, setSubmitted] = useState(false)
 
     // Reset all state when switching tabs
@@ -262,7 +196,7 @@ export default function ServiceBookingForm() {
         if (!datetime) e.datetime = 'Please select a date and time'
         if (config.showReturn && showReturn && !returnDatetime) e.returnDatetime = 'Please select a return date and time'
 
-        if (isHourly) {
+        if (isWhatsApp) {
             if (!name.trim()) e.name = 'Full name is required'
             if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'Valid email required'
             if (!phone.match(/^\+?[\d\s\-]{7,15}$/)) e.phone = 'Valid phone number required'
@@ -270,20 +204,18 @@ export default function ServiceBookingForm() {
 
         if (Object.keys(e).length) { setErrors(e); return }
 
-        if (isHourly) {
-            const msg = [
-                '🚗 *Hourly Hire Enquiry*',
+        if (isWhatsApp) {
+            const lines = [
+                `🚗 *${config.label} Enquiry*`,
                 '',
                 `📍 Pickup: ${from}`,
-                `📅 Date & Time: ${datetime.replace('T', ' ')}`,
-                `👥 Passengers: ${passengers}`,
-                `⏱ Duration: ${hours} hour${hours > 1 ? 's' : ''}`,
-                '',
-                `👤 Name: ${name}`,
-                `📧 Email: ${email}`,
-                `📞 Phone: ${phone}`,
-            ].join('\n')
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
+            ]
+            if (config.showTo && to) lines.push(`📍 Drop-off: ${to}`)
+            lines.push(`📅 Date & Time: ${datetime.replace('T', ' ')}`)
+            lines.push(`👥 Passengers: ${passengers}`)
+            if (config.showHours) lines.push(`⏱ Duration: ${hours} hour${hours > 1 ? 's' : ''}`)
+            lines.push('', `👤 Name: ${name}`, `📧 Email: ${email}`, `📞 Phone: ${phone}`)
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank')
             setSubmitted(true)
             return
         }
@@ -309,11 +241,10 @@ export default function ServiceBookingForm() {
         `w-full bg-white border rounded-xl px-4 py-2.5 text-[14px] text-primary font-body outline-none transition-all placeholder:text-[#aaa] ${err ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-slate-200 focus:border-primary focus:ring-2 focus:ring-[#EAF0EA]'}`
     const showRouteInfo = config.showTo && (routeLoading || routeError !== '' || distanceKm !== null)
 
-    // ── Success screen (hourly only) ──────────────────────────────────────────
+    // ── Success screen (WhatsApp flow only) ───────────────────────────────────
     if (submitted) {
         return (
             <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F0F5F0' }}>
-                {/* Banner */}
                 <div className="relative h-[200px] sm:h-[240px] overflow-hidden bg-primary">
                     {heroImage && <img src={heroImage} alt={config.label} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0" style={{ background: 'rgba(15,23,42,0.45)' }} />
@@ -326,14 +257,15 @@ export default function ServiceBookingForm() {
                         </div>
                         <h2 className="font-head font-bold text-slate-800 text-[22px] mb-2">Enquiry Sent!</h2>
                         <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
-                            Thank you, <strong>{name}</strong>. We've received your hourly hire request and will contact you on WhatsApp shortly to confirm everything.
+                            Thank you, <strong>{name}</strong>. We've received your {config.label.toLowerCase()} request and will contact you on WhatsApp shortly to confirm everything.
                         </p>
                         <div className="rounded-xl px-4 py-3 mb-6 text-left" style={{ backgroundColor: '#F0F5F0' }}>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Summary</p>
                             <div className="space-y-1 text-[12px] text-slate-600">
                                 <div><span className="font-semibold">Pickup:</span> {from}</div>
+                                {config.showTo && to && <div><span className="font-semibold">Drop-off:</span> {to}</div>}
                                 <div><span className="font-semibold">Date & Time:</span> {datetime.replace('T', ' ')}</div>
-                                <div><span className="font-semibold">Duration:</span> {hours} hour{hours > 1 ? 's' : ''}</div>
+                                {config.showHours && <div><span className="font-semibold">Duration:</span> {hours} hour{hours > 1 ? 's' : ''}</div>}
                                 <div><span className="font-semibold">Passengers:</span> {passengers}</div>
                             </div>
                         </div>
@@ -495,8 +427,8 @@ export default function ServiceBookingForm() {
                     </>
                 )}
 
-                {/* ── Hourly hire: contact details ─────────────────────────── */}
-                {isHourly && (
+                {/* Contact details — WhatsApp flow services only */}
+                {isWhatsApp && (
                     <>
                         <div className="pt-2 pb-1">
                             <div className="flex items-center gap-2">
@@ -506,7 +438,6 @@ export default function ServiceBookingForm() {
                             </div>
                         </div>
 
-                        {/* Full name */}
                         <div>
                             <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] ${errors.name ? 'ring-2 ring-red-400' : ''}`}>
                                 <FieldLabel>Full Name *</FieldLabel>
@@ -523,7 +454,6 @@ export default function ServiceBookingForm() {
                             <FieldError msg={errors.name} />
                         </div>
 
-                        {/* Email */}
                         <div>
                             <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] ${errors.email ? 'ring-2 ring-red-400' : ''}`}>
                                 <FieldLabel>Email Address *</FieldLabel>
@@ -541,7 +471,6 @@ export default function ServiceBookingForm() {
                             <FieldError msg={errors.email} />
                         </div>
 
-                        {/* Phone */}
                         <div>
                             <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 shadow-[0_2px_8px_rgba(15,23,42,0.06)] ${errors.phone ? 'ring-2 ring-red-400' : ''}`}>
                                 <FieldLabel>Phone Number *</FieldLabel>
@@ -566,16 +495,16 @@ export default function ServiceBookingForm() {
                     type="button"
                     onClick={handleSubmit}
                     className="w-full flex items-center justify-center gap-2 text-white border-none rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-all hover:brightness-105 mt-1 shadow-[0_4px_16px_rgba(15,76,62,0.25)]"
-                    style={{ backgroundColor: isHourly ? '#25D366' : '#2E4052' }}
+                    style={{ backgroundColor: isWhatsApp ? '#25D366' : '#2E4052' }}
                 >
-                    {isHourly ? (
+                    {isWhatsApp ? (
                         <><MessageCircle size={17} /> Send Enquiry via WhatsApp</>
                     ) : (
                         <>Check Availability <ArrowRight size={16} /></>
                     )}
                 </button>
 
-                {isHourly && (
+                {isWhatsApp && (
                     <p className="text-center text-[11px] text-muted">
                         We'll reply on WhatsApp to confirm your booking and pricing.
                     </p>
