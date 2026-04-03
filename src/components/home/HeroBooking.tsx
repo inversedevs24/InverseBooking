@@ -184,9 +184,21 @@ export default function HeroBooking() {
   const showRouteInfo = routeLoading || (distanceKm !== null && durationText !== '')
 
   return (
-    <div className="relative flex items-center">
-      {/* Background slideshow */}
-      <div className="absolute inset-0 overflow-hidden">
+    <div className="flex flex-col md:relative md:flex-row md:items-center">
+      {/* Mobile-only hero image */}
+      <div className="md:hidden relative h-[240px] overflow-hidden flex-shrink-0">
+        {images.map((src, i) => (
+          <div
+            key={src}
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+            style={{ backgroundImage: `url('${src}')`, opacity: i === activeIdx ? 1 : 0 }}
+          />
+        ))}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.35) 100%)' }} />
+      </div>
+
+      {/* Desktop-only background slideshow */}
+      <div className="hidden md:block absolute inset-0 overflow-hidden">
         {images.map((src, i) => (
           <div
             key={src}
@@ -202,16 +214,16 @@ export default function HeroBooking() {
       </div>
 
       {/* Main content */}
-      <div className="relative w-full max-w-container mx-auto px-6 md:px-10 pt-8 pb-20 md:py-16 max-sm:pb-32">
+      <div className="relative w-full max-w-container mx-auto px-4 md:px-10 py-5 md:pt-8 md:pb-20 md:py-16 bg-primaryBg md:bg-transparent">
         <div className="flex items-stretch gap-8 lg:gap-16">
-          <div className="max-w-[420px] w-full flex-shrink-0 flex flex-col relative">
+          <div className="w-full md:max-w-[420px] md:flex-shrink-0 flex flex-col relative">
 
             {/* Tabs */}
             <div className="flex gap-2 mb-2">
               {showTransfer && (
                 <button
                   type="button"
-                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl cursor-pointer font-body transition-all ${tab === 'transfer' ? 'text-white border-none' : 'bg-white text-muted hover:text-primary border border-[#D4DDE5]'}`}
                   style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
                   onClick={() => switchTab('transfer')}
                 >
@@ -221,7 +233,7 @@ export default function HeroBooking() {
               {showAirport && (
                 <button
                   type="button"
-                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl border-none cursor-pointer font-body transition-all ${tab === 'airport' ? 'text-white' : 'bg-white text-muted hover:text-primary'}`}
+                  className={`flex-1 py-[13px] text-[14px] font-semibold rounded-2xl cursor-pointer font-body transition-all ${tab === 'airport' ? 'text-white border-none' : 'bg-white text-muted hover:text-primary border border-[#D4DDE5]'}`}
                   style={tab === 'airport' ? { background: '#2E4052' } : undefined}
                   onClick={() => switchTab('airport')}
                 >
@@ -232,7 +244,7 @@ export default function HeroBooking() {
 
             {/* From */}
             <div className="mb-2">
-              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.from ? 'ring-2 ring-red-400' : ''}`}>
+              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.from ? 'ring-2 ring-red-400' : 'border border-[#D4DDE5]'}`}>
                 <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">{cfg.fromLabel} *</div>
                 <div className="flex items-center gap-2">
                   <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
@@ -250,7 +262,7 @@ export default function HeroBooking() {
 
             {/* To */}
             <div className="mb-2">
-              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.to ? 'ring-2 ring-red-400' : ''}`}>
+              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.to ? 'ring-2 ring-red-400' : 'border border-[#D4DDE5]'}`}>
                 <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">{cfg.toLabel} *</div>
                 <div className="flex items-center gap-2">
                   <MapPin size={15} className="text-[#aaa] flex-shrink-0" />
@@ -305,7 +317,7 @@ export default function HeroBooking() {
 
             {/* Pickup date & time */}
             <div className="mb-2">
-              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.datetime ? 'ring-2 ring-red-400' : ''}`}>
+              <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.datetime ? 'ring-2 ring-red-400' : 'border border-[#D4DDE5]'}`}>
                 <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Pickup Date &amp; Time *</div>
                 <DateTimePicker
                   value={datetime}
@@ -320,7 +332,7 @@ export default function HeroBooking() {
             {/* Return date & time — transfer only */}
             {tab === 'transfer' && showReturn && (
               <div className="mb-2">
-                <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.returnDatetime ? 'ring-2 ring-red-400' : ''}`}>
+                <div className={`bg-white rounded-2xl px-4 pt-3 pb-4 ${errors.returnDatetime ? 'ring-2 ring-red-400' : 'border border-[#D4DDE5]'}`}>
                   <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Return Date &amp; Time *</div>
                   <DateTimePicker
                     value={returnDatetime}
@@ -335,7 +347,7 @@ export default function HeroBooking() {
 
             {/* Add / Remove Return — transfer only */}
             {tab === 'transfer' && (
-              <div className="bg-white rounded-2xl px-4 py-4 mb-2 flex items-center justify-center">
+              <div className="bg-white rounded-2xl px-4 py-4 mb-2 flex items-center justify-center border border-[#D4DDE5]">
                 <button
                   type="button"
                   className="text-[15px] font-semibold text-primary cursor-pointer bg-transparent border-none font-body transition-colors hover:opacity-70"
@@ -380,7 +392,7 @@ export default function HeroBooking() {
       </div>
 
       {/* Stats pill — mobile only */}
-      <div className="md:hidden absolute bottom-4 right-4 left-4 z-[3] flex justify-center bg-white/80 backdrop-blur-[12px] border border-[#D4DDE5] rounded-[14px] overflow-hidden">
+      <div className="md:hidden flex justify-center mx-4 mb-5 bg-white/80 border border-[#D4DDE5] rounded-[14px] overflow-hidden">
         {[
           { num: '4.9★', lbl: 'Rating' },
           { num: '12k+', lbl: 'Rides' },
