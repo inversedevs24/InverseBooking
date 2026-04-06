@@ -9,6 +9,7 @@ import ContactPage from './pages/ContactPage'
 import PartnerPage from './pages/PartnerPage'
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
 import BookingConditionsPage from './pages/BookingConditionsPage'
@@ -24,7 +25,7 @@ import { WhatsAppButton } from './components/ui/WhatsAppButton'
 import DriverNotification from './components/ui/DriverNotification'
 
 
-const AUTH_ROUTES = ['/signin', '/signup']
+const AUTH_ROUTES = ['/signin', '/signup', '/forgot-password']
 
 export default function App() {
   const { pathname } = useLocation()
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="/partner" element={<PartnerPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/booking-conditions" element={<BookingConditionsPage />} />

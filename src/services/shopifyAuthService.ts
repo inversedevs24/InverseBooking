@@ -138,6 +138,27 @@ export async function getCustomer(
   return data.customer ?? null
 }
 
+// ─── Forgot Password ─────────────────────────────────────────────────────────
+
+const CUSTOMER_RECOVER = `
+  mutation customerRecover($email: String!) {
+    customerRecover(email: $email) {
+      customerUserErrors {
+        field
+        message
+        code
+      }
+    }
+  }
+`
+
+export async function recoverCustomer(
+  email: string
+): Promise<{ errors: AuthError[] }> {
+  const { data } = await gql(CUSTOMER_RECOVER, { email })
+  return { errors: data.customerRecover?.customerUserErrors ?? [] }
+}
+
 // ─── Customer Orders ──────────────────────────────────────────────────────────
 
 export interface ShopifyOrderLineItem {

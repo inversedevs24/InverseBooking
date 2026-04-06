@@ -148,13 +148,6 @@ function BookingSummary({ booking }: { booking: BookingState }) {
         </div>
       </div>
 
-      {/* Trust note */}
-      <div className="flex items-start gap-2.5 rounded-2xl px-4 py-3" style={{ backgroundColor: '#BDD9BF' }}>
-        <ShieldCheck size={14} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
-        <p className="text-[11px] leading-relaxed" style={{ color: '#2E4052' }}>
-          Your information is secure and will only be used for this booking.
-        </p>
-      </div>
     </div>
   )
 }

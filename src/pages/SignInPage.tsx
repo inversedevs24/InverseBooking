@@ -113,7 +113,7 @@ export default function SignInPage() {
           <label className="flex items-center gap-[6px] text-[13px] text-white/70 cursor-pointer">
             <input type="checkbox" className="accent-secondary" /> Remember me
           </label>
-          <a className="text-[13px] text-secondary font-semibold no-underline" href="#">Forgot password?</a>
+          <Link to="/forgot-password" className="text-[13px] text-secondary font-semibold no-underline">Forgot password?</Link>
         </div>
 
         {/* Submit */}
