@@ -142,7 +142,7 @@ function BookingSummary({ booking }: { booking: BookingState }) {
           <div className="flex items-center justify-between pt-3 border-t border-slate-100">
             <span className="text-[12px] text-slate-500 font-body">Total</span>
             <span className="text-[20px] font-bold font-head" style={{ color: '#2E4052' }}>
-              AED{booking.price || '—'}
+              AED {booking.price || '—'}
             </span>
           </div>
         </div>
