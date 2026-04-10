@@ -21,7 +21,7 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
     <div
       className="group bg-white rounded-[20px] overflow-hidden flex flex-col cursor-pointer"
       style={{ boxShadow: '0 2px 16px rgba(46,64,82,0.08)', transition: 'transform 0.25s ease, box-shadow 0.25s ease' }}
-      onClick={() => navigate(getBookRoute(fleet))}
+      onClick={() => navigate(`/fleet/${fleet.id}`)}
       onMouseEnter={e => {
         e.currentTarget.style.transform = 'translateY(-5px)'
         e.currentTarget.style.boxShadow = '0 18px 48px rgba(46,64,82,0.16)'
@@ -121,33 +121,27 @@ function FleetCard({ fleet }: { fleet: TaxiOption }) {
         {/* Divider */}
         <div className="border-t mt-auto" style={{ borderColor: 'rgba(46,64,82,0.08)' }} />
 
-        {/* Price + CTA */}
-        <div className="flex items-center justify-between pt-0.5">
-          {fleet.baseFare > 0 ? (
-            <div>
-              <div className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(46,64,82,0.45)' }}>
-                From
-              </div>
-              <div className="font-head text-[20px] font-bold leading-tight" style={{ color: '#2E4052' }}>
-                AED {fleet.baseFare.toFixed(0)}
-              </div>
-            </div>
-          ) : (
-            <div className="text-[12px] font-semibold" style={{ color: 'rgba(46,64,82,0.5)' }}>
-              Contact for price
-            </div>
-          )}
-
-          <button
-            onClick={e => { e.stopPropagation(); navigate(getBookRoute(fleet)) }}
-            className="flex items-center gap-1.5 text-[12px] font-bold px-4 py-2.5 rounded-xl cursor-pointer border-none text-white"
-            style={{ backgroundColor: '#2E4052', transition: 'background-color 0.2s ease' }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3A5268' }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#2E4052' }}
-          >
-            Book
-            <ArrowRight size={12} />
-          </button>
+        {/* CTA */}
+        <div className="flex items-center gap-2 pt-0.5 w-full">
+            <button
+              onClick={e => { e.stopPropagation(); navigate(`/fleet/${fleet.id}`) }}
+              className="flex-1 text-[12px] font-bold px-4 py-2.5 rounded-xl cursor-pointer border-none text-white"
+              style={{ backgroundColor: '#2E4052', transition: 'background-color 0.2s ease' }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3A5268' }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#2E4052' }}
+            >
+              Details
+            </button>
+            <button
+              onClick={e => { e.stopPropagation(); navigate(getBookRoute(fleet)) }}
+              className="flex-1 flex items-center justify-center gap-1.5 text-[12px] font-bold px-4 py-2.5 rounded-xl cursor-pointer border-none text-white"
+              style={{ backgroundColor: '#2E4052', transition: 'background-color 0.2s ease' }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3A5268' }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#2E4052' }}
+            >
+              Book
+              <ArrowRight size={12} />
+            </button>
         </div>
       </div>
     </div>

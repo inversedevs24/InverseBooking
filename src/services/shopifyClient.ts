@@ -10,8 +10,9 @@ const GET_PRODUCTS_QUERY = `
         node {
           id
           title
+          description
           productType
-          images(first: 1) {
+          images(first: 10) {
             edges {
               node {
                 url
@@ -165,6 +166,8 @@ function transformProduct(node: any): TaxiOption {
     type: vehicleType,
     displayName: node.title as string,
     image: node.images?.edges?.[0]?.node?.url ?? '',
+    images: (node.images?.edges ?? []).map((e: any) => e.node?.url).filter(Boolean) as string[],
+    description: (node.description as string) ?? '',
     rating: getMeta(METAFIELD_NAMESPACES.TAXI_DETAILS, METAFIELD_KEYS.RATING, 0) as number,
     reviews: getMeta(METAFIELD_NAMESPACES.TAXI_DETAILS, METAFIELD_KEYS.REVIEWS, 0) as number,
     passengers: getMeta(METAFIELD_NAMESPACES.TAXI_DETAILS, METAFIELD_KEYS.PASSENGERS, 0) as number,

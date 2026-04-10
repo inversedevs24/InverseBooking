@@ -81,6 +81,8 @@ export interface TaxiOption {
   type: string                // alias for vehicleType
   displayName: string
   image: string
+  images: string[]
+  description: string
   rating: number
   reviews: number
   passengers: number

@@ -16,6 +16,7 @@ import BookingConditionsPage from './pages/BookingConditionsPage'
 import RefundPage from './pages/RefundPage'
 import HelpPage from './pages/HelpPage'
 import AllFleets from './components/fleets/AllFleets'
+import VehicleDetailPage from './components/fleets/VehicleDetailPage'
 import VehicleSelect from './components/fleets/VehicleSelect'
 import BookingDetails from './components/fleets/BookingDetails'
 import Checkout from './components/fleets/Checkout'
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/refund" element={<RefundPage />} />
           <Route path="/help" element={<HelpPage />} />
           <Route path="/fleet" element={<AllFleets />} />
+          <Route path="/fleet/:id" element={<VehicleDetailPage />} />
           <Route path="/vehicles" element={<VehicleSelect />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path="/checkout" element={<Checkout />} />

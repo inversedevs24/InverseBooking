@@ -3,12 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, Users, Luggage, MapPin, CalendarDays,
   Clock, Ruler, CheckCircle2, ArrowRight, Zap, Loader2,
-  AlertCircle, Star, Car, ChevronDown, ChevronUp,
+  AlertCircle, Star, Car, ChevronDown, ChevronUp, Expand,
 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 import { getVariantIdForDistance } from '../../services/shopifyClient'
 import { loadGoogleMaps } from '../../services/googleMapsLoader'
+import VehicleDetailModal from './VehicleDetailModal'
 import type { TaxiOption, TaxiVariant, SearchDetails } from '../../types'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -268,6 +269,7 @@ function VehicleCard({
   currencyCode,
   isEstimate,
   onSelect,
+  onViewDetails,
 }: {
   vehicle: TaxiOption
   selected: boolean
@@ -275,6 +277,7 @@ function VehicleCard({
   currencyCode: string
   isEstimate: boolean
   onSelect: () => void
+  onViewDetails: () => void
 }) {
   const sym = currencyCode === 'USD' ? '$' : currencyCode === 'AED' ? 'AED ' : currencyCode
 
@@ -319,6 +322,7 @@ function VehicleCard({
       <div
         className="relative aspect-[16/7] md:aspect-auto md:w-[210px] flex-shrink-0 overflow-hidden"
         style={{ backgroundColor: '#EAF0EA', minHeight: 120 }}
+        onClick={e => { e.stopPropagation(); onViewDetails() }}
       >
         {vehicle.image ? (
           <img
@@ -333,6 +337,20 @@ function VehicleCard({
             <Car size={48} style={{ color: '#BDD9BF' }} />
           </div>
         )}
+
+        {/* View details overlay hint */}
+        <div
+          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+          style={{ backgroundColor: 'rgba(46,64,82,0.18)' }}
+        >
+          <div
+            className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full"
+            style={{ backgroundColor: 'rgba(255,255,255,0.9)', color: '#2E4052' }}
+          >
+            <Expand size={11} />
+            View Details
+          </div>
+        </div>
 
         {/* Popular badge */}
         {vehicle.popular && (
@@ -481,6 +499,7 @@ export default function VehicleSelect() {
 
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [summaryOpen, setSummaryOpen] = useState(true)
+  const [detailVehicle, setDetailVehicle] = useState<TaxiOption | null>(null)
 
   useEffect(() => {
     dispatch(fetchTaxiProducts())
@@ -745,6 +764,7 @@ export default function VehicleSelect() {
                       currencyCode={currencyCode}
                       isEstimate={isEstimate}
                       onSelect={() => handleSelect(product)}
+                      onViewDetails={() => setDetailVehicle(product)}
                     />
                   )
                 })}
@@ -759,6 +779,15 @@ export default function VehicleSelect() {
 
         </div>
       </div>
+
+      {/* ── Vehicle detail modal ── */}
+      {detailVehicle && (
+        <VehicleDetailModal
+          vehicle={detailVehicle}
+          onClose={() => setDetailVehicle(null)}
+          onSelect={() => { setDetailVehicle(null); handleSelect(detailVehicle) }}
+        />
+      )}
 
       {/* ── Sticky bottom selected bar (mobile / tablet) ── */}
       <div
