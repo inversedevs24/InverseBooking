@@ -106,7 +106,7 @@ export default function Checkout() {
   const { checkoutUrl, loading: cartLoading, error: cartError } = useAppSelector(s => s.cart)
   const { customer } = useAuth()
 
-  const [showSummary, setShowSummary] = useState(false)
+  const [showSummary, setShowSummary] = useState(true)
 
   // Derive currency from the taxiOption variant price, fall back to AED
   const taxiOption = (booking as any).taxiOption as TaxiOption | undefined
