@@ -44,12 +44,12 @@ function ModalGallery({ vehicle }: { vehicle: TaxiOption }) {
   }
 
   return (
-    <div className="relative w-full flex-shrink-0 overflow-hidden" style={{ height: 220, backgroundColor: '#EAF0EA' }}>
+    <div className="relative w-full flex-shrink-0 overflow-hidden rounded-t-[24px] sm:rounded-t-none" style={{ height: 220, backgroundColor: '#EAF0EA' }}>
       <img
         key={active}
         src={images[active]}
         alt={`${vehicle.name} ${active + 1}`}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
 
       {/* gradient */}

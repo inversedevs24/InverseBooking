@@ -221,17 +221,6 @@ function TripSummary({ search }: { search: SearchDetails }) {
           </p>
         </div>
       )}
-
-      {/* Info note */}
-      <div className="rounded-2xl px-4 py-3 flex items-start gap-2.5" style={{ backgroundColor: '#BDD9BF' }}>
-        <Zap size={12} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
-        <p className="text-[11px] leading-relaxed font-body" style={{ color: '#2E4052' }}>
-          {search.distance
-            ? `Prices based on a ${search.distance.toFixed(1)} km journey.`
-            : 'Prices shown for the nearest distance band.'}
-          {' '}Free cancellation up to 1 hour before pickup.
-        </p>
-      </div>
     </div>
   )
 }

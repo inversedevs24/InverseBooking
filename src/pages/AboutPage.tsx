@@ -119,7 +119,7 @@ export default function AboutPage() {
               
               <button
                 className="bg-primary text-white border-none rounded-lg px-7 py-3 font-semibold text-label cursor-pointer font-body transition-colors hover:bg-secondary"
-                onClick={() => navigate('/signin')}
+                onClick={() => navigate('/book')}
               >
                 Book with us
               </button>

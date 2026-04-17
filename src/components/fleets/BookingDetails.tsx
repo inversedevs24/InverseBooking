@@ -89,7 +89,7 @@ function BookingSummary({ booking }: { booking: BookingState }) {
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.07)] overflow-hidden">
         {v?.image && (
           <div className="h-[130px] overflow-hidden relative">
-            <img src={v.image} alt={v.name} className="w-full h-full object-cover" />
+            <img src={v.image} alt={v.name} className="w-full h-full object-contain" />
             <div className="absolute inset-0 pointer-events-none"
               style={{ background: 'linear-gradient(to top, rgba(15,23,42,0.4) 0%, transparent 60%)' }} />
             {v.tag && (

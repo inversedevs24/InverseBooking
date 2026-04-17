@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, MapPin, Clock, Ruler, Car, Users,
   Luggage, User, Mail, Phone, Plane, MessageSquare,
-  CheckCircle2, ShieldCheck, CreditCard, ExternalLink, Loader2,
+  CheckCircle2, CreditCard, ExternalLink, Loader2,
   AlertCircle,
 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
@@ -279,13 +279,6 @@ export default function Checkout() {
               )}
             </SectionCard>
 
-            {/* Mobile CTA (below cards, above sidebar) */}
-            <div className="lg:hidden">
-              <PaymentPanel
-                sym={sym} subtotal={subtotal} tax={tax} total={total}
-                redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
-              />
-            </div>
           </div>
 
           {/*  Right: payment sidebar (desktop)  */}
@@ -388,16 +381,6 @@ function PaymentPanel({
         )}
       </button>
 
-      {/* Shopify note */}
-      <div
-        className="flex items-start gap-2.5 rounded-2xl px-4 py-3"
-        style={{ backgroundColor: '#BDD9BF' }}
-      >
-        <ShieldCheck size={14} style={{ color: '#2E4052' }} className="flex-shrink-0 mt-0.5" />
-        <p className="text-[11px] leading-relaxed" style={{ color: '#2E4052' }}>
-          You'll be securely redirected to our Shopify checkout to complete your payment. 256-bit SSL encrypted.
-        </p>
-      </div>
     </div>
   )
 }
