@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MapPin, Ruler, Clock, Loader2 } from 'lucide-react'
+import { MapPin, Ruler, Clock, Loader2, Users, Minus, Plus } from 'lucide-react'
 import DateTimePicker from '../ui/DateTimePicker'
 import { PlacesInput } from '../ui/PlacesInput'
 import type { PlaceResult } from '../ui/PlacesInput'
@@ -28,8 +28,8 @@ const TAB_CONFIG: Record<Tab, {
   toPlaceholder: string
 }> = {
   transfer: {
-    label: 'Private Transfer',
-    service: 'transfer',
+    label: 'City to City',
+    service: 'city-to-city',
     fromLabel: 'From',
     fromPlaceholder: 'Enter pickup location',
     toLabel: 'To',
@@ -54,7 +54,7 @@ export default function HeroBooking() {
     dispatch(fetchHomepageImages())
   }, [dispatch])
 
-  // ─── Slideshow ─────────────────────────────────────────────────────────────
+  //  Slideshow ─────────────────────────────────────────────────────────────
   const images = heroImagesInitialized && heroImages.length > 0 ? heroImages : [FALLBACK_IMAGE]
   const [activeIdx, setActiveIdx] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -67,18 +67,18 @@ export default function HeroBooking() {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [images.length])
 
-  // ─── Google Maps ────────────────────────────────────────────────────────────
+  //  Google Maps 
   const [mapsReady, setMapsReady] = useState(false)
   useEffect(() => {
     loadGoogleMaps().then(() => setMapsReady(true)).catch(e => console.warn('Maps load failed:', e))
   }, [])
 
-  // ─── Derive available tabs from Shopify ─────────────────────────────────────
+  //  Derive available tabs from Shopify 
   const activeTypes = new Set(products.map(p => p.serviceType).filter(Boolean))
-  const showTransfer = !initialized || activeTypes.size === 0 || activeTypes.has('Private Transfer')
+  const showTransfer = !initialized || activeTypes.size === 0 || activeTypes.has('City to City') || activeTypes.has('Private Transfer')
   const showAirport = !initialized || activeTypes.size === 0 || activeTypes.has('Airport Rides')
 
-  // ─── Form state ─────────────────────────────────────────────────────────────
+  //  Form state 
   const [tab, setTab] = useState<Tab>('transfer')
   const cfg = TAB_CONFIG[tab]
 
@@ -89,6 +89,7 @@ export default function HeroBooking() {
 
   const minNow = useMemo(() => toLocalISO(new Date()), [])
   const [datetime, setDatetime] = useState(minNow)
+  const [passengers, setPassengers] = useState(1)
   const [showReturn, setShowReturn] = useState(false)
   const [returnDatetime, setReturnDatetime] = useState('')
   const navigate = useNavigate()
@@ -97,7 +98,7 @@ export default function HeroBooking() {
     from?: string; to?: string; datetime?: string; returnDatetime?: string
   }>({})
 
-  // ─── Route calculation (distance + ETA) ────────────────────────────────────
+  //  Route calculation (distance + ETA) 
   const [distanceKm, setDistanceKm] = useState<number | null>(null)
   const [durationText, setDurationText] = useState('')
   const [routeLoading, setRouteLoading] = useState(false)
@@ -128,7 +129,7 @@ export default function HeroBooking() {
     )
   }, [fromCoords, toCoords])
 
-  // ─── Tab switch ─────────────────────────────────────────────────────────────
+  //  Tab switch 
   function switchTab(next: Tab) {
     setTab(next)
     setFrom(''); setTo('')
@@ -138,7 +139,7 @@ export default function HeroBooking() {
     setErrors({})
   }
 
-  // ─── Field handlers ─────────────────────────────────────────────────────────
+  //  Field handlers 
   function handleFromChange(r: PlaceResult) {
     setFrom(r.address); setFromCoords(r.coords ?? null)
     setErrors(e => ({ ...e, from: '' }))
@@ -176,6 +177,7 @@ export default function HeroBooking() {
         returnDatetime: tab === 'transfer' && showReturn ? returnDatetime : undefined,
         service: cfg.service,
         type: 'transfer',
+        passengers,
       },
     })
   }
@@ -227,7 +229,7 @@ export default function HeroBooking() {
                   style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
                   onClick={() => switchTab('transfer')}
                 >
-                  Private Transfer
+                  City to City
                 </button>
               )}
               {showAirport && (
@@ -327,6 +329,26 @@ export default function HeroBooking() {
                 />
               </div>
               {errors.datetime && <p className="text-[11px] text-red-400 font-medium mt-1 ml-1">{errors.datetime}</p>}
+            </div>
+
+            {/* Passengers */}
+            <div className="mb-2">
+              <div className="bg-white rounded-2xl px-4 pt-3 pb-4 border border-[#D4DDE5]">
+                <div className="text-[11px] font-bold text-primary uppercase tracking-wide mb-[6px]">Passengers *</div>
+                <div className="flex items-center gap-3">
+                  <Users size={15} className="text-[#aaa] flex-shrink-0" />
+                  <div className="flex items-center gap-3 flex-1">
+                    <button type="button" onClick={() => setPassengers(p => Math.max(1, p - 1))} className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition-colors">
+                      <Minus size={13} className="text-primary" />
+                    </button>
+                    <span className="text-[15px] font-bold text-primary w-8 text-center">{passengers}</span>
+                    <button type="button" onClick={() => setPassengers(p => Math.min(14, p + 1))} className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition-colors">
+                      <Plus size={13} className="text-primary" />
+                    </button>
+                    <span className="text-[13px] text-muted ml-1">{passengers === 1 ? '1 passenger' : `${passengers} passengers`}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Return date & time — transfer only */}

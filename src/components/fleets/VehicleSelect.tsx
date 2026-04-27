@@ -249,7 +249,7 @@ function VehicleCardSkeleton() {
   )
 }
 
-// ─── Vehicle Card ─────────────────────────────────────────────────────────────
+//  Vehicle Card 
 
 function VehicleCard({
   vehicle,
@@ -257,6 +257,7 @@ function VehicleCard({
   priceDisplay,
   currencyCode,
   isEstimate,
+  isReturn,
   onSelect,
   onViewDetails,
 }: {
@@ -265,6 +266,7 @@ function VehicleCard({
   priceDisplay: string
   currencyCode: string
   isEstimate: boolean
+  isReturn: boolean
   onSelect: () => void
   onViewDetails: () => void
 }) {
@@ -407,6 +409,14 @@ function VehicleCard({
           <div className="flex-shrink-0 text-right">
             {priceDisplay !== '—' ? (
               <>
+                {isReturn && (
+                  <span
+                    className="inline-block text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full mb-1"
+                    style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+                  >
+                    Return Trip
+                  </span>
+                )}
                 <p
                   className="font-head font-bold leading-none"
                   style={{ color: '#2E4052', fontSize: 'clamp(1.1rem, 2.5vw, 1.3rem)' }}
@@ -741,7 +751,11 @@ export default function VehicleSelect() {
               <div className="flex flex-col gap-4">
                 {available.map(product => {
                   const { variant, isEstimate } = getVariantForProduct(product)
-                  const priceDisplay = variant ? parseFloat(variant.price.amount).toFixed(2) : '—'
+                  const isReturn = searchDetails.tripType === 'return'
+                  const quantity = isReturn ? 2 : 1
+                  const priceDisplay = variant
+                    ? (parseFloat(variant.price.amount) * quantity).toFixed(2)
+                    : '—'
                   const currencyCode = variant?.price.currencyCode ?? 'AED'
 
                   return (
@@ -752,6 +766,7 @@ export default function VehicleSelect() {
                       priceDisplay={priceDisplay}
                       currencyCode={currencyCode}
                       isEstimate={isEstimate}
+                      isReturn={isReturn}
                       onSelect={() => handleSelect(product)}
                       onViewDetails={() => setDetailVehicle(product)}
                     />
@@ -815,7 +830,7 @@ export default function VehicleSelect() {
             {selectedVariantData?.variant && (
               <p className="text-[11px] font-semibold font-body" style={{ color: '#BDD9BF' }}>
                 {getCurrencySymbol(selectedVariantData.variant.price.currencyCode)}
-                {parseFloat(selectedVariantData.variant.price.amount).toFixed(2)}
+                {(parseFloat(selectedVariantData.variant.price.amount) * (searchDetails.tripType === 'return' ? 2 : 1)).toFixed(2)}
                 <span className="opacity-60"> est. total</span>
               </p>
             )}
