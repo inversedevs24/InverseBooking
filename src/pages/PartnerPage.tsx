@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   UserCheck, Car, Building2, Bus,
   CheckCircle2, Check, User, Phone, Mail, MapPin,
@@ -6,6 +6,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import FAQ from '../components/ui/FAQ'
 import { PARTNER_FAQS } from '../data'
+import { loadRecaptcha, getRecaptchaToken } from '../utils/recaptcha'
 
 //  Data 
 const PARTNER_TYPES = ['Individual Chauffeur', 'Fleet Owner', 'Transport Company']
@@ -83,14 +84,45 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
 const inputCls =
   'w-full text-[14px] text-slate-700 font-body outline-none border-none bg-transparent placeholder:text-slate-300'
 
-//  Main 
+//  Main
 export default function PartnerPage() {
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [city, setCity] = useState('')
+  const [partnerType, setPartnerType] = useState('Individual Chauffeur')
+  const [about, setAbout] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => { loadRecaptcha() }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 3000)
+    setError('')
+    setLoading(true)
+    try {
+      const recaptchaToken = await getRecaptchaToken('partner')
+      const res = await fetch('/submit.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ form_type: 'partner', fullName, email, phone, city, partnerType, about, recaptchaToken }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setSubmitted(true)
+        setFullName(''); setEmail(''); setPhone(''); setCity(''); setAbout('')
+        setPartnerType('Individual Chauffeur')
+        setTimeout(() => setSubmitted(false), 3000)
+      } else {
+        setError(data.message || 'Submission failed. Please try again.')
+      }
+    } catch {
+      setError('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -170,6 +202,16 @@ export default function PartnerPage() {
                 </div>
               )}
 
+              {/* Error banner */}
+              {error && (
+                <div
+                  className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-4"
+                  style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}
+                >
+                  <span className="text-[13px] font-semibold">{error}</span>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
 
                 {/* Name + Phone */}
@@ -177,14 +219,14 @@ export default function PartnerPage() {
                   <FormField label="Full Name">
                     <div className="flex items-center gap-2">
                       <User size={13} className="text-[#aaa] flex-shrink-0" />
-                      <input className={inputCls} placeholder="John Doe" />
+                      <input className={inputCls} placeholder="John Doe" required value={fullName} onChange={e => setFullName(e.target.value)} />
                     </div>
                   </FormField>
                   <FormField label="Phone Number">
                     <div className="flex items-center gap-2">
                       <Phone size={13} className="text-[#aaa] flex-shrink-0" />
                       <span className="text-[14px] text-slate-300 font-body flex-shrink-0">+971</span>
-                      <input className={inputCls} placeholder="050 123 4567" />
+                      <input className={inputCls} placeholder="050 123 4567" required value={phone} onChange={e => setPhone(e.target.value)} />
                     </div>
                   </FormField>
                 </div>
@@ -194,13 +236,13 @@ export default function PartnerPage() {
                   <FormField label="Email Address">
                     <div className="flex items-center gap-2">
                       <Mail size={13} className="text-[#aaa] flex-shrink-0" />
-                      <input className={inputCls} type="email" placeholder="john@email.com" />
+                      <input className={inputCls} type="email" placeholder="john@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                   </FormField>
                   <FormField label="City">
                     <div className="flex items-center gap-2">
                       <MapPin size={13} className="text-[#aaa] flex-shrink-0" />
-                      <input className={inputCls} placeholder="Dubai, Abu Dhabi…" />
+                      <input className={inputCls} placeholder="Dubai, Abu Dhabi…" required value={city} onChange={e => setCity(e.target.value)} />
                     </div>
                   </FormField>
                 </div>
@@ -215,7 +257,8 @@ export default function PartnerPage() {
                       >
                         <input
                           type="radio" name="partnerType" value={t}
-                          defaultChecked={t === 'Individual Chauffeur'}
+                          checked={partnerType === t}
+                          onChange={() => setPartnerType(t)}
                           className="accent-primary w-3.5 h-3.5"
                         />
                         {t}
@@ -230,13 +273,16 @@ export default function PartnerPage() {
                     className="w-full text-[14px] text-slate-700 font-body outline-none border-none bg-transparent resize-y min-h-[80px] placeholder:text-slate-300"
                     placeholder="Fleet size, experience, services you offer…"
                     rows={3}
+                    value={about}
+                    onChange={e => setAbout(e.target.value)}
                   />
                 </FormField>
 
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(46,64,82,0.3)]"
+                  disabled={loading}
+                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(46,64,82,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ backgroundColor: '#2E4052' }}
                 >
                   <span
@@ -244,7 +290,7 @@ export default function PartnerPage() {
                     style={{ backgroundColor: '#3A5268' }}
                   />
                   <span className="relative z-10 flex items-center gap-2">
-                    Submit Application <CheckCircle2 size={15} />
+                    {loading ? 'Submitting…' : <> Submit Application <CheckCircle2 size={15} /> </>}
                   </span>
                 </button>
 

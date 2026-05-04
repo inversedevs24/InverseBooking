@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Phone, Mail, MapPin, Clock, CheckCircle2,
   Send, User, MessageSquare,
@@ -6,6 +6,7 @@ import {
 import FAQ from '../components/ui/FAQ'
 import { CONTACT_FAQS } from '../data'
 import { brandPhone, brandEmail } from '../env'
+import { loadRecaptcha, getRecaptchaToken } from '../utils/recaptcha'
 
 const SUBJECTS = [
   { value: 'general', label: 'General Inquiry' },
@@ -56,11 +57,40 @@ const inputCls =
 export default function ContactPage() {
   const [subject, setSubject] = useState('general')
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [message, setMessage] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => { loadRecaptcha() }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 4000)
+    setError('')
+    setLoading(true)
+    try {
+      const recaptchaToken = await getRecaptchaToken('contact')
+      const res = await fetch('/submit.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ form_type: 'contact', firstName, lastName, email, phone, subject, message, recaptchaToken }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setSubmitted(true)
+        setFirstName(''); setLastName(''); setEmail(''); setPhone(''); setMessage('')
+        setTimeout(() => setSubmitted(false), 4000)
+      } else {
+        setError(data.message || 'Submission failed. Please try again.')
+      }
+    } catch {
+      setError('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -156,6 +186,16 @@ export default function ContactPage() {
                 </div>
               )}
 
+              {/* Error banner */}
+              {error && (
+                <div
+                  className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-4"
+                  style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}
+                >
+                  <span className="text-[13px] font-semibold">{error}</span>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
 
                 {/* Name row */}
@@ -163,13 +203,13 @@ export default function ContactPage() {
                   <FormField label="First Name">
                     <div className="flex items-center gap-2">
                       <User size={13} className="text-[#aaa] flex-shrink-0" />
-                      <input className={inputCls} placeholder="John" />
+                      <input className={inputCls} placeholder="John" required value={firstName} onChange={e => setFirstName(e.target.value)} />
                     </div>
                   </FormField>
                   <FormField label="Last Name">
                     <div className="flex items-center gap-2">
                       <User size={13} className="text-[#aaa] flex-shrink-0" />
-                      <input className={inputCls} placeholder="Doe" />
+                      <input className={inputCls} placeholder="Doe" required value={lastName} onChange={e => setLastName(e.target.value)} />
                     </div>
                   </FormField>
                 </div>
@@ -179,14 +219,14 @@ export default function ContactPage() {
                   <FormField label="Email">
                     <div className="flex items-center gap-2">
                       <Mail size={13} className="text-[#aaa] flex-shrink-0" />
-                      <input className={inputCls} type="email" placeholder="john@email.com" />
+                      <input className={inputCls} type="email" placeholder="john@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                   </FormField>
                   <FormField label="Phone Number">
                     <div className="flex items-center gap-2">
                       <Phone size={13} className="text-[#aaa] flex-shrink-0" />
                       <span className="text-[14px] text-[#aaa] font-body flex-shrink-0">+971</span>
-                      <input className={inputCls} placeholder="050 123 4567" />
+                      <input className={inputCls} placeholder="050 123 4567" value={phone} onChange={e => setPhone(e.target.value)} />
                     </div>
                   </FormField>
                 </div>
@@ -219,6 +259,9 @@ export default function ContactPage() {
                       className="flex-1 text-[14px] text-primary font-body outline-none border-none bg-transparent resize-y min-h-[90px] placeholder:text-[#bbb]"
                       placeholder="Write your message…"
                       rows={4}
+                      required
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
                     />
                   </div>
                 </FormField>
@@ -226,7 +269,8 @@ export default function ContactPage() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(46,64,82,0.3)]"
+                  disabled={loading}
+                  className="group relative overflow-hidden w-full rounded-2xl py-[15px] px-6 font-semibold text-[15px] cursor-pointer font-body transition-colors duration-500 text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(46,64,82,0.3)] disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ backgroundColor: '#2E4052' }}
                 >
                   {/* Teal wipe on hover */}
@@ -235,7 +279,7 @@ export default function ContactPage() {
                     style={{ backgroundColor: '#3A5268' }}
                   />
                   <span className="relative z-10 flex items-center gap-2">
-                    Send Message <Send size={15} />
+                    {loading ? 'Sending…' : <> Send Message <Send size={15} /> </>}
                   </span>
                 </button>
 
