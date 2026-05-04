@@ -128,7 +128,7 @@ function BookingSummary({ booking }: { booking: BookingState }) {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-2 mb-3">
             {[
-              { Icon: Ruler, val: booking.distance ? `${booking.distance} km` : '—' },
+              { Icon: Ruler, val: booking.distance ? `${booking.type === 'return' ? booking.distance * 2 : booking.distance} km` : '—' },
               { Icon: Clock, val: booking.duration ? `${booking.duration} min` : '—' },
             ].map(({ Icon, val }, i) => (
               <div key={i} className="flex items-center gap-1.5 rounded-xl px-3 py-2" style={{ backgroundColor: '#F0F5F0' }}>
@@ -453,9 +453,10 @@ export default function BookingDetails() {
   const booking: BookingState = location.state || {}
   const { customer, isLoggedIn } = useAuth()
 
+  const initialPassengers = String((booking as any)?.searchDetails?.passengers ?? 1)
   const [form, setForm] = useState<PassengerForm>({
     firstName: '', lastName: '', email: '', phone: '',
-    passengers: '1', flightNumber: '', specialRequests: '',
+    passengers: initialPassengers, flightNumber: '', specialRequests: '',
   })
   const [errors, setErrors] = useState<ValidationErrors>({})
   const [showSummary, setShowSummary] = useState(false)

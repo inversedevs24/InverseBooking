@@ -15,21 +15,25 @@ export const FLEET_HOME = FLEET.slice(3, 7)
 
 // Maps Shopify serviceType label → booking route — shared across Footer, PromoBanners, ServiceCategories
 export const SERVICE_ROUTE_MAP: Record<string, string> = {
-  'Private Transfer': '/book?service=transfer',
-  'City to City':     '/book?service=city-to-city',
-  'Airport Rides':    '/book?service=airport',
-  'City Tour':        '/book?service=city-tour',
-  'Hourly Hire':      '/book?service=hourly',
-  'Desert Safari':    '/book?service=desert-safari',
+  'Private Transfer':       '/book?service=transfer',
+  'City to City':           '/book?service=city-to-city',
+  'Airport Rides':          '/book?service=airport',
+  'City Tour':              '/book?service=city-tour',
+  'Hourly Hire':            '/book?service=hourly',
+  'Desert Safari':          '/book?service=desert-safari',
+  'Office Pick-up and Drop': '/book?service=office-pickup',
+  'School Pick-up and Drop': '/book?service=school-pickup',
 }
 
 export const SERVICES: Service[] = [
-  { icon: '🚗',    label: 'Private Transfer', image: 'https://images.pexels.com/photos/36377058/pexels-photo-36377058.jpeg' },
-  { icon: '🏙️',  label: 'City to City',      image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=200&q=80' },
-  { icon: '✈️',   label: 'Airport Rides',     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&q=80' },
-  { icon: '🏛️',  label: 'City Tour',          image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=200&q=80' },
-  { icon: '🧑‍✈️', label: 'Hourly Hire',     image: 'https://cdn.prod.website-files.com/656e39bd8b07a811ace24224/656e39bd8b07a811ace2462a_falt.webp' },
-  { icon: '🏜️',  label: 'Desert Safari',      image: 'https://images.pexels.com/photos/5604852/pexels-photo-5604852.jpeg' },
+  { icon: '🚗',    label: 'Private Transfer',       image: 'https://images.pexels.com/photos/36377058/pexels-photo-36377058.jpeg' },
+  { icon: '🏙️',  label: 'City to City',             image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=200&q=80' },
+  { icon: '✈️',   label: 'Airport Rides',            image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&q=80' },
+  { icon: '🏛️',  label: 'City Tour',                image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=200&q=80' },
+  { icon: '🧑‍✈️', label: 'Hourly Hire',            image: 'https://cdn.prod.website-files.com/656e39bd8b07a811ace24224/656e39bd8b07a811ace2462a_falt.webp' },
+  { icon: '🏜️',  label: 'Desert Safari',            image: 'https://images.pexels.com/photos/5604852/pexels-photo-5604852.jpeg' },
+  { icon: '🏢',   label: 'Office Pick-up and Drop',  image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=200&q=80' },
+  { icon: '🏫',   label: 'School Pick-up and Drop',  image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=200&q=80' },
 ]
 
 export const TRUST_BADGES: TrustBadge[] = [

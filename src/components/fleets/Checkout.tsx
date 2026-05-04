@@ -113,9 +113,12 @@ export default function Checkout() {
   const variantCurrency = taxiOption?.variants?.[0]?.price?.currencyCode
   const sym = currencySymbol(variantCurrency)
 
+  const bookingQuantity: number = (booking as any).quantity ?? 1
+  const isReturnTrip = booking.type === 'return'
+  const vehicleCount = Math.round(bookingQuantity / (isReturnTrip ? 2 : 1))
+
   const subtotal = Number(booking.price || 0)
-  const tax = +(subtotal * 0.05).toFixed(2)
-  const total = (subtotal + tax).toFixed(2)
+  const total = subtotal.toFixed(2)
 
   const formatDatetime = (dt?: string) => {
     if (!dt) return '—'
@@ -147,6 +150,7 @@ export default function Checkout() {
         },
         search: {
           ...rawSearchDetails,
+          passengers: p.passengers ? Number(p.passengers) : rawSearchDetails.passengers,
           flightNumber: p.flightNumber || rawSearchDetails.flightNumber || undefined,
         },
         totalPrice: subtotal,
@@ -202,7 +206,7 @@ export default function Checkout() {
       {showSummary && (
         <div className="lg:hidden px-4 pt-4 pb-2 max-w-5xl mx-auto">
           <PaymentPanel
-            sym={sym} subtotal={subtotal} tax={tax} total={total}
+            sym={sym} subtotal={subtotal} total={total}
             redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
           />
         </div>
@@ -224,7 +228,7 @@ export default function Checkout() {
                 <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#F0F5F0' }}>
                   <Ruler size={12} style={{ color: '#2E4052' }} />
                   <span className="text-[12px] font-semibold text-slate-700">
-                    {booking.distance ? `${booking.distance} km` : '—'}
+                    {booking.distance ? `${booking.type === 'return' ? booking.distance * 2 : booking.distance} km` : '—'}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 flex-1 rounded-xl px-3 py-2" style={{ backgroundColor: '#F0F5F0' }}>
@@ -247,13 +251,20 @@ export default function Checkout() {
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-bold text-slate-800 font-head">{v.name || '—'}</div>
                   <div className="text-[11px] text-slate-400 mb-2">{v.model}</div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                      <Users size={10} />{v.passengers} pax
+                      <Users size={10} />
+                      {vehicleCount > 1 ? `${v.passengers} pax ×${vehicleCount}` : `${v.passengers} pax`}
                     </span>
                     <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                       <Luggage size={10} />{v.luggage} bags
                     </span>
+                    {vehicleCount > 1 && (
+                      <span className="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: '#FFC857', color: '#2E4052' }}>
+                        ×{vehicleCount} Vehicles
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -284,7 +295,7 @@ export default function Checkout() {
           {/*  Right: payment sidebar (desktop)  */}
           <div className="hidden lg:block w-[300px] xl:w-[320px] flex-shrink-0 sticky top-[112px]">
             <PaymentPanel
-              sym={sym} subtotal={subtotal} tax={tax} total={total}
+              sym={sym} subtotal={subtotal} total={total}
               redirecting={redirecting} error={cartError} onPay={handleShopifyRedirect}
             />
           </div>
@@ -297,9 +308,9 @@ export default function Checkout() {
 
 //  Payment panel (extracted so it can be used in both mobile + desktop)
 function PaymentPanel({
-  sym, subtotal, tax, total, redirecting, error, onPay,
+  sym, subtotal, total, redirecting, error, onPay,
 }: {
-  sym: string; subtotal: number; tax: number; total: string
+  sym: string; subtotal: number; total: string
   redirecting: boolean; error?: string | null; onPay: () => void
 }) {
   return (
@@ -318,14 +329,13 @@ function PaymentPanel({
           <div className="text-[28px] font-bold text-white font-head leading-none">
             {sym}{total}
           </div>
-          <div className="text-[11px] mt-1" style={{ color: '#BDD9BF' }}>Total inc. VAT</div>
+          <div className="text-[11px] mt-1" style={{ color: '#BDD9BF' }}>Total</div>
         </div>
 
         {/* Breakdown rows */}
         <div className="px-5 py-4">
           {[
             { label: 'Base fare', value: `${sym}${subtotal.toFixed(2)}`, highlight: false },
-            { label: 'VAT (5%)', value: `${sym}${tax.toFixed(2)}`, highlight: false },
             { label: 'Discount', value: `–${sym}0.00`, highlight: true },
           ].map(row => (
             <div key={row.label} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">

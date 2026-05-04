@@ -52,7 +52,7 @@ export function getParkingFeeVariantId(passengers: number): string | null {
   return import.meta.env.VITE_PARKING_FEE_LARGE as string || null
 }
 
-// ─── Line Item Builder ────────────────────────────────────────────────────────
+//  Line Item Builder 
 
 interface ShopifyLineInput {
   merchandiseId: string
@@ -61,13 +61,13 @@ interface ShopifyLineInput {
 }
 
 export function cartItemToLineInput(cartItem: CartItem): ShopifyLineInput {
-  const { taxi, search } = cartItem
+  const { taxi, search, quantity } = cartItem
   const isReturn = search.tripType === 'return'
-  const quantity = isReturn ? 2 : 1
 
   const attributes: { key: string; value: string }[] = [
     { key: 'Vehicle', value: taxi.name },
     { key: 'Trip Type', value: isReturn ? 'Return' : 'One-Way' },
+    { key: 'Passengers', value: String(search.passengers) },
     { key: 'From', value: search.from },
     { key: 'To', value: search.to },
     { key: 'Distance', value: `${search.distance.toFixed(1)} km` },

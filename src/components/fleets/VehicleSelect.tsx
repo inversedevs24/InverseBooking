@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeft, Users, Luggage, MapPin, CalendarDays,
-  Clock, Ruler, CheckCircle2, ArrowRight, Zap, Loader2,
+  Clock, Ruler, CheckCircle2, ArrowRight, Loader2,
   AlertCircle, Star, Car, ChevronDown, ChevronUp, Expand,
 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
@@ -12,7 +12,7 @@ import { loadGoogleMaps } from '../../services/googleMapsLoader'
 import VehicleDetailModal from './VehicleDetailModal'
 import type { TaxiOption, TaxiVariant, SearchDetails } from '../../types'
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+//  Helpers 
 
 function formatDate(date?: string) {
   if (!date) return '—'
@@ -195,7 +195,7 @@ function TripSummary({ search }: { search: SearchDetails }) {
         <div className="grid grid-cols-3 divide-x bg-white" style={{ borderColor: '#F0F5F0' }}>
           {[
             { Icon: CalendarDays, val: formatDate(search.date), sub: 'Date' },
-            { Icon: Ruler, val: search.distance ? `${search.distance.toFixed(1)} km` : '—', sub: 'Distance' },
+            { Icon: Ruler, val: search.distance ? `${(search.tripType === 'return' ? search.distance * 2 : search.distance).toFixed(1)} km` : '—', sub: 'Distance' },
             { Icon: Clock, val: search.duration || '—', sub: 'Est. time' },
           ].map(({ Icon, val, sub }, i) => (
             <div key={i} className="px-3 py-3 text-center" style={{ borderColor: '#F0F5F0' }}>
@@ -225,7 +225,7 @@ function TripSummary({ search }: { search: SearchDetails }) {
   )
 }
 
-// ─── Skeleton Card ────────────────────────────────────────────────────────────
+//  Skeleton Card 
 
 function VehicleCardSkeleton() {
   return (
@@ -258,6 +258,7 @@ function VehicleCard({
   currencyCode,
   isEstimate,
   isReturn,
+  vehicleQuantity,
   onSelect,
   onViewDetails,
 }: {
@@ -267,6 +268,7 @@ function VehicleCard({
   currencyCode: string
   isEstimate: boolean
   isReturn: boolean
+  vehicleQuantity: number
   onSelect: () => void
   onViewDetails: () => void
 }) {
@@ -409,14 +411,24 @@ function VehicleCard({
           <div className="flex-shrink-0 text-right">
             {priceDisplay !== '—' ? (
               <>
-                {isReturn && (
-                  <span
-                    className="inline-block text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full mb-1"
-                    style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
-                  >
-                    Return Trip
-                  </span>
-                )}
+                <div className="flex flex-wrap justify-end gap-1 mb-1">
+                  {isReturn && (
+                    <span
+                      className="inline-block text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: '#BDD9BF', color: '#2E4052' }}
+                    >
+                      Return Trip
+                    </span>
+                  )}
+                  {vehicleQuantity > 1 && (
+                    <span
+                      className="inline-block text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: '#FFC857', color: '#2E4052' }}
+                    >
+                      ×{vehicleQuantity} Vehicles
+                    </span>
+                  )}
+                </div>
                 <p
                   className="font-head font-bold leading-none"
                   style={{ color: '#2E4052', fontSize: 'clamp(1.1rem, 2.5vw, 1.3rem)' }}
@@ -444,7 +456,8 @@ function VehicleCard({
             className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
             style={{ backgroundColor: '#F0F5F0', color: '#2E4052' }}
           >
-            <Users size={9} /> {vehicle.passengers} pax
+            <Users size={9} />
+            {vehicleQuantity > 1 ? `${vehicle.passengers} pax ×${vehicleQuantity}` : `${vehicle.passengers} pax`}
           </span>
           <span
             className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full"
@@ -514,10 +527,16 @@ export default function VehicleSelect() {
   }
   const serviceLabel = rawState.service ? SERVICE_TYPE_LABEL[rawState.service as string] : undefined
 
-  const available = products.filter(p => {
-    if (p.passengers < requiredPassengers) return false
+  const allMatchingService = products.filter(p => {
     if (serviceLabel && p.serviceType && p.serviceType !== serviceLabel) return false
     return true
+  })
+  // Sort: vehicles needing multiple units first (smaller capacity first), then single-vehicle options
+  const available = [...allMatchingService].sort((a, b) => {
+    const qA = Math.ceil(requiredPassengers / (a.passengers || 1))
+    const qB = Math.ceil(requiredPassengers / (b.passengers || 1))
+    if ((qA > 1) !== (qB > 1)) return qA > 1 ? -1 : 1
+    return a.passengers - b.passengers
   })
 
   const getVariantForProduct = (product: TaxiOption): { variant: TaxiVariant | null; isEstimate: boolean } => {
@@ -538,14 +557,18 @@ export default function VehicleSelect() {
 
   const selectedProduct = selectedId ? available.find(p => p.id === selectedId) ?? null : null
   const selectedVariantData = selectedProduct ? getVariantForProduct(selectedProduct) : null
+  const selectedVehicleQuantity = selectedProduct
+    ? Math.ceil(requiredPassengers / (selectedProduct.passengers || 1))
+    : 1
 
-  const handleSelect = (product: TaxiOption) => {
+  const handleSelect = (product: TaxiOption, vehicleQuantity: number = 1) => {
     setSelectedId(product.id)
 
     const { variant } = getVariantForProduct(product)
     const selectedVariantId = variant?.id ?? product.shopifyId
     const variantPrice = variant ? parseFloat(variant.price.amount) : 0
-    const quantity = searchDetails.tripType === 'return' ? 2 : 1
+    const returnMultiplier = searchDetails.tripType === 'return' ? 2 : 1
+    const quantity = vehicleQuantity * returnMultiplier
     const totalPrice = variantPrice * quantity
 
     setTimeout(() => {
@@ -750,11 +773,12 @@ export default function VehicleSelect() {
             {!loading && !error && (
               <div className="flex flex-col gap-4">
                 {available.map(product => {
+                  const vehicleQuantity = Math.ceil(requiredPassengers / (product.passengers || 1))
                   const { variant, isEstimate } = getVariantForProduct(product)
                   const isReturn = searchDetails.tripType === 'return'
-                  const quantity = isReturn ? 2 : 1
+                  const totalQuantity = vehicleQuantity * (isReturn ? 2 : 1)
                   const priceDisplay = variant
-                    ? (parseFloat(variant.price.amount) * quantity).toFixed(2)
+                    ? (parseFloat(variant.price.amount) * totalQuantity).toFixed(2)
                     : '—'
                   const currencyCode = variant?.price.currencyCode ?? 'AED'
 
@@ -767,7 +791,8 @@ export default function VehicleSelect() {
                       currencyCode={currencyCode}
                       isEstimate={isEstimate}
                       isReturn={isReturn}
-                      onSelect={() => handleSelect(product)}
+                      vehicleQuantity={vehicleQuantity}
+                      onSelect={() => handleSelect(product, vehicleQuantity)}
                       onViewDetails={() => setDetailVehicle(product)}
                     />
                   )
@@ -789,7 +814,11 @@ export default function VehicleSelect() {
         <VehicleDetailModal
           vehicle={detailVehicle}
           onClose={() => setDetailVehicle(null)}
-          onSelect={() => { setDetailVehicle(null); handleSelect(detailVehicle) }}
+          onSelect={() => {
+            const qty = Math.ceil(requiredPassengers / (detailVehicle.passengers || 1))
+            setDetailVehicle(null)
+            handleSelect(detailVehicle, qty)
+          }}
         />
       )}
 
@@ -830,7 +859,7 @@ export default function VehicleSelect() {
             {selectedVariantData?.variant && (
               <p className="text-[11px] font-semibold font-body" style={{ color: '#BDD9BF' }}>
                 {getCurrencySymbol(selectedVariantData.variant.price.currencyCode)}
-                {(parseFloat(selectedVariantData.variant.price.amount) * (searchDetails.tripType === 'return' ? 2 : 1)).toFixed(2)}
+                {(parseFloat(selectedVariantData.variant.price.amount) * selectedVehicleQuantity * (searchDetails.tripType === 'return' ? 2 : 1)).toFixed(2)}
                 <span className="opacity-60"> est. total</span>
               </p>
             )}
