@@ -11,7 +11,7 @@ export default function RefundPage() {
       ],
     },
     {
-      h: 'InverseRide Cancellations',
+      h: 'Luxeway Ride Cancellations',
       items: ['If we are unable to fulfill your booking, it will be cancelled and fully refunded'],
     },
     {
@@ -40,7 +40,7 @@ export default function RefundPage() {
       items: [
         'All disputes must be reported within 48 hours of the completed or cancelled ride',
         'Provide booking reference and relevant details when contacting support',
-        "InverseRide's decision on disputes is final, subject to applicable laws",
+        "Luxeway Ride's decision on disputes is final, subject to applicable laws",
       ],
     },
     {

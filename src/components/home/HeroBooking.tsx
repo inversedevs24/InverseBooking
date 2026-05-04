@@ -6,9 +6,21 @@ import { PlacesInput } from '../ui/PlacesInput'
 import type { PlaceResult } from '../ui/PlacesInput'
 import { loadGoogleMaps } from '../../services/googleMapsLoader'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchTaxiProducts, fetchHomepageImages } from '../../store/slices/shopifySlice'
+import { fetchTaxiProducts } from '../../store/slices/shopifySlice'
 
-const FALLBACK_IMAGE = '/images/hero.png'
+const DESKTOP_IMAGES = [
+  '/images/hero-desktop-1.jpg',
+  '/images/hero-desktop-2.jpg',
+  '/images/hero-desktop-3.jpg',
+  '/images/hero-desktop-4.jpg',
+]
+
+const MOBILE_IMAGES = [
+  '/images/hero-mobile-1.jpg',
+  '/images/hero-mobile-2.jpg',
+  '/images/hero-mobile-3.jpg',
+  '/images/hero-mobile-4.jpg',
+]
 
 const GRAIN_SVG = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
@@ -28,15 +40,15 @@ const TAB_CONFIG: Record<Tab, {
   toPlaceholder: string
 }> = {
   transfer: {
-    label: 'City to City',
-    service: 'city-to-city',
+    label: 'Private Transfer',
+    service: 'transfer',
     fromLabel: 'From',
     fromPlaceholder: 'Enter pickup location',
     toLabel: 'To',
     toPlaceholder: 'Enter drop-off location',
   },
   airport: {
-    label: 'Airport Rides',
+    label: 'Airport Transfer',
     service: 'airport',
     fromLabel: 'Airport / Terminal',
     fromPlaceholder: 'e.g. Dubai International Airport',
@@ -47,25 +59,33 @@ const TAB_CONFIG: Record<Tab, {
 
 export default function HeroBooking() {
   const dispatch = useAppDispatch()
-  const { products, initialized, heroImages, heroImagesInitialized } = useAppSelector(s => s.shopify)
+  const { products, initialized } = useAppSelector(s => s.shopify)
 
   useEffect(() => {
     dispatch(fetchTaxiProducts())
-    dispatch(fetchHomepageImages())
   }, [dispatch])
 
   //  Slideshow ─────────────────────────────────────────────────────────────
-  const images = heroImagesInitialized && heroImages.length > 0 ? heroImages : [FALLBACK_IMAGE]
-  const [activeIdx, setActiveIdx] = useState(0)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [desktopIdx, setDesktopIdx] = useState(0)
+  const [mobileIdx, setMobileIdx] = useState(0)
+  const desktopTimer = useRef<ReturnType<typeof setInterval> | null>(null)
+  const mobileTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    if (images.length <= 1) return
-    timerRef.current = setInterval(() => {
-      setActiveIdx(i => (i + 1) % images.length)
-    }, 2000)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [images.length])
+    if (DESKTOP_IMAGES.length <= 1) return
+    desktopTimer.current = setInterval(() => {
+      setDesktopIdx(i => (i + 1) % DESKTOP_IMAGES.length)
+    }, 4000)
+    return () => { if (desktopTimer.current) clearInterval(desktopTimer.current) }
+  }, [])
+
+  useEffect(() => {
+    if (MOBILE_IMAGES.length <= 1) return
+    mobileTimer.current = setInterval(() => {
+      setMobileIdx(i => (i + 1) % MOBILE_IMAGES.length)
+    }, 4000)
+    return () => { if (mobileTimer.current) clearInterval(mobileTimer.current) }
+  }, [])
 
   //  Google Maps 
   const [mapsReady, setMapsReady] = useState(false)
@@ -189,11 +209,11 @@ export default function HeroBooking() {
     <div className="flex flex-col md:relative md:flex-row md:items-center">
       {/* Mobile-only hero image */}
       <div className="md:hidden relative h-[240px] overflow-hidden flex-shrink-0">
-        {images.map((src, i) => (
+        {MOBILE_IMAGES.map((src, i) => (
           <div
             key={src}
             className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-            style={{ backgroundImage: `url('${src}')`, opacity: i === activeIdx ? 1 : 0 }}
+            style={{ backgroundImage: `url('${src}')`, opacity: i === mobileIdx ? 1 : 0 }}
           />
         ))}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.35) 100%)' }} />
@@ -201,11 +221,11 @@ export default function HeroBooking() {
 
       {/* Desktop-only background slideshow */}
       <div className="hidden md:block absolute inset-0 overflow-hidden">
-        {images.map((src, i) => (
+        {DESKTOP_IMAGES.map((src, i) => (
           <div
             key={src}
             className="absolute inset-0 bg-cover bg-center filter brightness-[0.82] saturate-[0.9] transition-opacity duration-1000"
-            style={{ backgroundImage: `url('${src}')`, opacity: i === activeIdx ? 1 : 0 }}
+            style={{ backgroundImage: `url('${src}')`, opacity: i === desktopIdx ? 1 : 0 }}
           />
         ))}
         <div
@@ -229,7 +249,7 @@ export default function HeroBooking() {
                   style={tab === 'transfer' ? { background: '#2E4052' } : undefined}
                   onClick={() => switchTab('transfer')}
                 >
-                  City to City
+                  {TAB_CONFIG.transfer.label}
                 </button>
               )}
               {showAirport && (
@@ -239,7 +259,7 @@ export default function HeroBooking() {
                   style={tab === 'airport' ? { background: '#2E4052' } : undefined}
                   onClick={() => switchTab('airport')}
                 >
-                  Airport Rides
+                  {TAB_CONFIG.airport.label}
                 </button>
               )}
             </div>

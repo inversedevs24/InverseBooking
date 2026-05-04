@@ -47,7 +47,7 @@ export default function Footer() {
 
           {/* Brand col — full width on mobile */}
           <div className="col-span-2 md:col-span-1 flex flex-col items-center md:items-start">
-            <Logo light />
+            <Logo src="/images/logo.svg" />
 
             {/* Contact */}
             <div className="mt-5 flex flex-col gap-2.5 items-center md:items-start">
@@ -149,7 +149,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="text-[12px] text-white/30 text-center w-full">
-            © {new Date().getFullYear()} InverseRide — All Rights Reserved
+            © {new Date().getFullYear()} Luxeway Ride — All Rights Reserved
           </p>
 
           {/* Payment methods */}

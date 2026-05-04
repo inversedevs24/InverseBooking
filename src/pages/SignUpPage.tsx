@@ -177,7 +177,7 @@ export default function SignUpPage() {
 
         {/* Terms */}
         <p className="text-center text-[11px] text-white">
-          By proceeding you agree to InverseRide{' '}
+          By proceeding you agree to Luxeway Ride{' '}
           <Link to="/terms" className="text-white underline">Terms</Link> &amp;{' '}
           <Link to="/privacy" className="text-white underline">Privacy</Link>
         </p>

@@ -122,7 +122,7 @@ export default function Navbar() {
     <nav className="bg-white border-b border-border fixed top-0 left-0 right-0 z-[100] shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
       <div className="max-w-container mx-auto px-4 sm:px-6 relative flex items-center justify-between h-16">
 
-        <Logo />
+        <Logo src="/images/logo.svg" />
 
         {/* Desktop nav links — absolutely centred */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">

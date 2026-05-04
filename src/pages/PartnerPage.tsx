@@ -104,7 +104,7 @@ export default function PartnerPage() {
             <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Join Our Network</p>
             <h1 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.4rem, 5.5vw, 2rem)' }}>Become a Partner</h1>
             <p className="text-muted text-[14px] max-w-md mx-auto leading-relaxed">
-              Drive your success with us. Join the InverseRide partner network and grow your business.
+              Drive your success with us. Join the Luxeway Ride partner network and grow your business.
             </p>
           </div>
 
@@ -127,7 +127,7 @@ export default function PartnerPage() {
                   Partner Information
                 </p>
                 <h2 className="font-head text-[22px] font-bold text-white leading-tight mb-6">
-                  Grow with InverseRide
+                  Grow with Luxeway Ride
                 </h2>
 
                 {/* Why join rows */}
@@ -262,7 +262,7 @@ export default function PartnerPage() {
             <div>
               <p className="text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Why Join Us</p>
               <h2 className="font-head font-bold text-primary leading-tight mb-3" style={{ fontSize: 'clamp(1.3rem, 5.5vw, 2rem)' }}>
-                Why Partner with InverseRide?
+                Why Partner with Luxeway Ride?
               </h2>
               <p className="text-muted text-[14px] font-body leading-relaxed mb-6">
                 We believe in growing together. Join our partner network and unlock new earning opportunities with every ride.
